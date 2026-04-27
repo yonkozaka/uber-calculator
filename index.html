@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uber Earnings & Expense Calculator</title>
+  <style>
+    :root {
+      --bg: #071018;
+      --panel: #0d1824;
+      --panel-2: #101f2d;
+      --field: #132433;
+      --border: #244054;
+      --text: #e9f5f7;
+      --muted: #91a9b5;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --red: #fb7185;
+      --yellow: #facc15;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+      --soft-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 32rem),
+        radial-gradient(circle at 85% 8%, rgba(52, 211, 153, 0.12), transparent 26rem),
+        linear-gradient(135deg, #071018 0%, #081521 48%, #06110f 100%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 38px 0;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+      font-size: 1rem;
+    }
+
+    .quick-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .quick-stats span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 8px;
+      background: rgba(13, 24, 36, 0.68);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .mode-card {
+      min-width: 260px;
+      padding: 16px;
+      background: rgba(13, 24, 36, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--field);
+      color: var(--text);
+      padding: 11px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+    }
+
+    input[readonly] {
+      color: #b9ccd4;
+      background: rgba(19, 36, 51, 0.66);
+      cursor: not-allowed;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.07fr) minmax(340px, 0.93fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .section {
+      background: rgba(13, 24, 36, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .section + .section {
+      margin-top: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 19px 22px;
+      border-bottom: 1px solid rgba(145, 169, 181, 0.18);
+      background: rgba(16, 31, 45, 0.72);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-align: right;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .period-inputs {
+      display: none;
+      border-top: 1px solid rgba(145, 169, 181, 0.14);
+      margin-top: 6px;
+      padding-top: 20px;
+    }
+
+    .period-inputs.active {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 22px 22px;
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #03120f;
+      background: var(--green);
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--soft-shadow);
+      transition: transform 140ms ease, filter 140ms ease, background 140ms ease, box-shadow 140ms ease;
+    }
+
+    button:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+
+    button.secondary {
+      color: var(--text);
+      background: #1b3142;
+      border: 1px solid var(--border);
+    }
+
+    button.blue {
+      color: #031018;
+      background: var(--blue);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      padding: 22px;
+    }
+
+    .result-card {
+      min-height: 112px;
+      padding: 17px;
+      background:
+        linear-gradient(145deg, rgba(16, 31, 45, 0.96), rgba(11, 22, 33, 0.96));
+      border: 1px solid rgba(145, 169, 181, 0.18);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      opacity: 0.8;
+    }
+
+    .result-card strong {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+    }
+
+    .result-card span {
+      display: block;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.1;
+      font-weight: 900;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .positive {
+      color: var(--green) !important;
+    }
+
+    .negative {
+      color: var(--red) !important;
+    }
+
+    .warning {
+      color: var(--yellow) !important;
+    }
+
+    .alerts {
+      display: grid;
+      gap: 10px;
+      padding: 0 22px 22px;
+    }
+
+    .alert {
+      padding: 13px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(250, 204, 21, 0.25);
+      background: rgba(250, 204, 21, 0.11);
+      color: var(--yellow);
+      font-weight: 800;
+    }
+
+    .alert.good {
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.11);
+      color: var(--green);
+    }
+
+    .alert.bad {
+      border-color: rgba(251, 113, 133, 0.32);
+      background: rgba(251, 113, 133, 0.11);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(145, 169, 181, 0.14);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: rgba(16, 31, 45, 0.6);
+    }
+
+    td {
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .notes {
+      display: grid;
+      gap: 10px;
+      padding: 20px 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .notes p {
+      margin: 0;
+      padding-left: 14px;
+      border-left: 3px solid var(--blue);
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .mode-card {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app {
+        width: min(100% - 20px, 1180px);
+        padding: 24px 0;
+      }
+
+      .form-grid,
+      .period-inputs.active,
+      .results-grid,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hint {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Uber Earnings Calculator</h1>
+        <p class="subtitle">Estimate driver income, expenses, gas cost, and real take-home profit across daily, weekly, or monthly work.</p>
+        <div class="quick-stats" aria-label="Calculator highlights">
+          <span>No sign-up</span>
+          <span>Private browser storage</span>
+          <span>Text report export</span>
+        </div>
+      </div>
+      <div class="mode-card">
+        <label for="mode">Mode</label>
+        <select id="mode">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section>
+        <div class="section">
+          <div class="section-title">
+            <h2>Trip / Day Data</h2>
+            <span class="hint">Use day totals, or averages in weekly/monthly mode.</span>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label id="incomeLabel" for="income">Total Uber income ($)</label>
+              <input id="income" type="number" min="0" step="0.01" value="220">
+            </div>
+            <div>
+              <label id="hoursLabel" for="hours">Total working hours</label>
+              <input id="hours" type="number" min="0" step="0.1" value="8">
+            </div>
+            <div>
+              <label for="trips">Number of trips</label>
+              <input id="trips" type="number" min="0" step="1" value="18">
+            </div>
+            <div>
+              <label id="milesLabel" for="miles">Total miles driven</label>
+              <input id="miles" type="number" min="0" step="0.1" value="135">
+            </div>
+            <div>
+              <label for="gasPrice">Gas price per gallon ($)</label>
+              <input id="gasPrice" type="number" min="0" step="0.01" value="3.75">
+            </div>
+            <div>
+              <label for="mpg">Car MPG</label>
+              <input id="mpg" type="number" min="0" step="0.1" value="28">
+            </div>
+            <div>
+              <label id="tollsLabel" for="tolls">Parking/tolls cost ($)</label>
+              <input id="tolls" type="number" min="0" step="0.01" value="12">
+            </div>
+            <div>
+              <label id="additionalLabel" for="additional">Additional expenses ($)</label>
+              <input id="additional" type="number" min="0" step="0.01" value="8">
+            </div>
+
+            <div id="periodInputs" class="period-inputs wide">
+              <div>
+                <label for="workingDays">Number of working days</label>
+                <input id="workingDays" type="number" min="1" step="1" value="5">
+              </div>
+              <div>
+                <label for="avgHours">Average hours per day</label>
+                <input id="avgHours" type="number" min="0" step="0.1" value="8">
+              </div>
+              <div>
+                <label for="avgMiles">Average miles per day</label>
+                <input id="avgMiles" type="number" min="0" step="0.1" value="135">
+              </div>
+              <div>
+                <label for="avgIncome">Average daily income ($)</label>
+                <input id="avgIncome" type="number" min="0" step="0.01" value="220">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>Monthly Fixed Costs</h2>
+            <span class="hint">Shared by working days.</span>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="insurance">Monthly insurance ($)</label>
+              <input id="insurance" type="number" min="0" step="0.01" value="180">
+            </div>
+            <div>
+              <label for="maintenance">Estimated monthly maintenance ($)</label>
+              <input id="maintenance" type="number" min="0" step="0.01" value="120">
+            </div>
+            <div>
+              <label for="phone">Phone/subscriptions ($)</label>
+              <input id="phone" type="number" min="0" step="0.01" value="60">
+            </div>
+            <div>
+              <label for="otherFixed">Any other fixed cost ($)</label>
+              <input id="otherFixed" type="number" min="0" step="0.01" value="40">
+            </div>
+          </div>
+          <div class="actions">
+            <button id="calculateBtn" type="button">Calculate</button>
+            <button id="resetBtn" class="secondary" type="button">Reset</button>
+            <button id="saveBtn" class="blue" type="button">Save result</button>
+            <button id="downloadBtn" class="secondary" type="button">Download result</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section">
+          <div class="section-title">
+            <h2>Results</h2>
+            <span class="hint" id="savedStatus">Auto-saves inputs</span>
+          </div>
+          <div class="results-grid">
+            <div class="result-card">
+              <strong>Total income</strong>
+              <span id="resultIncome">$0.00</span>
+            </div>
+            <div class="result-card">
+              <strong>Gas cost</strong>
+              <span id="resultGas">$0.00</span>
+            </div>
+            <div class="result-card">
+              <strong>Total expenses</strong>
+              <span id="resultExpenses">$0.00</span>
+            </div>
+            <div class="result-card">
+              <strong>Net profit</strong>
+              <span id="resultProfit">$0.00</span>
+            </div>
+            <div class="result-card">
+              <strong>Profit per hour</strong>
+              <span id="resultHour">$0.00</span>
+            </div>
+            <div class="result-card">
+              <strong>Profit per mile</strong>
+              <span id="resultMile">$0.00</span>
+            </div>
+            <div class="result-card wide">
+              <strong>Profit per trip</strong>
+              <span id="resultTrip">$0.00</span>
+            </div>
+          </div>
+          <div class="alerts" id="alerts"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>Summary Table</h2>
+            <span class="hint">Key details</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Value</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="summaryBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>Notes</h2>
+          </div>
+          <div class="notes">
+            <p>This is an estimate, not financial advice.</p>
+            <p>Depreciation is not included unless added manually.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'uberCalculatorInputs';
+    const RESULT_KEY = 'uberCalculatorSavedResult';
+
+    const ids = [
+      'mode', 'income', 'hours', 'trips', 'miles', 'gasPrice', 'mpg', 'tolls',
+      'additional', 'workingDays', 'avgHours', 'avgMiles', 'avgIncome',
+      'insurance', 'maintenance', 'phone', 'otherFixed'
+    ];
+
+    const fields = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
+    const periodInputs = document.getElementById('periodInputs');
+    const savedStatus = document.getElementById('savedStatus');
+    const alerts = document.getElementById('alerts');
+    const summaryBody = document.getElementById('summaryBody');
+    const labels = {
+      income: document.getElementById('incomeLabel'),
+      hours: document.getElementById('hoursLabel'),
+      miles: document.getElementById('milesLabel'),
+      tolls: document.getElementById('tollsLabel'),
+      additional: document.getElementById('additionalLabel')
+    };
+
+    const outputs = {
+      income: document.getElementById('resultIncome'),
+      gas: document.getElementById('resultGas'),
+      expenses: document.getElementById('resultExpenses'),
+      profit: document.getElementById('resultProfit'),
+      hour: document.getElementById('resultHour'),
+      mile: document.getElementById('resultMile'),
+      trip: document.getElementById('resultTrip')
+    };
+
+    let latestResult = null;
+
+    function money(value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(Number.isFinite(value) ? value : 0);
+    }
+
+    function numberValue(id) {
+      return parseFloat(fields[id].value) || 0;
+    }
+
+    function getInputs() {
+      const data = {};
+      ids.forEach((id) => {
+        data[id] = fields[id].value;
+      });
+      return data;
+    }
+
+    function saveInputs() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getInputs()));
+    }
+
+    function restoreInputs() {
+      let saved = {};
+      try {
+        saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch (error) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+
+      ids.forEach((id) => {
+        if (saved[id] !== undefined) {
+          fields[id].value = saved[id];
+        }
+      });
+    }
+
+    function syncMode() {
+      const isDaily = fields.mode.value === 'daily';
+      periodInputs.classList.toggle('active', !isDaily);
+
+      labels.income.textContent = isDaily ? 'Total Uber income ($)' : 'Calculated income ($)';
+      labels.hours.textContent = isDaily ? 'Total working hours' : 'Calculated working hours';
+      labels.miles.textContent = isDaily ? 'Total miles driven' : 'Calculated miles driven';
+      labels.tolls.textContent = isDaily ? 'Parking/tolls cost ($)' : 'Parking/tolls for period ($)';
+      labels.additional.textContent = isDaily ? 'Additional expenses ($)' : 'Additional expenses for period ($)';
+
+      fields.income.readOnly = !isDaily;
+      fields.hours.readOnly = !isDaily;
+      fields.miles.readOnly = !isDaily;
+    }
+
+    function calculate() {
+      syncMode();
+
+      const mode = fields.mode.value;
+      const workingDays = Math.max(numberValue('workingDays'), 1);
+      const isDaily = mode === 'daily';
+      const income = isDaily ? numberValue('income') : numberValue('avgIncome') * workingDays;
+      const hours = isDaily ? numberValue('hours') : numberValue('avgHours') * workingDays;
+      const trips = numberValue('trips');
+      const miles = isDaily ? numberValue('miles') : numberValue('avgMiles') * workingDays;
+      const mpg = Math.max(numberValue('mpg'), 0.01);
+      const gasPrice = numberValue('gasPrice');
+      const monthlyFixedCosts =
+        numberValue('insurance') +
+        numberValue('maintenance') +
+        numberValue('phone') +
+        numberValue('otherFixed');
+
+      // Core fuel math: gallons used equals miles driven divided by MPG.
+      const gasUsed = miles / mpg;
+      const gasCost = gasUsed * gasPrice;
+
+      // Variable expenses are direct driving expenses for the selected period.
+      const variableExpenses = gasCost + numberValue('tolls') + numberValue('additional');
+
+      // Monthly costs are shared across estimated working days.
+      const monthlyShare = mode === 'daily'
+        ? monthlyFixedCosts / 22
+        : monthlyFixedCosts * (workingDays / 22);
+
+      const totalExpenses = variableExpenses + monthlyShare;
+      const netProfit = income - totalExpenses;
+      const profitPerHour = hours > 0 ? netProfit / hours : 0;
+      const profitPerMile = miles > 0 ? netProfit / miles : 0;
+      const averageIncomePerTrip = trips > 0 ? income / trips : 0;
+      const averageProfitPerTrip = trips > 0 ? netProfit / trips : 0;
+
+      latestResult = {
+        mode,
+        workingDays,
+        income,
+        hours,
+        trips,
+        miles,
+        gasUsed,
+        gasCost,
+        variableExpenses,
+        monthlyShare,
+        totalExpenses,
+        netProfit,
+        profitPerHour,
+        profitPerMile,
+        averageIncomePerTrip,
+        averageProfitPerTrip
+      };
+
+      if (!isDaily) {
+        fields.income.value = income.toFixed(2);
+        fields.hours.value = hours.toFixed(1);
+        fields.miles.value = miles.toFixed(1);
+      }
+
+      renderResults(latestResult);
+      saveInputs();
+      return latestResult;
+    }
+
+    function setTone(element, value, warningLimit) {
+      element.classList.remove('positive', 'negative', 'warning');
+      if (value < 0) {
+        element.classList.add('negative');
+      } else if (typeof warningLimit === 'number' && value < warningLimit) {
+        element.classList.add('warning');
+      } else {
+        element.classList.add('positive');
+      }
+    }
+
+    function renderResults(result) {
+      outputs.income.textContent = money(result.income);
+      outputs.gas.textContent = money(result.gasCost);
+      outputs.expenses.textContent = money(result.totalExpenses);
+      outputs.profit.textContent = money(result.netProfit);
+      outputs.hour.textContent = money(result.profitPerHour);
+      outputs.mile.textContent = money(result.profitPerMile);
+      outputs.trip.textContent = money(result.averageProfitPerTrip);
+
+      setTone(outputs.profit, result.netProfit);
+      setTone(outputs.hour, result.profitPerHour, 15);
+      setTone(outputs.mile, result.profitPerMile, 1);
+      setTone(outputs.trip, result.averageProfitPerTrip);
+
+      renderAlerts(result);
+      renderSummary(result);
+    }
+
+    function renderAlerts(result) {
+      const messages = [];
+
+      if (result.netProfit < 0) {
+        messages.push({ text: 'You are losing money', type: 'bad' });
+      }
+      if (result.profitPerHour < 15) {
+        messages.push({ text: 'Low hourly earnings', type: 'warn' });
+      }
+      if (result.profitPerMile < 1) {
+        messages.push({ text: 'Low efficiency per mile', type: 'warn' });
+      }
+      if (messages.length === 0) {
+        messages.push({ text: 'Good performance', type: 'good' });
+      }
+
+      alerts.innerHTML = messages
+        .map((message) => `<div class="alert ${message.type === 'good' ? 'good' : message.type === 'bad' ? 'bad' : ''}">${message.text}</div>`)
+        .join('');
+    }
+
+    function renderSummary(result) {
+      const rows = [
+        ['Mode', result.mode.charAt(0).toUpperCase() + result.mode.slice(1), 'Selected calculation period'],
+        ['Working days', result.mode === 'daily' ? '1 day' : `${result.workingDays} days`, 'Used to share monthly fixed costs'],
+        ['Gas used', `${result.gasUsed.toFixed(2)} gallons`, 'Miles divided by MPG'],
+        ['Variable expenses', money(result.variableExpenses), 'Gas, parking/tolls, and additional expenses'],
+        ['Fixed cost share', money(result.monthlyShare), 'Estimated portion of monthly costs'],
+        ['Average income per trip', money(result.averageIncomePerTrip), 'Income divided by number of trips'],
+        ['Average profit per trip', money(result.averageProfitPerTrip), 'Net profit divided by number of trips']
+      ];
+
+      summaryBody.innerHTML = rows.map((row) => `
+        <tr>
+          <td>${row[0]}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+        </tr>
+      `).join('');
+    }
+
+    function resetForm() {
+      localStorage.removeItem(STORAGE_KEY);
+      fields.mode.value = 'daily';
+      fields.income.value = 220;
+      fields.hours.value = 8;
+      fields.trips.value = 18;
+      fields.miles.value = 135;
+      fields.gasPrice.value = 3.75;
+      fields.mpg.value = 28;
+      fields.tolls.value = 12;
+      fields.additional.value = 8;
+      fields.workingDays.value = 5;
+      fields.avgHours.value = 8;
+      fields.avgMiles.value = 135;
+      fields.avgIncome.value = 220;
+      fields.insurance.value = 180;
+      fields.maintenance.value = 120;
+      fields.phone.value = 60;
+      fields.otherFixed.value = 40;
+      savedStatus.textContent = 'Inputs reset';
+      calculate();
+    }
+
+    function saveResult() {
+      const result = latestResult || calculate();
+      localStorage.setItem(RESULT_KEY, JSON.stringify(result));
+      savedStatus.textContent = `Result saved at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    function buildTextReport() {
+      const result = latestResult || calculate();
+      return [
+        'Uber Earnings & Expense Calculator Result',
+        `Date: ${new Date().toLocaleString()}`,
+        `Mode: ${result.mode}`,
+        '',
+        `Total income: ${money(result.income)}`,
+        `Gas used: ${result.gasUsed.toFixed(2)} gallons`,
+        `Gas cost: ${money(result.gasCost)}`,
+        `Total expenses: ${money(result.totalExpenses)}`,
+        `Net profit: ${money(result.netProfit)}`,
+        `Profit per hour: ${money(result.profitPerHour)}`,
+        `Profit per mile: ${money(result.profitPerMile)}`,
+        `Average income per trip: ${money(result.averageIncomePerTrip)}`,
+        `Average profit per trip: ${money(result.averageProfitPerTrip)}`,
+        '',
+        'Notes:',
+        'This is an estimate, not financial advice.',
+        'Depreciation is not included unless added manually.'
+      ].join('\n');
+    }
+
+    function downloadResult() {
+      const blob = new Blob([buildTextReport()], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'uber-earnings-result.txt';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    ids.forEach((id) => {
+      fields[id].addEventListener('input', () => {
+        calculate();
+        savedStatus.textContent = 'Auto-saves inputs';
+      });
+    });
+
+    fields.mode.addEventListener('change', calculate);
+    document.getElementById('calculateBtn').addEventListener('click', calculate);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+    document.getElementById('saveBtn').addEventListener('click', saveResult);
+    document.getElementById('downloadBtn').addEventListener('click', downloadResult);
+
+    restoreInputs();
+    calculate();
+  </script>
+</body>
+</html>
