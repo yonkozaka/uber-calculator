@@ -121,6 +121,11 @@
       return Number.isFinite(number) ? number : fallback;
     }
 
+    function safeText(value, fallback = '') {
+      if (value === undefined || value === null) return fallback;
+      return String(value);
+    }
+
     function safeDivide(numerator, denominator, fallback = 0) {
       const top = safeNumber(numerator);
       const bottom = safeNumber(denominator);
@@ -135,12 +140,16 @@
       }
     }
 
-    function money(value) {
+    function formatMoney(value) {
       const amount = safeNumber(value);
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD'
       }).format(amount);
+    }
+
+    function money(value) {
+      return formatMoney(value);
     }
 
     function compactMoney(value) {
@@ -161,7 +170,7 @@
     }
 
     function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, (char) => ({
+      return safeText(value).replace(/[&<>"']/g, (char) => ({
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -184,7 +193,7 @@
     function getInputs() {
       const data = {};
       inputIds.forEach((id) => {
-        data[id] = fields[id].value;
+        data[id] = fields[id]?.value ?? defaults[id] ?? '';
       });
       data.periodInputSource = periodInputSource;
       return data;
@@ -240,7 +249,7 @@
 
     function setPeriodFieldValue(id, value, activeId) {
       if (id === activeId) return;
-      const safeValue = Number.isFinite(value) ? value : 0;
+      const safeValue = safeNumber(value);
       fields[id].value = safeValue.toFixed(periodDecimals[id] ?? 2);
     }
 
@@ -548,8 +557,8 @@
 
     function renderResults(result) {
       const cards = [
-        { label: 'Total income', value: money(result.income), note: `${result.trips.toFixed(0)} trips`, toneValue: result.income },
-        { label: 'Gas cost', value: money(result.gasCost), note: `${result.gasUsed.toFixed(2)} gallons` },
+        { label: 'Total income', value: money(result.income), note: `${safeNumber(result.trips).toFixed(0)} trips`, toneValue: result.income },
+        { label: 'Gas cost', value: money(result.gasCost), note: `${safeNumber(result.gasUsed).toFixed(2)} gallons` },
         { label: 'Total expenses', value: money(result.totalExpenses), note: 'Cash expenses plus fixed cost share' },
         { label: 'Net profit', value: money(result.netProfit), toneValue: result.netProfit },
         { label: 'Profit per hour', value: money(result.profitPerHour), toneValue: result.profitPerHour, warningLimit: 15 },
@@ -627,8 +636,8 @@
       const rows = [
         ['Mode', capitalize(result.mode), 'Selected calculation period'],
         ['Working days', result.mode === 'daily' ? '1 day' : `${result.workingDays} days`, 'Used to scale averages and fixed costs'],
-        ['Trips', result.trips.toFixed(0), result.mode === 'daily' ? 'Total trips' : 'Average trips per day multiplied by working days'],
-        ['Gas used', `${result.gasUsed.toFixed(2)} gallons`, 'Miles divided by MPG'],
+        ['Trips', safeNumber(result.trips).toFixed(0), result.mode === 'daily' ? 'Total trips' : 'Average trips per day multiplied by working days'],
+        ['Gas used', `${safeNumber(result.gasUsed).toFixed(2)} gallons`, 'Miles divided by MPG'],
         ['Variable expenses', money(result.variableExpenses), 'Gas, parking/tolls, and additional expenses'],
         ['Fixed cost share', money(result.fixedCostShare), 'Estimated portion of monthly costs'],
         ['Total expenses', money(result.totalExpenses), 'Cash expenses before taxes and wear'],
@@ -748,8 +757,8 @@
         <tr>
           <td>${escapeHtml(new Date(entry.savedAt).toLocaleString())}</td>
           <td>${money(entry.income)}</td>
-          <td>${entry.hours.toFixed(1)}</td>
-          <td>${entry.miles.toFixed(1)}</td>
+          <td>${safeNumber(entry.hours).toFixed(1)}</td>
+          <td>${safeNumber(entry.miles).toFixed(1)}</td>
           <td>${money(entry.netProfit)}</td>
           <td>${money(entry.afterTaxProfit)}</td>
           <td>${money(entry.trueNetAfterWear)}</td>
@@ -804,8 +813,8 @@
       const metrics = [
         ['Total saved shifts', history.length.toString()],
         ['Total income', money(totals.income)],
-        ['Total miles', totals.miles.toFixed(1)],
-        ['Total hours', totals.hours.toFixed(1)],
+        ['Total miles', safeNumber(totals.miles).toFixed(1)],
+        ['Total hours', safeNumber(totals.hours).toFixed(1)],
         ['Total gas cost', money(totals.gasCost)],
         ['Total expenses', money(totals.totalExpenses)],
         ['Total net profit', money(totals.netProfit)],
@@ -854,7 +863,7 @@
         const isBest = index === bestIndex;
         return `
           <tr class="${isBest ? 'best-row' : ''}">
-            <td>${escapeHtml(item.name)}${isBest ? ' â€¢ Best' : ''}</td>
+            <td>${escapeHtml(item.name)}${isBest ? ' - Best' : ''}</td>
             <td>${money(item.result.income)}</td>
             <td>${money(item.result.totalExpenses)}</td>
             <td>${money(item.result.netProfit)}</td>
@@ -895,14 +904,14 @@
         '',
         'Inputs',
         `Income: ${money(result.income)}`,
-        `Hours: ${result.hours.toFixed(1)}`,
-        `Miles: ${result.miles.toFixed(1)}`,
-        `Trips: ${result.trips.toFixed(0)}`,
+        `Hours: ${safeNumber(result.hours).toFixed(1)}`,
+        `Miles: ${safeNumber(result.miles).toFixed(1)}`,
+        `Trips: ${safeNumber(result.trips).toFixed(0)}`,
         `Gas price: ${money(result.gasPrice)} / gallon`,
-        `MPG: ${result.mpg}`,
+        `MPG: ${safeNumber(result.mpg)}`,
         '',
         'Expenses',
-        `Gas used: ${result.gasUsed.toFixed(2)} gallons`,
+        `Gas used: ${safeNumber(result.gasUsed).toFixed(2)} gallons`,
         `Gas cost: ${money(result.gasCost)}`,
         `Parking/tolls: ${money(result.tolls)}`,
         `Additional expenses: ${money(result.additional)}`,
