@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,13 +8,16 @@
 </head>
 <body>
   <main class="app">
-    <header>
-      <div class="hero">
-        <div class="brand-lockup">
+    <header class="dashboard-hero">
+      <div class="hero-copy">
+        <div class="brand-row">
           <div class="logo-mark" aria-hidden="true"></div>
-          <h1>Uber Earnings & Expense Calculator</h1>
+          <div>
+            <span class="eyebrow">Rideshare profit studio</span>
+            <h1>Uber Earnings & Expense Calculator</h1>
+          </div>
         </div>
-        <p class="subtitle">A private rideshare profit dashboard for estimating income, expenses, taxes, vehicle wear, saved shift history, and whether a shift is truly worth driving.</p>
+        <p class="subtitle">Plan a shift, compare scenarios, estimate taxes and vehicle wear, then save your driving history locally in your browser.</p>
         <div class="quick-stats" aria-label="Calculator highlights">
           <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
           <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
@@ -24,42 +27,47 @@
         <div id="featureDetails" class="feature-details" aria-live="polite"></div>
       </div>
 
-      <aside class="top-summary" aria-label="Dashboard summary">
-        <div class="summary-tile">
-          <strong>Net profit</strong>
-          <span id="topNet">$0.00</span>
-        </div>
-        <div class="summary-tile">
-          <strong>After tax</strong>
-          <span id="topAfterTax">$0.00</span>
-        </div>
-        <div class="summary-tile">
-          <strong>True net</strong>
-          <span id="topTrueNet">$0.00</span>
-        </div>
-        <div class="summary-tile">
-          <strong>True / hour</strong>
-          <span id="topTrueHour">$0.00</span>
-        </div>
+      <aside class="command-center" aria-label="Dashboard summary">
         <div class="mode-card">
-          <label for="mode">Mode</label>
+          <label for="mode">Calculation mode</label>
           <select id="mode">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
           </select>
         </div>
+        <div class="summary-grid">
+          <div class="summary-tile">
+            <strong>Net profit</strong>
+            <span id="topNet">$0.00</span>
+          </div>
+          <div class="summary-tile">
+            <strong>After tax</strong>
+            <span id="topAfterTax">$0.00</span>
+          </div>
+          <div class="summary-tile">
+            <strong>True net</strong>
+            <span id="topTrueNet">$0.00</span>
+          </div>
+          <div class="summary-tile">
+            <strong>True / hour</strong>
+            <span id="topTrueHour">$0.00</span>
+          </div>
+        </div>
       </aside>
     </header>
 
-    <div class="layout">
-      <section>
-        <div class="section" id="tripSection">
-          <div class="section-title">
-            <h2>Trip / Day Data</h2>
-            <span class="hint">Weekly and monthly mode use daily averages.</span>
+    <div class="dashboard-layout">
+      <section class="workspace">
+        <div class="panel hero-panel" id="tripSection">
+          <div class="panel-heading">
+            <div>
+              <span class="section-kicker">Step 01</span>
+              <h2>Income and shift activity</h2>
+            </div>
+            <span class="hint">Weekly and monthly modes can use totals or daily averages.</span>
           </div>
-          <div class="form-grid">
+          <div class="form-grid primary-grid">
             <div>
               <label id="incomeLabel" for="income">Total Uber income ($)</label>
               <input id="income" type="number" min="0" step="0.01" value="220">
@@ -92,11 +100,14 @@
               <label id="additionalLabel" for="additional">Additional expenses ($)</label>
               <input id="additional" type="number" min="0" step="0.01" value="8">
             </div>
-
             <div id="periodInputs" class="period-inputs wide">
               <div>
                 <label for="workingDays">Number of working days</label>
                 <input id="workingDays" type="number" min="1" step="1" value="5">
+              </div>
+              <div>
+                <label for="avgIncome">Average daily income ($)</label>
+                <input id="avgIncome" type="number" min="0" step="0.01" value="220">
               </div>
               <div>
                 <label for="avgHours">Average hours per day</label>
@@ -106,99 +117,109 @@
                 <label for="avgMiles">Average miles per day</label>
                 <input id="avgMiles" type="number" min="0" step="0.1" value="135">
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-stack">
+          <div class="panel" id="fixedCostsSection">
+            <div class="panel-heading compact">
               <div>
-                <label for="avgIncome">Average daily income ($)</label>
-                <input id="avgIncome" type="number" min="0" step="0.01" value="220">
+                <span class="section-kicker">Step 02</span>
+                <h2>Fixed monthly costs</h2>
+              </div>
+              <span class="hint">Shared across estimated working days.</span>
+            </div>
+            <div class="form-grid">
+              <div>
+                <label for="insurance">Monthly insurance ($)</label>
+                <input id="insurance" type="number" min="0" step="0.01" value="180">
+              </div>
+              <div>
+                <label for="maintenance">Estimated monthly maintenance ($)</label>
+                <input id="maintenance" type="number" min="0" step="0.01" value="120">
+              </div>
+              <div>
+                <label for="phone">Phone/subscriptions ($)</label>
+                <input id="phone" type="number" min="0" step="0.01" value="60">
+              </div>
+              <div>
+                <label for="otherFixed">Any other fixed cost ($)</label>
+                <input id="otherFixed" type="number" min="0" step="0.01" value="40">
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="taxSection">
+            <div class="panel-heading compact">
+              <div>
+                <span class="section-kicker">Step 03</span>
+                <h2>Taxes and deduction model</h2>
+              </div>
+              <span class="hint">Estimate only, not tax advice.</span>
+            </div>
+            <div class="form-grid">
+              <div>
+                <label for="selfEmploymentTax">Self-employment tax (%)</label>
+                <input id="selfEmploymentTax" type="number" min="0" step="0.1" value="15.3">
+              </div>
+              <div>
+                <label for="federalTax">Federal income tax (%)</label>
+                <input id="federalTax" type="number" min="0" step="0.1" value="12">
+              </div>
+              <div>
+                <label for="stateTax">State income tax (%)</label>
+                <input id="stateTax" type="number" min="0" step="0.1" value="5">
+              </div>
+              <div>
+                <label for="deductionMode">Tax deduction mode</label>
+                <select id="deductionMode">
+                  <option value="standard">Standard mileage deduction</option>
+                  <option value="actual">Actual expenses</option>
+                  <option value="none">No deduction estimate</option>
+                </select>
+              </div>
+              <div class="wide">
+                <label for="mileageRate">Mileage deduction rate ($/mile)</label>
+                <input id="mileageRate" type="number" min="0" step="0.01" value="0.67">
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="wearSection">
+            <div class="panel-heading compact">
+              <div>
+                <span class="section-kicker">Step 04</span>
+                <h2>Vehicle wear</h2>
+              </div>
+              <span class="hint">Hidden cost per mile.</span>
+            </div>
+            <div class="form-grid three-col">
+              <div>
+                <label for="depreciationPerMile">Depreciation per mile ($)</label>
+                <input id="depreciationPerMile" type="number" min="0" step="0.01" value="0.12">
+              </div>
+              <div>
+                <label for="tireWearPerMile">Tire wear per mile ($)</label>
+                <input id="tireWearPerMile" type="number" min="0" step="0.01" value="0.03">
+              </div>
+              <div>
+                <label for="brakeWearPerMile">Brake/maintenance wear per mile ($)</label>
+                <input id="brakeWearPerMile" type="number" min="0" step="0.01" value="0.04">
               </div>
             </div>
           </div>
         </div>
 
-        <div class="section" id="fixedCostsSection">
-          <div class="section-title">
-            <h2>Monthly Fixed Costs</h2>
-            <span class="hint">Shared across estimated working days.</span>
-          </div>
-          <div class="form-grid">
+        <div class="panel">
+          <div class="panel-heading compact">
             <div>
-              <label for="insurance">Monthly insurance ($)</label>
-              <input id="insurance" type="number" min="0" step="0.01" value="180">
+              <span class="section-kicker">Step 05</span>
+              <h2>Goal checker</h2>
             </div>
-            <div>
-              <label for="maintenance">Estimated monthly maintenance ($)</label>
-              <input id="maintenance" type="number" min="0" step="0.01" value="120">
-            </div>
-            <div>
-              <label for="phone">Phone/subscriptions ($)</label>
-              <input id="phone" type="number" min="0" step="0.01" value="60">
-            </div>
-            <div>
-              <label for="otherFixed">Any other fixed cost ($)</label>
-              <input id="otherFixed" type="number" min="0" step="0.01" value="40">
-            </div>
-          </div>
-        </div>
-
-        <div class="section" id="taxSection">
-          <div class="section-title">
-            <h2>Taxes & Set-Aside</h2>
-            <span class="hint">Estimate only, not tax advice.</span>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label for="selfEmploymentTax">Self-employment tax (%)</label>
-              <input id="selfEmploymentTax" type="number" min="0" step="0.1" value="15.3">
-            </div>
-            <div>
-              <label for="federalTax">Federal income tax (%)</label>
-              <input id="federalTax" type="number" min="0" step="0.1" value="12">
-            </div>
-            <div>
-              <label for="stateTax">State income tax (%)</label>
-              <input id="stateTax" type="number" min="0" step="0.1" value="5">
-            </div>
-            <div>
-              <label for="deductionMode">Tax deduction mode</label>
-              <select id="deductionMode">
-                <option value="standard">Standard mileage deduction</option>
-                <option value="actual">Actual expenses</option>
-                <option value="none">No deduction estimate</option>
-              </select>
-            </div>
-            <div>
-              <label for="mileageRate">Mileage deduction rate ($/mile)</label>
-              <input id="mileageRate" type="number" min="0" step="0.01" value="0.67">
-            </div>
-          </div>
-        </div>
-
-        <div class="section" id="wearSection">
-          <div class="section-title">
-            <h2>Vehicle Wear & Depreciation</h2>
-            <span class="hint">Shows profit after hidden vehicle cost.</span>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label for="depreciationPerMile">Depreciation per mile ($)</label>
-              <input id="depreciationPerMile" type="number" min="0" step="0.01" value="0.12">
-            </div>
-            <div>
-              <label for="tireWearPerMile">Tire wear per mile ($)</label>
-              <input id="tireWearPerMile" type="number" min="0" step="0.01" value="0.03">
-            </div>
-            <div>
-              <label for="brakeWearPerMile">Brake/maintenance wear per mile ($)</label>
-              <input id="brakeWearPerMile" type="number" min="0" step="0.01" value="0.04">
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">
-            <h2>Goal Settings</h2>
             <span class="hint">Used by the recommendation engine.</span>
           </div>
-          <div class="form-grid">
+          <div class="form-grid three-col">
             <div>
               <label for="targetDailyProfit">Target net profit per day ($)</label>
               <input id="targetDailyProfit" type="number" min="0" step="1" value="160">
@@ -214,13 +235,15 @@
           </div>
         </div>
 
-        <div class="section">
-          <div class="section-title">
-            <h2>Quick Presets</h2>
-            <span class="hint">Autofill realistic starting points.</span>
+        <div class="panel action-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Workflow</span>
+              <h2>Presets and actions</h2>
+            </div>
+            <span class="hint">Autofill, calculate, save, or export.</span>
           </div>
           <div class="preset-panel">
-            <p>Presets update the relevant fields and recalculate immediately.</p>
             <div class="preset-row">
               <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
               <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
@@ -236,45 +259,56 @@
           </div>
         </div>
 
-        <div class="section">
-          <div class="section-title">
-            <h2>Scenario Comparison</h2>
+        <div class="panel scenario-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Compare</span>
+              <h2>Scenario comparison</h2>
+            </div>
             <span class="hint">Uses current gas, tax, fixed cost, and wear settings.</span>
           </div>
-          <div class="form-grid">
-            <div class="wide"><span class="pill">Scenario A</span></div>
-            <div>
-              <label for="scenarioAIncome">Income ($)</label>
-              <input id="scenarioAIncome" type="number" min="0" step="0.01" value="220">
+          <div class="scenario-editor">
+            <div class="scenario-card">
+              <span class="scenario-label">Scenario A</span>
+              <div class="form-grid two-col">
+                <div>
+                  <label for="scenarioAIncome">Income ($)</label>
+                  <input id="scenarioAIncome" type="number" min="0" step="0.01" value="220">
+                </div>
+                <div>
+                  <label for="scenarioAHours">Hours</label>
+                  <input id="scenarioAHours" type="number" min="0" step="0.1" value="8">
+                </div>
+                <div>
+                  <label for="scenarioAMiles">Miles</label>
+                  <input id="scenarioAMiles" type="number" min="0" step="0.1" value="120">
+                </div>
+                <div>
+                  <label for="scenarioATrips">Trips</label>
+                  <input id="scenarioATrips" type="number" min="0" step="1" value="18">
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="scenarioAHours">Hours</label>
-              <input id="scenarioAHours" type="number" min="0" step="0.1" value="8">
-            </div>
-            <div>
-              <label for="scenarioAMiles">Miles</label>
-              <input id="scenarioAMiles" type="number" min="0" step="0.1" value="120">
-            </div>
-            <div>
-              <label for="scenarioATrips">Trips</label>
-              <input id="scenarioATrips" type="number" min="0" step="1" value="18">
-            </div>
-            <div class="wide"><span class="pill">Scenario B</span></div>
-            <div>
-              <label for="scenarioBIncome">Income ($)</label>
-              <input id="scenarioBIncome" type="number" min="0" step="0.01" value="260">
-            </div>
-            <div>
-              <label for="scenarioBHours">Hours</label>
-              <input id="scenarioBHours" type="number" min="0" step="0.1" value="8">
-            </div>
-            <div>
-              <label for="scenarioBMiles">Miles</label>
-              <input id="scenarioBMiles" type="number" min="0" step="0.1" value="120">
-            </div>
-            <div>
-              <label for="scenarioBTrips">Trips</label>
-              <input id="scenarioBTrips" type="number" min="0" step="1" value="20">
+            <div class="scenario-card">
+              <span class="scenario-label">Scenario B</span>
+              <div class="form-grid two-col">
+                <div>
+                  <label for="scenarioBIncome">Income ($)</label>
+                  <input id="scenarioBIncome" type="number" min="0" step="0.01" value="260">
+                </div>
+                <div>
+                  <label for="scenarioBHours">Hours</label>
+                  <input id="scenarioBHours" type="number" min="0" step="0.1" value="8">
+                </div>
+                <div>
+                  <label for="scenarioBMiles">Miles</label>
+                  <input id="scenarioBMiles" type="number" min="0" step="0.1" value="120">
+                </div>
+                <div>
+                  <label for="scenarioBTrips">Trips</label>
+                  <input id="scenarioBTrips" type="number" min="0" step="1" value="20">
+                </div>
+              </div>
             </div>
           </div>
           <div class="table-wrap">
@@ -297,10 +331,13 @@
         </div>
       </section>
 
-      <section>
-        <div class="section">
-          <div class="section-title">
-            <h2>Results</h2>
+      <aside class="insights">
+        <div class="panel results-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Live output</span>
+              <h2>Results</h2>
+            </div>
             <span class="hint" id="savedStatus">Auto-saves inputs</span>
           </div>
           <div class="results-grid" id="resultsGrid"></div>
@@ -308,9 +345,12 @@
           <div class="alerts" id="alerts"></div>
         </div>
 
-        <div class="section">
-          <div class="section-title">
-            <h2>Summary Table</h2>
+        <div class="panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Breakdown</span>
+              <h2>Summary table</h2>
+            </div>
             <span class="hint">Main result details</span>
           </div>
           <div class="table-wrap">
@@ -327,17 +367,23 @@
           </div>
         </div>
 
-        <div class="section">
-          <div class="section-title">
-            <h2>Analytics</h2>
+        <div class="panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">History insight</span>
+              <h2>Analytics</h2>
+            </div>
             <span class="hint">Based on saved shift history.</span>
           </div>
           <div class="analytics-grid" id="analyticsGrid"></div>
         </div>
 
-        <div class="section" id="historySection">
-          <div class="section-title">
-            <h2>Shift History</h2>
+        <div class="panel" id="historySection">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Records</span>
+              <h2>Shift history</h2>
+            </div>
             <span class="hint">Saved locally in this browser.</span>
           </div>
           <div class="history-actions">
@@ -365,16 +411,19 @@
           <div id="historyEmpty" class="empty-state">No saved shifts yet. Click "Save result" after a calculation to build your history.</div>
         </div>
 
-        <div class="section" id="notesSection">
-          <div class="section-title">
-            <h2>Notes</h2>
+        <div class="panel" id="notesSection">
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">Disclaimer</span>
+              <h2>Notes</h2>
+            </div>
           </div>
           <div class="notes">
             <p>This is an estimate, not financial, tax, or legal advice.</p>
             <p>Tax estimates are simplified and depend on your actual filing status, deductions, and records.</p>
           </div>
         </div>
-      </section>
+      </aside>
     </div>
   </main>
 
@@ -399,4 +448,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
