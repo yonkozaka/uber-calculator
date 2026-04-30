@@ -14,7 +14,8 @@
     'depreciationPerMile', 'tireWearPerMile', 'brakeWearPerMile', 'targetDailyProfit',
     'targetProfitHour', 'targetProfitMile', 'scenarioAIncome', 'scenarioAHours',
     'scenarioAMiles', 'scenarioATrips', 'scenarioBIncome', 'scenarioBHours',
-    'scenarioBMiles', 'scenarioBTrips'
+    'scenarioBMiles', 'scenarioBTrips', 'tripOfferPay', 'tripTime', 'tripMiles',
+    'tripPickupMiles', 'tripPickupTime', 'tripTolls'
   ];
 
   const fields = Object.fromEntries(inputIds.map((id) => [id, document.getElementById(id)]));
@@ -54,7 +55,20 @@
     proTipDots: document.getElementById('proTipDots'),
     advisorMessages: document.getElementById('advisorMessages'),
     advisorInput: document.getElementById('advisorInput'),
-    advisorSendBtn: document.getElementById('advisorSendBtn')
+    advisorSendBtn: document.getElementById('advisorSendBtn'),
+    heroReadout: document.getElementById('heroReadout'),
+    smartSuggestions: document.getElementById('smartSuggestions'),
+    tripDecisionCard: document.getElementById('tripDecisionCard'),
+    tripDecisionBadge: document.getElementById('tripDecisionBadge'),
+    tripDecisionText: document.getElementById('tripDecisionText'),
+    tripDecisionReason: document.getElementById('tripDecisionReason'),
+    tripTotalTime: document.getElementById('tripTotalTime'),
+    tripTotalMiles: document.getElementById('tripTotalMiles'),
+    tripPayHour: document.getElementById('tripPayHour'),
+    tripPayMile: document.getElementById('tripPayMile'),
+    tripGasCost: document.getElementById('tripGasCost'),
+    tripWearCost: document.getElementById('tripWearCost'),
+    tripTrueProfit: document.getElementById('tripTrueProfit')
   };
 
   const defaults = {
@@ -93,7 +107,13 @@
     scenarioBIncome: 260,
     scenarioBHours: 8,
     scenarioBMiles: 120,
-    scenarioBTrips: 20
+    scenarioBTrips: 20,
+    tripOfferPay: 18,
+    tripTime: 24,
+    tripMiles: 10,
+    tripPickupMiles: 2.5,
+    tripPickupTime: 7,
+    tripTolls: 0
   };
 
   const periodAverageByTotal = { income: 'avgIncome', hours: 'avgHours', miles: 'avgMiles' };
@@ -311,6 +331,24 @@
     };
   }
 
+  function buildTripDecisionInput(currentInput = getMainInputObject()) {
+    return {
+      offeredPay: numberValue('tripOfferPay'),
+      tripTimeMinutes: numberValue('tripTime'),
+      tripMiles: numberValue('tripMiles'),
+      pickupMiles: numberValue('tripPickupMiles'),
+      pickupTimeMinutes: numberValue('tripPickupTime'),
+      tollsParking: numberValue('tripTolls'),
+      targetProfitHour: currentInput.targetProfitHour,
+      targetProfitMile: currentInput.targetProfitMile,
+      gasPrice: currentInput.gasPrice,
+      mpg: currentInput.mpg,
+      depreciationPerMile: currentInput.depreciationPerMile,
+      tireWearPerMile: currentInput.tireWearPerMile,
+      brakeWearPerMile: currentInput.brakeWearPerMile
+    };
+  }
+
   function renderScenarioComparison(currentResult) {
     UI.renderScenarioComparison(els, [
       { name: 'Current', result: currentResult },
@@ -322,8 +360,13 @@
   function calculate(activeId = null) {
     syncMode();
     syncPeriodAmounts(activeId);
-    latestResult = U.calculateCore(getMainInputObject());
+    const mainInput = getMainInputObject();
+    latestResult = U.calculateCore(mainInput);
+    const tripDecision = U.calculateTripDecision(buildTripDecisionInput(mainInput));
     UI.renderResults(els, latestResult, renderScenarioComparison);
+    UI.renderTripDecision(els, tripDecision);
+    UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult));
+    UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`);
     renderActiveProTip();
     saveInputs();
     return latestResult;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uber Earnings & Expense Calculator</title>
+  <title>Uber Profit Calculator</title>
   <link rel="stylesheet" href="variables.css">
   <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="styles.css">
@@ -15,42 +15,16 @@
         <div class="logo-mark" aria-hidden="true"></div>
         <div>
           <div class="title-row">
-            <h1>Uber Profit Calculator</h1>
+            <span class="eyebrow">Rideshare fintech command center</span>
             <span class="year-badge">2026</span>
           </div>
-          <p>Estimate your earnings, expenses, taxes, vehicle wear, and true take-home profit.</p>
+          <h1>Uber Profit Calculator</h1>
+          <p>Forecast gross pay, operating costs, taxes, vehicle wear, and the real profit behind every shift.</p>
         </div>
       </div>
 
       <div class="topbar-actions">
-        <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
-      </div>
-    </header>
-
-    <section class="hero-strip">
-      <div>
-        <span class="eyebrow">Private rideshare profit studio</span>
-        <h2>Plan the shift before the shift costs you.</h2>
-      </div>
-      <div class="quick-stats" aria-label="Calculator highlights">
-        <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
-        <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
-        <button class="pill" type="button" data-feature="taxWear" data-jump-target="taxSection">Tax and wear modeling</button>
-        <button class="pill" type="button" data-feature="exports" data-jump-target="historySection">CSV and TXT exports</button>
-      </div>
-      <div id="featureDetails" class="feature-details" aria-live="polite"></div>
-    </section>
-
-    <div class="dashboard-grid">
-      <section class="input-column" aria-label="Calculator inputs">
-        <div class="glass-card mode-card">
-          <div class="card-heading">
-            <div class="step-badge">00</div>
-            <div>
-              <h2>Calculation mode</h2>
-              <p>Choose the period you want to evaluate.</p>
-            </div>
-          </div>
+        <div class="top-mode-control">
           <label for="mode">Mode</label>
           <select id="mode">
             <option value="daily">Daily</option>
@@ -58,13 +32,44 @@
             <option value="monthly">Monthly</option>
           </select>
         </div>
+        <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
+      </div>
+    </header>
 
-        <div class="glass-card" id="tripSection">
+    <section class="hero-strip">
+      <div class="hero-copy">
+        <span class="eyebrow">Private profit studio</span>
+        <h2>Know the true take-home before the road takes its cut.</h2>
+        <p>Built for drivers who want a sharper read on hourly return, mileage quality, tax set-aside, and hidden vehicle cost.</p>
+      </div>
+      <div class="hero-command">
+        <div class="hero-score">
+          <span>Live operating readout</span>
+          <strong id="heroReadout">True-profit dashboard</strong>
+        </div>
+        <div class="quick-stats" aria-label="Calculator highlights">
+          <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
+          <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
+          <button class="pill" type="button" data-feature="taxWear" data-jump-target="taxSection">Tax and wear modeling</button>
+          <button class="pill" type="button" data-feature="exports" data-jump-target="historySection">CSV and TXT exports</button>
+        </div>
+      </div>
+      <div id="featureDetails" class="feature-details" aria-live="polite"></div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="input-column" aria-label="Calculator inputs">
+        <div class="section-kicker">
+          <span>Input workspace</span>
+          <strong>Build the shift model</strong>
+        </div>
+
+        <div class="glass-card input-card priority-card" id="tripSection">
           <div class="card-heading">
             <div class="step-badge">01</div>
             <div>
               <h2>Income and driving activity</h2>
-              <p>Enter the money earned, time worked, trips, mileage, and cash expenses.</p>
+              <p>Period totals, daily averages, mileage, and direct cash expenses.</p>
             </div>
           </div>
           <div class="form-grid four-col">
@@ -121,12 +126,65 @@
           </div>
         </div>
 
-        <div class="glass-card" id="fixedCostsSection">
+        <div class="glass-card trip-decision-card" id="tripDecisionCard">
+          <div class="card-heading">
+            <div class="step-badge">P1</div>
+            <div>
+              <h2>Trip Decision Engine</h2>
+              <p>Evaluate an offer before accepting it using your live cost and goal settings.</p>
+            </div>
+          </div>
+          <div class="decision-layout">
+            <div class="form-grid three-col compact">
+              <div>
+                <label for="tripOfferPay">Offered trip pay ($)</label>
+                <input id="tripOfferPay" type="number" min="0" step="0.01" value="18">
+              </div>
+              <div>
+                <label for="tripTime">Estimated trip time (minutes)</label>
+                <input id="tripTime" type="number" min="0" step="1" value="24">
+              </div>
+              <div>
+                <label for="tripMiles">Estimated trip miles</label>
+                <input id="tripMiles" type="number" min="0" step="0.1" value="10">
+              </div>
+              <div>
+                <label for="tripPickupMiles">Pickup miles</label>
+                <input id="tripPickupMiles" type="number" min="0" step="0.1" value="2.5">
+              </div>
+              <div>
+                <label for="tripPickupTime">Pickup time (minutes)</label>
+                <input id="tripPickupTime" type="number" min="0" step="1" value="7">
+              </div>
+              <div>
+                <label for="tripTolls">Optional tolls/parking ($)</label>
+                <input id="tripTolls" type="number" min="0" step="0.01" value="0">
+              </div>
+            </div>
+            <div class="decision-console">
+              <div class="decision-badge warn" id="tripDecisionBadge">
+                <span id="tripDecisionText">MAYBE</span>
+              </div>
+              <p id="tripDecisionReason">Enter offer details to see whether this trip clears your goals.</p>
+              <div class="decision-metrics">
+                <div><strong>Total time</strong><span id="tripTotalTime">0 min</span></div>
+                <div><strong>Total miles</strong><span id="tripTotalMiles">0.0 mi</span></div>
+                <div><strong>Pay / hour</strong><span id="tripPayHour">$0.00</span></div>
+                <div><strong>Pay / mile</strong><span id="tripPayMile">$0.00</span></div>
+                <div><strong>Gas cost</strong><span id="tripGasCost">$0.00</span></div>
+                <div><strong>Wear cost</strong><span id="tripWearCost">$0.00</span></div>
+                <div class="wide-metric"><strong>Estimated true profit</strong><span id="tripTrueProfit">$0.00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card input-card" id="fixedCostsSection">
           <div class="card-heading">
             <div class="step-badge">02</div>
             <div>
               <h2>Fixed monthly costs</h2>
-              <p>Shared across estimated working days.</p>
+              <p>Shared across estimated working days so the model includes real operating overhead.</p>
             </div>
           </div>
           <div class="form-grid two-col">
@@ -150,12 +208,12 @@
         </div>
 
         <div class="split-grid">
-          <div class="glass-card" id="taxSection">
+          <div class="glass-card input-card" id="taxSection">
             <div class="card-heading">
               <div class="step-badge">03</div>
               <div>
                 <h2>Taxes and deduction model</h2>
-                <p>Estimate only, not tax advice.</p>
+                <p>Planning estimate only, not tax advice.</p>
               </div>
             </div>
             <div class="form-grid two-col compact">
@@ -186,12 +244,12 @@
             </div>
           </div>
 
-          <div class="glass-card" id="wearSection">
+          <div class="glass-card input-card" id="wearSection">
             <div class="card-heading">
               <div class="step-badge">04</div>
               <div>
                 <h2>Vehicle wear</h2>
-                <p>Hidden cost per mile.</p>
+                <p>The hidden cost per mile behind depreciation, tires, and brakes.</p>
               </div>
             </div>
             <div class="stacked-fields">
@@ -211,12 +269,12 @@
           </div>
         </div>
 
-        <div class="glass-card">
+        <div class="glass-card input-card">
           <div class="card-heading">
             <div class="step-badge">05</div>
             <div>
               <h2>Goal checker</h2>
-              <p>Set your personal thresholds for whether a shift is worth it.</p>
+              <p>Your personal floor for daily profit, hourly profit, and profit per mile.</p>
             </div>
           </div>
           <div class="form-grid three-col">
@@ -240,7 +298,7 @@
             <div class="step-badge">06</div>
             <div>
               <h2>Presets and actions</h2>
-              <p>Use presets for fast estimates, then save or export the result.</p>
+              <p>Load a reference pattern, calculate, save a shift, or export the current report.</p>
             </div>
           </div>
           <div class="preset-row">
@@ -257,7 +315,7 @@
         </div>
 
         <div class="glass-card pro-tip-card" id="proTipsCard" tabindex="0">
-          <div class="tip-icon" aria-hidden="true">*</div>
+          <div class="tip-icon" aria-hidden="true">PT</div>
           <div class="tip-content">
             <span class="eyebrow" id="proTipCategory">Profit strategy</span>
             <h2 id="proTipTitle">Track the hidden cost of every mile.</h2>
@@ -273,7 +331,7 @@
             <div class="step-badge">07</div>
             <div>
               <h2>Scenario comparison</h2>
-              <p>Compare two possible shifts against the current calculation settings.</p>
+              <p>Compare two possible shifts against the same gas, tax, fixed-cost, and wear model.</p>
             </div>
           </div>
           <div class="scenario-editor">
@@ -341,11 +399,16 @@
       </section>
 
       <aside class="results-column" aria-label="Calculator results">
+        <div class="section-kicker">
+          <span>Results cockpit</span>
+          <strong>Live operating intelligence</strong>
+        </div>
+
         <div class="glass-card results-panel">
           <div class="results-head">
             <div>
               <h2>Results summary</h2>
-              <p>Cash expenses plus fixed cost share</p>
+              <p>Cash expenses plus fixed cost share, tax estimate, and vehicle wear.</p>
             </div>
             <span id="savedStatus" class="live-dot">Live calculation</span>
           </div>
@@ -370,6 +433,17 @@
           <div class="results-grid" id="resultsGrid"></div>
           <div class="recommendation" id="recommendation">Calculate to see the final recommendation.</div>
           <div class="alerts" id="alerts"></div>
+        </div>
+
+        <div class="glass-card smart-suggestions-card" id="smartSuggestionsCard">
+          <div class="card-heading">
+            <div class="step-badge">P1</div>
+            <div>
+              <h2>Smart Suggestions Engine</h2>
+              <p>Auto-prioritized recommendations from profit, mileage, gas, wear, tax, and goals.</p>
+            </div>
+          </div>
+          <div class="suggestions-list" id="smartSuggestions"></div>
         </div>
 
         <div class="glass-card advisor-panel" id="advisorPanel">
@@ -405,7 +479,7 @@
             <div class="step-badge">08</div>
             <div>
               <h2>Summary table</h2>
-              <p>Main result details and formulas.</p>
+              <p>Main result details and formula notes.</p>
             </div>
           </div>
           <div class="table-wrap">

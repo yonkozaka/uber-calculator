@@ -140,6 +140,38 @@
     renderScenarioComparison(result);
   }
 
+  function renderTripDecision(els, decision) {
+    if (!decision) return;
+    setElementText(els.tripDecisionText, decision.decision);
+    setElementText(els.tripDecisionReason, decision.reason);
+    setElementText(els.tripTotalTime, `${U.safeNumber(decision.totalTimeMinutes).toFixed(0)} min`);
+    setElementText(els.tripTotalMiles, `${U.safeNumber(decision.totalMiles).toFixed(1)} mi`);
+    setElementText(els.tripPayHour, U.money(decision.payPerHour));
+    setElementText(els.tripPayMile, U.money(decision.payPerMile));
+    setElementText(els.tripGasCost, U.money(decision.gasCost));
+    setElementText(els.tripWearCost, U.money(decision.vehicleWearCost));
+    setElementText(els.tripTrueProfit, U.money(decision.trueProfit));
+    setElementClass(els.tripDecisionBadge, `decision-badge ${decision.type}`);
+    if (els.tripDecisionCard) {
+      els.tripDecisionCard.classList.remove('good', 'warn', 'bad');
+      els.tripDecisionCard.classList.add(decision.type);
+    }
+    setTone(els.tripPayHour, decision.payPerHour, decision.targetProfitHour);
+    setTone(els.tripPayMile, decision.payPerMile, decision.targetProfitMile);
+    setTone(els.tripTrueProfit, decision.trueProfit, 0);
+  }
+
+  function renderSmartSuggestions(els, suggestions) {
+    if (!els.smartSuggestions) return;
+    const list = Array.isArray(suggestions) ? suggestions : [];
+    els.smartSuggestions.innerHTML = list.map((suggestion) => `
+      <article class="suggestion-item ${U.escapeHtml(suggestion.type || 'info')}">
+        <strong>${U.escapeHtml(suggestion.title)}</strong>
+        <p>${U.escapeHtml(suggestion.text)}</p>
+      </article>
+    `).join('');
+  }
+
   function renderHistory(els, history) {
     setElementDisplay(els.historyEmpty, history.length ? 'none' : 'block');
     if (!els.historyBody) return;
@@ -263,6 +295,8 @@
     setElementClass,
     setElementDisplay,
     renderResults,
+    renderTripDecision,
+    renderSmartSuggestions,
     renderHistory,
     renderAnalytics,
     renderScenarioComparison,
