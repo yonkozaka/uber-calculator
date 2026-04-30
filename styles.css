@@ -1072,3 +1072,106 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Targeted polish from browser review */
+    .logo-mark {
+      isolation: isolate;
+      cursor: default;
+      background:
+        linear-gradient(145deg, rgba(69, 190, 238, 0.2), rgba(50, 213, 150, 0.18)),
+        linear-gradient(180deg, #142438, #07131f);
+      transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background 180ms ease;
+    }
+
+    .logo-mark::before {
+      content: "UE";
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 0;
+      color: #f4fbfc;
+      font-size: 1.08rem;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      text-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+    }
+
+    .logo-mark::after {
+      content: "PRO";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      z-index: 2;
+      width: auto;
+      height: auto;
+      min-width: 34px;
+      padding: 3px 7px;
+      border: 1px solid rgba(50, 213, 150, 0.38);
+      border-radius: 999px;
+      background: rgba(50, 213, 150, 0.14);
+      color: #8ff5c9;
+      font-size: 0.56rem;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-lockup:hover .logo-mark,
+    .logo-mark:hover {
+      border-color: rgba(50, 213, 150, 0.72);
+      background:
+        linear-gradient(145deg, rgba(50, 213, 150, 0.26), rgba(69, 190, 238, 0.22)),
+        linear-gradient(180deg, #152c2e, #081722);
+      box-shadow: 0 0 0 4px rgba(50, 213, 150, 0.11), 0 18px 42px rgba(50, 213, 150, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .brand-lockup:hover .logo-mark::after,
+    .logo-mark:hover::after {
+      background: #32d596;
+      border-color: #32d596;
+      color: #03120f;
+    }
+
+    button:hover,
+    button:focus-visible,
+    button.pill:hover,
+    button.pill:focus-visible,
+    .preset-row button:hover,
+    .preset-row button:focus-visible,
+    .history-actions button:hover,
+    .history-actions button:focus-visible {
+      border-color: rgba(50, 213, 150, 0.62);
+      box-shadow: 0 0 0 3px rgba(50, 213, 150, 0.12), 0 15px 34px rgba(0, 0, 0, 0.26);
+      color: #f5fffb;
+    }
+
+    button.blue:hover,
+    button.blue:focus-visible {
+      border-color: rgba(69, 190, 238, 0.72);
+      box-shadow: 0 0 0 3px rgba(69, 190, 238, 0.16), 0 15px 34px rgba(0, 0, 0, 0.26);
+      color: #041118;
+    }
+
+    button.danger:hover,
+    button.danger:focus-visible {
+      border-color: rgba(240, 93, 115, 0.78);
+      box-shadow: 0 0 0 3px rgba(240, 93, 115, 0.15), 0 15px 34px rgba(0, 0, 0, 0.26);
+    }
+
+    #resetBtn {
+      color: #171006;
+      background: linear-gradient(180deg, #ffe27a, #f3bc31);
+      border: 1px solid rgba(244, 200, 74, 0.68);
+    }
+
+    #resetBtn:hover,
+    #resetBtn:focus-visible {
+      color: #110b03;
+      border-color: rgba(255, 226, 122, 0.95);
+      box-shadow: 0 0 0 3px rgba(244, 200, 74, 0.18), 0 15px 34px rgba(0, 0, 0, 0.28);
+    }
