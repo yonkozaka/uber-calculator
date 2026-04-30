@@ -63,7 +63,8 @@ h2 {
 .card-heading p,
 .results-head p,
 .notes p,
-.pro-tip p {
+.pro-tip p,
+.pro-tip-card p {
   margin: 0;
   color: var(--text-secondary);
 }
@@ -519,4 +520,226 @@ tr.best-row td {
   background: rgba(67, 244, 154, 0.08);
   color: #e4fff1;
   font-weight: 850;
+}
+
+.pro-tip-card {
+  grid-column: 1 / -1;
+}
+
+.pro-tip-card .tip-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.pro-tip-card h2 {
+  margin: 6px 0 7px;
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+}
+
+.pro-tip-card small {
+  display: block;
+  margin-top: 10px;
+  color: #c7d4f1;
+  font-size: 0.82rem;
+}
+
+.pro-tip-card.tip-enter .tip-content {
+  animation: tipFadeSlide 420ms ease both;
+}
+
+.pro-tip-card.tip-enter .tip-icon {
+  animation: tipIconPulse 520ms ease both;
+}
+
+.tip-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tip-dot {
+  width: 9px;
+  min-width: 9px;
+  height: 9px;
+  min-height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(211, 220, 245, 0.26);
+  box-shadow: none;
+  transition: width var(--transition-med), background var(--transition-med), box-shadow var(--transition-med), transform var(--transition-med);
+}
+
+.tip-dot:hover,
+.tip-dot:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(114, 214, 255, 0.7);
+  box-shadow: 0 0 0 5px rgba(114, 214, 255, 0.12);
+}
+
+.tip-dot.active {
+  width: 30px;
+  min-width: 30px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+  box-shadow: 0 0 18px rgba(114, 214, 255, 0.34);
+}
+
+.advisor-panel {
+  border-color: rgba(185, 104, 255, 0.22);
+  background:
+    radial-gradient(circle at 96% 0%, rgba(185, 104, 255, 0.22), transparent 14rem),
+    linear-gradient(145deg, rgba(12, 24, 49, 0.86), rgba(7, 13, 29, 0.9));
+}
+
+.advisor-messages {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 0 var(--space-6) var(--space-5);
+  scroll-behavior: smooth;
+}
+
+.advisor-message {
+  width: fit-content;
+  max-width: min(88%, 620px);
+  padding: 13px 15px;
+  border: 1px solid rgba(161, 177, 255, 0.14);
+  border-radius: 16px;
+  color: var(--text-soft);
+  background: rgba(9, 16, 34, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  animation: messageIn 220ms ease both;
+}
+
+.advisor-message strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-main);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.advisor-message p {
+  margin: 0;
+}
+
+.advisor-message.assistant {
+  justify-self: start;
+  border-color: rgba(185, 104, 255, 0.23);
+  background:
+    linear-gradient(145deg, rgba(185, 104, 255, 0.12), rgba(10, 18, 37, 0.72)),
+    rgba(9, 16, 34, 0.72);
+}
+
+.advisor-message.user {
+  justify-self: end;
+  border-color: rgba(114, 214, 255, 0.24);
+  background:
+    linear-gradient(145deg, rgba(114, 214, 255, 0.15), rgba(10, 18, 37, 0.72)),
+    rgba(9, 16, 34, 0.72);
+}
+
+.advisor-suggestions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 var(--space-6) var(--space-4);
+}
+
+.advisor-chip {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-color: rgba(161, 177, 255, 0.18);
+  border-radius: 999px;
+  color: var(--text-soft);
+  background: rgba(10, 18, 37, 0.72);
+  box-shadow: none;
+  font-size: 0.83rem;
+}
+
+.advisor-chip:hover,
+.advisor-chip:focus-visible {
+  color: var(--text-main);
+  border-color: rgba(185, 104, 255, 0.55);
+  background: rgba(28, 25, 69, 0.82);
+  box-shadow: var(--shadow-glow-purple);
+}
+
+.advisor-input-row {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+.advisor-input-row input {
+  min-width: 0;
+}
+
+.advisor-input-row button {
+  min-width: 92px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes tipFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tipIconPulse {
+  0% {
+    transform: scale(0.96);
+    box-shadow: none;
+  }
+
+  55% {
+    transform: scale(1.04);
+    box-shadow: var(--shadow-glow-purple);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

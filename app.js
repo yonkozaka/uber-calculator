@@ -45,7 +45,16 @@
     mobileNet: document.getElementById('mobileNet'),
     mobileAfterTax: document.getElementById('mobileAfterTax'),
     mobileTrueNet: document.getElementById('mobileTrueNet'),
-    mobileTrueHour: document.getElementById('mobileTrueHour')
+    mobileTrueHour: document.getElementById('mobileTrueHour'),
+    proTipsCard: document.getElementById('proTipsCard'),
+    proTipCategory: document.getElementById('proTipCategory'),
+    proTipTitle: document.getElementById('proTipTitle'),
+    proTipText: document.getElementById('proTipText'),
+    proTipMeta: document.getElementById('proTipMeta'),
+    proTipDots: document.getElementById('proTipDots'),
+    advisorMessages: document.getElementById('advisorMessages'),
+    advisorInput: document.getElementById('advisorInput'),
+    advisorSendBtn: document.getElementById('advisorSendBtn')
   };
 
   const defaults = {
@@ -100,6 +109,18 @@
   let latestResult = null;
   let periodInputSource = 'averages';
   let lastMode = fields.mode?.value || 'daily';
+  let activeTipIndex = 0;
+  let proTipTimer = null;
+  let proTipsPaused = false;
+
+  const proTips = [
+    { key: 'profit', category: 'Profit strategy', title: 'Judge the shift by true net, not gross pay.', text: 'Gross income can look strong while taxes, fuel, and wear quietly erase the margin.' },
+    { key: 'gas', category: 'Fuel control', title: 'Gas pressure rises fastest on low-MPG long pickups.', text: 'When gas takes a large share of income, prioritize shorter pickups and denser areas.' },
+    { key: 'taxes', category: 'Tax planning', title: 'Set aside money before it feels like profit.', text: 'A clean tax set-aside habit keeps strong shifts from becoming surprise bills later.' },
+    { key: 'wear', category: 'Vehicle wear', title: 'Every mile has a hidden cost.', text: 'Depreciation, tires, brakes, and maintenance can turn a positive cash day into a weak true-profit day.' },
+    { key: 'hourly', category: 'Hourly profit', title: 'Protect your hourly floor.', text: 'If true profit per hour is below your goal, the shift needs better pay, fewer waits, or fewer dead miles.' },
+    { key: 'mileage', category: 'Mileage quality', title: 'High miles need high payout density.', text: 'A long shift can still work if profit per mile stays strong after gas, taxes, and wear.' }
+  ];
 
   function safeStorageGet(key, fallback = null) {
     try {
@@ -303,8 +324,40 @@
     syncPeriodAmounts(activeId);
     latestResult = U.calculateCore(getMainInputObject());
     UI.renderResults(els, latestResult, renderScenarioComparison);
+    renderActiveProTip();
     saveInputs();
     return latestResult;
+  }
+
+  function getActiveTip() {
+    const tip = proTips[activeTipIndex] || proTips[0];
+    const meta = U.getProfitTipData(latestResult || null)[tip.key] || 'Calculate to personalize this tip.';
+    return { ...tip, meta };
+  }
+
+  function renderActiveProTip() {
+    UI.renderProTip(els, getActiveTip());
+    UI.renderProTipDots(els, proTips, activeTipIndex);
+  }
+
+  function showTip(index) {
+    activeTipIndex = (index + proTips.length) % proTips.length;
+    renderActiveProTip();
+  }
+
+  function startProTips() {
+    if (proTipTimer) window.clearInterval(proTipTimer);
+    proTipTimer = window.setInterval(() => {
+      if (!proTipsPaused) showTip(activeTipIndex + 1);
+    }, 7000);
+  }
+
+  function pauseProTips() {
+    proTipsPaused = true;
+  }
+
+  function resumeProTips() {
+    proTipsPaused = false;
   }
 
   function getHistory() {
@@ -454,6 +507,15 @@
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function sendAdvisorQuestion(rawQuestion) {
+    const question = U.safeText(rawQuestion).trim();
+    if (!question) return;
+    const result = latestResult || calculate();
+    UI.appendAdvisorMessage(els.advisorMessages, 'user', question);
+    UI.appendAdvisorMessage(els.advisorMessages, 'assistant', U.buildAdvisorReply(question, result));
+    if (els.advisorInput) els.advisorInput.value = '';
+  }
+
   inputIds.forEach((id) => {
     if (id === 'mode' || !fields[id]) return;
     fields[id].addEventListener('input', () => {
@@ -478,6 +540,21 @@
   document.querySelectorAll('[data-feature]').forEach((button) => {
     button.addEventListener('click', () => openFeature(button.dataset.feature, button.dataset.jumpTarget));
   });
+  els.proTipsCard?.addEventListener('mouseenter', pauseProTips);
+  els.proTipsCard?.addEventListener('mouseleave', resumeProTips);
+  els.proTipsCard?.addEventListener('focusin', pauseProTips);
+  els.proTipsCard?.addEventListener('focusout', resumeProTips);
+  els.proTipDots?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-tip-index]');
+    if (button) showTip(U.safeNumber(button.dataset.tipIndex));
+  });
+  els.advisorSendBtn?.addEventListener('click', () => sendAdvisorQuestion(els.advisorInput?.value));
+  els.advisorInput?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') sendAdvisorQuestion(els.advisorInput.value);
+  });
+  document.querySelectorAll('[data-advisor-question]').forEach((button) => {
+    button.addEventListener('click', () => sendAdvisorQuestion(button.dataset.advisorQuestion));
+  });
   els.historyBody?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-delete-shift]');
     if (button) deleteShift(button.dataset.deleteShift);
@@ -486,6 +563,8 @@
   restoreInputs();
   lastMode = fields.mode?.value || 'daily';
   calculate();
+  renderActiveProTip();
+  startProTips();
   renderHistory();
   renderAnalytics();
 }());

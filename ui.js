@@ -220,6 +220,44 @@
     }).join('');
   }
 
+  function renderProTip(els, tip) {
+    if (!tip) return;
+    const card = els.proTipsCard;
+    if (card) {
+      card.classList.remove('tip-enter');
+      void card.offsetWidth;
+      card.classList.add('tip-enter');
+    }
+    setElementText(els.proTipCategory, tip.category);
+    setElementText(els.proTipTitle, tip.title);
+    setElementText(els.proTipText, tip.text);
+    setElementText(els.proTipMeta, tip.meta);
+  }
+
+  function renderProTipDots(els, tips, activeIndex) {
+    if (!els.proTipDots) return;
+    els.proTipDots.innerHTML = tips.map((tip, index) => `
+      <button
+        class="tip-dot ${index === activeIndex ? 'active' : ''}"
+        type="button"
+        data-tip-index="${index}"
+        aria-label="Show tip ${index + 1}: ${U.escapeHtml(tip.category)}"
+      ></button>
+    `).join('');
+  }
+
+  function appendAdvisorMessage(container, role, text) {
+    if (!container) return;
+    const message = document.createElement('div');
+    message.className = `advisor-message ${role === 'user' ? 'user' : 'assistant'}`;
+    message.innerHTML = `
+      <strong>${role === 'user' ? 'You' : 'Advisor'}</strong>
+      <p>${U.escapeHtml(text)}</p>
+    `;
+    container.appendChild(message);
+    container.scrollTop = container.scrollHeight;
+  }
+
   window.CalculatorUI = {
     setElementText,
     setElementClass,
@@ -227,6 +265,9 @@
     renderResults,
     renderHistory,
     renderAnalytics,
-    renderScenarioComparison
+    renderScenarioComparison,
+    renderProTip,
+    renderProTipDots,
+    appendAdvisorMessage
   };
 }());

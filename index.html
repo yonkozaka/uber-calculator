@@ -6,8 +6,6 @@
   <title>Uber Earnings & Expense Calculator</title>
   <link rel="stylesheet" href="variables.css">
   <link rel="stylesheet" href="components.css">
-  <link rel="stylesheet" href="variables.css">
-  <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -258,11 +256,14 @@
           </div>
         </div>
 
-        <div class="glass-card pro-tip">
+        <div class="glass-card pro-tip-card" id="proTipsCard" tabindex="0">
           <div class="tip-icon" aria-hidden="true">*</div>
-          <div>
-            <h2>Pro tip</h2>
-            <p>Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
+          <div class="tip-content">
+            <span class="eyebrow" id="proTipCategory">Profit strategy</span>
+            <h2 id="proTipTitle">Track the hidden cost of every mile.</h2>
+            <p id="proTipText">Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
+            <small id="proTipMeta">Tips rotate automatically every few seconds.</small>
+            <div class="tip-dots" id="proTipDots" aria-label="Pro tip progress"></div>
           </div>
           <div class="tip-art" aria-hidden="true"></div>
         </div>
@@ -369,6 +370,34 @@
           <div class="results-grid" id="resultsGrid"></div>
           <div class="recommendation" id="recommendation">Calculate to see the final recommendation.</div>
           <div class="alerts" id="alerts"></div>
+        </div>
+
+        <div class="glass-card advisor-panel" id="advisorPanel">
+          <div class="card-heading">
+            <div class="step-badge">AI</div>
+            <div>
+              <h2>Chat with AI Advisor</h2>
+              <p>Local smart advisor. Not financial or tax advice.</p>
+            </div>
+          </div>
+          <div class="advisor-messages" id="advisorMessages" aria-live="polite">
+            <div class="advisor-message assistant">
+              <strong>Advisor</strong>
+              <p>Ask me if this shift is worth it, what to improve first, or whether gas, miles, taxes, or wear are hurting your profit.</p>
+            </div>
+          </div>
+          <div class="advisor-suggestions" aria-label="Advisor quick questions">
+            <button class="advisor-chip" type="button" data-advisor-question="Is this shift worth it?">Worth it?</button>
+            <button class="advisor-chip" type="button" data-advisor-question="How can I increase profit?">Increase profit</button>
+            <button class="advisor-chip" type="button" data-advisor-question="Are my miles too high?">Miles too high?</button>
+            <button class="advisor-chip" type="button" data-advisor-question="Is gas cost hurting my profit?">Gas cost?</button>
+            <button class="advisor-chip" type="button" data-advisor-question="What should I improve first?">Improve first</button>
+          </div>
+          <div class="advisor-input-row">
+            <label class="sr-only" for="advisorInput">Ask the local smart advisor</label>
+            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off">
+            <button id="advisorSendBtn" type="button">Send</button>
+          </div>
         </div>
 
         <div class="glass-card">

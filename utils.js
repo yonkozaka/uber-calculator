@@ -240,6 +240,81 @@
     return 'No deduction estimate';
   };
 
+  Utils.getProfitTipData = function getProfitTipData(result) {
+    if (!result) {
+      return {
+        profit: 'Calculate once to personalize this tip.',
+        gas: 'Gas pressure appears after mileage and MPG are known.',
+        taxes: 'Tax set-aside appears after income and deduction mode are known.',
+        wear: 'Vehicle wear appears after mileage is entered.',
+        hourly: 'Hourly strength appears after hours are entered.',
+        mileage: 'Mileage efficiency appears after miles and profit are known.'
+      };
+    }
+
+    const gasShare = Utils.safeDivide(result.gasCost, result.income) * 100;
+    const wearShare = Utils.safeDivide(result.vehicleWearCost, result.income) * 100;
+    return {
+      profit: `Current true net is ${Utils.money(result.trueNetAfterWear)} with a ${result.goalStatus.label.toLowerCase()} rating.`,
+      gas: `Gas is ${Utils.pct(gasShare)} of income, or ${Utils.money(result.gasCost)} total.`,
+      taxes: `Suggested tax set-aside is ${Utils.money(result.suggestedTaxSetAside)} using ${Utils.deductionLabel(result.deductionMode).toLowerCase()}.`,
+      wear: `Vehicle wear is ${Utils.money(result.vehicleWearCost)}, about ${Utils.pct(wearShare)} of income.`,
+      hourly: `True hourly profit is ${Utils.money(result.trueProfitPerHour)} vs. your ${Utils.money(result.targetProfitHour)} target.`,
+      mileage: `True profit per mile is ${Utils.money(result.trueProfitPerMile)} vs. your ${Utils.money(result.targetProfitMile)} target.`
+    };
+  };
+
+  Utils.buildAdvisorReply = function buildAdvisorReply(question, result) {
+    const q = Utils.safeText(question).toLowerCase();
+    if (!result) return 'Calculate a shift first, then I can read the current profit, miles, gas, taxes, and vehicle wear.';
+
+    const gasShare = Utils.safeDivide(result.gasCost, result.income) * 100;
+    const wearShare = Utils.safeDivide(result.vehicleWearCost, result.income) * 100;
+    const expenseShare = Utils.safeDivide(result.totalExpenses, result.income) * 100;
+    const weakHourly = result.trueProfitPerHour < result.targetProfitHour;
+    const weakMileage = result.trueProfitPerMile < result.targetProfitMile;
+    const gasHigh = gasShare >= 12;
+    const wearHigh = wearShare >= 12;
+
+    if (q.includes('worth') || q.includes('accept')) {
+      return result.trueNetAfterWear > 0 && result.goalStatus.type !== 'bad'
+        ? `Yes, this looks workable: true net is ${Utils.money(result.trueNetAfterWear)}, true hourly profit is ${Utils.money(result.trueProfitPerHour)}, and true profit per mile is ${Utils.money(result.trueProfitPerMile)}. ${result.goalStatus.label}.`
+        : `I would be cautious. True net is ${Utils.money(result.trueNetAfterWear)}, true hourly profit is ${Utils.money(result.trueProfitPerHour)}, and the shift is rated "${result.goalStatus.label}". Try improving pay, reducing miles, or avoiding this shift pattern.`;
+    }
+
+    if (q.includes('increase') || q.includes('profit') || q.includes('improve')) {
+      const priorities = [];
+      if (weakHourly) priorities.push(`raise hourly return from ${Utils.money(result.trueProfitPerHour)} toward ${Utils.money(result.targetProfitHour)}`);
+      if (weakMileage) priorities.push(`improve true profit per mile from ${Utils.money(result.trueProfitPerMile)} toward ${Utils.money(result.targetProfitMile)}`);
+      if (gasHigh) priorities.push(`reduce gas pressure because gas is ${Utils.pct(gasShare)} of income`);
+      if (wearHigh) priorities.push(`watch vehicle wear because hidden wear is ${Utils.money(result.vehicleWearCost)}`);
+      if (!priorities.length) priorities.push('keep this pattern, but continue tracking miles, fuel, and taxes');
+      return `Improve first: ${priorities.slice(0, 3).join('; ')}. Current net after tax and wear is ${Utils.money(result.trueNetAfterWear)}.`;
+    }
+
+    if (q.includes('mile')) {
+      return weakMileage
+        ? `Miles are likely too heavy for this payout. True profit per mile is ${Utils.money(result.trueProfitPerMile)} vs. your ${Utils.money(result.targetProfitMile)} target, with ${Utils.money(result.vehicleWearCost)} in estimated wear.`
+        : `Mileage looks acceptable right now. True profit per mile is ${Utils.money(result.trueProfitPerMile)}, above or near your ${Utils.money(result.targetProfitMile)} target. Keep avoiding low-pay long-distance trips.`;
+    }
+
+    if (q.includes('gas') || q.includes('fuel')) {
+      return gasHigh
+        ? `Gas is hurting profit: ${Utils.money(result.gasCost)} is ${Utils.pct(gasShare)} of income. Better MPG, shorter pickups, and fewer empty miles would help.`
+        : `Gas does not look like the main problem right now. It is ${Utils.money(result.gasCost)}, about ${Utils.pct(gasShare)} of income.`;
+    }
+
+    if (q.includes('tax')) {
+      return `Tax planning estimate: taxable profit is ${Utils.money(result.taxableProfit)}, estimated tax owed is ${Utils.money(result.estimatedTaxOwed)}, and suggested set-aside is ${Utils.money(result.suggestedTaxSetAside)}. This is not tax advice.`;
+    }
+
+    if (q.includes('wear') || q.includes('vehicle') || q.includes('maintenance')) {
+      return `Vehicle wear estimate is ${Utils.money(result.vehicleWearCost)} at ${Utils.money(result.wearRate)} per mile. That reduces after-tax profit from ${Utils.money(result.afterTaxProfit)} to ${Utils.money(result.trueNetAfterWear)}.`;
+    }
+
+    return `Based on the current shift: income is ${Utils.money(result.income)}, cash expenses are ${Utils.money(result.totalExpenses)}, true net is ${Utils.money(result.trueNetAfterWear)}, gas is ${Utils.money(result.gasCost)}, and true hourly profit is ${Utils.money(result.trueProfitPerHour)}. Ask about miles, gas, taxes, wear, or whether the shift is worth it.`;
+  };
+
   Utils.buildTextReport = function buildTextReport(result) {
     return [
       'Uber Earnings & Expense Calculator Report',

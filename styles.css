@@ -239,7 +239,8 @@ section[id],
   flex: 1 1 160px;
 }
 
-.pro-tip {
+.pro-tip,
+.pro-tip-card {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr) 150px;
   align-items: center;
@@ -525,8 +526,24 @@ section[id],
     margin-right: 18px;
   }
 
-  .pro-tip {
+  .pro-tip,
+  .pro-tip-card {
     grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .advisor-messages,
+  .advisor-suggestions,
+  .advisor-input-row {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .advisor-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .advisor-input-row button {
+    width: 100%;
   }
 
   .tip-art {
