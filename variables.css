@@ -1,0 +1,49 @@
+:root {
+  color-scheme: dark;
+
+  --bg-main: #050714;
+  --bg-page-2: #070d1f;
+  --bg-card: rgba(12, 22, 44, 0.72);
+  --bg-card-strong: rgba(13, 24, 49, 0.92);
+  --bg-glass: rgba(19, 31, 58, 0.64);
+  --bg-field: rgba(8, 16, 33, 0.82);
+  --bg-field-hover: rgba(12, 23, 45, 0.94);
+
+  --primary-blue: #72d6ff;
+  --primary-purple: #b968ff;
+  --primary-pink: #ff6cb9;
+  --primary: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  --accent-green: #43f49a;
+  --accent-yellow: #ffb743;
+  --accent-red: #ff6f8a;
+
+  --text-main: #f8fbff;
+  --text-secondary: #a8b5d6;
+  --text-soft: #d3dcf5;
+  --border-subtle: rgba(161, 177, 255, 0.18);
+  --border-glow: rgba(119, 205, 255, 0.38);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.28);
+  --shadow-card: 0 24px 80px rgba(0, 0, 0, 0.44);
+  --shadow-glow-blue: 0 0 0 3px rgba(114, 214, 255, 0.14);
+  --shadow-glow-green: 0 0 0 3px rgba(67, 244, 154, 0.13);
+  --shadow-glow-purple: 0 0 0 3px rgba(185, 104, 255, 0.12);
+
+  --transition-fast: 150ms ease;
+  --transition-med: 180ms ease;
+}

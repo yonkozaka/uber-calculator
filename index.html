@@ -4,70 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Uber Earnings & Expense Calculator</title>
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="app">
-    <header class="dashboard-hero">
-      <div class="hero-copy">
-        <div class="brand-row">
-          <div class="logo-mark" aria-hidden="true"></div>
-          <div>
-            <span class="eyebrow">Rideshare profit studio</span>
-            <h1>Uber Earnings & Expense Calculator</h1>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <div>
+          <div class="title-row">
+            <h1>Uber Profit Calculator</h1>
+            <span class="year-badge">2026</span>
           </div>
+          <p>Estimate your earnings, expenses, taxes, vehicle wear, and true take-home profit.</p>
         </div>
-        <p class="subtitle">Plan a shift, compare scenarios, estimate taxes and vehicle wear, then save your driving history locally in your browser.</p>
-        <div class="quick-stats" aria-label="Calculator highlights">
-          <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
-          <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
-          <button class="pill" type="button" data-feature="taxWear" data-jump-target="taxSection">Tax and wear modeling</button>
-          <button class="pill" type="button" data-feature="exports" data-jump-target="historySection">CSV and TXT exports</button>
-        </div>
-        <div id="featureDetails" class="feature-details" aria-live="polite"></div>
       </div>
 
-      <aside class="command-center" aria-label="Dashboard summary">
-        <div class="mode-card">
-          <label for="mode">Calculation mode</label>
+      <div class="topbar-actions">
+        <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
+      </div>
+    </header>
+
+    <section class="hero-strip">
+      <div>
+        <span class="eyebrow">Private rideshare profit studio</span>
+        <h2>Plan the shift before the shift costs you.</h2>
+      </div>
+      <div class="quick-stats" aria-label="Calculator highlights">
+        <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
+        <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
+        <button class="pill" type="button" data-feature="taxWear" data-jump-target="taxSection">Tax and wear modeling</button>
+        <button class="pill" type="button" data-feature="exports" data-jump-target="historySection">CSV and TXT exports</button>
+      </div>
+      <div id="featureDetails" class="feature-details" aria-live="polite"></div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="input-column" aria-label="Calculator inputs">
+        <div class="glass-card mode-card">
+          <div class="card-heading">
+            <div class="step-badge">00</div>
+            <div>
+              <h2>Calculation mode</h2>
+              <p>Choose the period you want to evaluate.</p>
+            </div>
+          </div>
+          <label for="mode">Mode</label>
           <select id="mode">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
           </select>
         </div>
-        <div class="summary-grid">
-          <div class="summary-tile">
-            <strong>Net profit</strong>
-            <span id="topNet">$0.00</span>
-          </div>
-          <div class="summary-tile">
-            <strong>After tax</strong>
-            <span id="topAfterTax">$0.00</span>
-          </div>
-          <div class="summary-tile">
-            <strong>True net</strong>
-            <span id="topTrueNet">$0.00</span>
-          </div>
-          <div class="summary-tile">
-            <strong>True / hour</strong>
-            <span id="topTrueHour">$0.00</span>
-          </div>
-        </div>
-      </aside>
-    </header>
 
-    <div class="dashboard-layout">
-      <section class="workspace">
-        <div class="panel hero-panel" id="tripSection">
-          <div class="panel-heading">
+        <div class="glass-card" id="tripSection">
+          <div class="card-heading">
+            <div class="step-badge">01</div>
             <div>
-              <span class="section-kicker">Step 01</span>
-              <h2>Income and shift activity</h2>
+              <h2>Income and driving activity</h2>
+              <p>Enter the money earned, time worked, trips, mileage, and cash expenses.</p>
             </div>
-            <span class="hint">Weekly and monthly modes can use totals or daily averages.</span>
           </div>
-          <div class="form-grid primary-grid">
+          <div class="form-grid four-col">
             <div>
               <label id="incomeLabel" for="income">Total Uber income ($)</label>
               <input id="income" type="number" min="0" step="0.01" value="220">
@@ -121,44 +123,44 @@
           </div>
         </div>
 
-        <div class="panel-stack">
-          <div class="panel" id="fixedCostsSection">
-            <div class="panel-heading compact">
-              <div>
-                <span class="section-kicker">Step 02</span>
-                <h2>Fixed monthly costs</h2>
-              </div>
-              <span class="hint">Shared across estimated working days.</span>
-            </div>
-            <div class="form-grid">
-              <div>
-                <label for="insurance">Monthly insurance ($)</label>
-                <input id="insurance" type="number" min="0" step="0.01" value="180">
-              </div>
-              <div>
-                <label for="maintenance">Estimated monthly maintenance ($)</label>
-                <input id="maintenance" type="number" min="0" step="0.01" value="120">
-              </div>
-              <div>
-                <label for="phone">Phone/subscriptions ($)</label>
-                <input id="phone" type="number" min="0" step="0.01" value="60">
-              </div>
-              <div>
-                <label for="otherFixed">Any other fixed cost ($)</label>
-                <input id="otherFixed" type="number" min="0" step="0.01" value="40">
-              </div>
+        <div class="glass-card" id="fixedCostsSection">
+          <div class="card-heading">
+            <div class="step-badge">02</div>
+            <div>
+              <h2>Fixed monthly costs</h2>
+              <p>Shared across estimated working days.</p>
             </div>
           </div>
-
-          <div class="panel" id="taxSection">
-            <div class="panel-heading compact">
-              <div>
-                <span class="section-kicker">Step 03</span>
-                <h2>Taxes and deduction model</h2>
-              </div>
-              <span class="hint">Estimate only, not tax advice.</span>
+          <div class="form-grid two-col">
+            <div>
+              <label for="insurance">Monthly insurance ($)</label>
+              <input id="insurance" type="number" min="0" step="0.01" value="180">
             </div>
-            <div class="form-grid">
+            <div>
+              <label for="maintenance">Estimated monthly maintenance ($)</label>
+              <input id="maintenance" type="number" min="0" step="0.01" value="120">
+            </div>
+            <div>
+              <label for="phone">Phone/subscriptions ($)</label>
+              <input id="phone" type="number" min="0" step="0.01" value="60">
+            </div>
+            <div>
+              <label for="otherFixed">Any other fixed cost ($)</label>
+              <input id="otherFixed" type="number" min="0" step="0.01" value="40">
+            </div>
+          </div>
+        </div>
+
+        <div class="split-grid">
+          <div class="glass-card" id="taxSection">
+            <div class="card-heading">
+              <div class="step-badge">03</div>
+              <div>
+                <h2>Taxes and deduction model</h2>
+                <p>Estimate only, not tax advice.</p>
+              </div>
+            </div>
+            <div class="form-grid two-col compact">
               <div>
                 <label for="selfEmploymentTax">Self-employment tax (%)</label>
                 <input id="selfEmploymentTax" type="number" min="0" step="0.1" value="15.3">
@@ -186,15 +188,15 @@
             </div>
           </div>
 
-          <div class="panel" id="wearSection">
-            <div class="panel-heading compact">
+          <div class="glass-card" id="wearSection">
+            <div class="card-heading">
+              <div class="step-badge">04</div>
               <div>
-                <span class="section-kicker">Step 04</span>
                 <h2>Vehicle wear</h2>
+                <p>Hidden cost per mile.</p>
               </div>
-              <span class="hint">Hidden cost per mile.</span>
             </div>
-            <div class="form-grid three-col">
+            <div class="stacked-fields">
               <div>
                 <label for="depreciationPerMile">Depreciation per mile ($)</label>
                 <input id="depreciationPerMile" type="number" min="0" step="0.01" value="0.12">
@@ -211,13 +213,13 @@
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-heading compact">
+        <div class="glass-card">
+          <div class="card-heading">
+            <div class="step-badge">05</div>
             <div>
-              <span class="section-kicker">Step 05</span>
               <h2>Goal checker</h2>
+              <p>Set your personal thresholds for whether a shift is worth it.</p>
             </div>
-            <span class="hint">Used by the recommendation engine.</span>
           </div>
           <div class="form-grid three-col">
             <div>
@@ -235,42 +237,48 @@
           </div>
         </div>
 
-        <div class="panel action-panel">
-          <div class="panel-heading compact">
+        <div class="glass-card action-card">
+          <div class="card-heading">
+            <div class="step-badge">06</div>
             <div>
-              <span class="section-kicker">Workflow</span>
               <h2>Presets and actions</h2>
+              <p>Use presets for fast estimates, then save or export the result.</p>
             </div>
-            <span class="hint">Autofill, calculate, save, or export.</span>
           </div>
-          <div class="preset-panel">
-            <div class="preset-row">
-              <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
-              <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
-              <button class="blue" type="button" data-preset="strong">Strong Uber Day</button>
-              <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
-            </div>
+          <div class="preset-row">
+            <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
+            <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
+            <button class="blue" type="button" data-preset="strong">Strong Uber Day</button>
+            <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
           </div>
           <div class="actions">
             <button id="calculateBtn" type="button">Calculate</button>
-            <button id="resetBtn" class="secondary" type="button">Reset</button>
             <button id="saveBtn" class="blue" type="button">Save result</button>
             <button id="downloadBtn" class="secondary" type="button">Export current TXT</button>
           </div>
         </div>
 
-        <div class="panel scenario-panel">
-          <div class="panel-heading compact">
+        <div class="glass-card pro-tip">
+          <div class="tip-icon" aria-hidden="true">*</div>
+          <div>
+            <h2>Pro tip</h2>
+            <p>Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
+          </div>
+          <div class="tip-art" aria-hidden="true"></div>
+        </div>
+
+        <div class="glass-card scenario-panel">
+          <div class="card-heading">
+            <div class="step-badge">07</div>
             <div>
-              <span class="section-kicker">Compare</span>
               <h2>Scenario comparison</h2>
+              <p>Compare two possible shifts against the current calculation settings.</p>
             </div>
-            <span class="hint">Uses current gas, tax, fixed cost, and wear settings.</span>
           </div>
           <div class="scenario-editor">
             <div class="scenario-card">
               <span class="scenario-label">Scenario A</span>
-              <div class="form-grid two-col">
+              <div class="form-grid two-col compact">
                 <div>
                   <label for="scenarioAIncome">Income ($)</label>
                   <input id="scenarioAIncome" type="number" min="0" step="0.01" value="220">
@@ -291,7 +299,7 @@
             </div>
             <div class="scenario-card">
               <span class="scenario-label">Scenario B</span>
-              <div class="form-grid two-col">
+              <div class="form-grid two-col compact">
                 <div>
                   <label for="scenarioBIncome">Income ($)</label>
                   <input id="scenarioBIncome" type="number" min="0" step="0.01" value="260">
@@ -331,27 +339,45 @@
         </div>
       </section>
 
-      <aside class="insights">
-        <div class="panel results-panel">
-          <div class="panel-heading compact">
+      <aside class="results-column" aria-label="Calculator results">
+        <div class="glass-card results-panel">
+          <div class="results-head">
             <div>
-              <span class="section-kicker">Live output</span>
-              <h2>Results</h2>
+              <h2>Results summary</h2>
+              <p>Cash expenses plus fixed cost share</p>
             </div>
-            <span class="hint" id="savedStatus">Auto-saves inputs</span>
+            <span id="savedStatus" class="live-dot">Live calculation</span>
+          </div>
+          <div class="top-results" aria-label="Top summary">
+            <div class="mini-result">
+              <strong>Net profit</strong>
+              <span id="topNet">$0.00</span>
+            </div>
+            <div class="mini-result">
+              <strong>After tax</strong>
+              <span id="topAfterTax">$0.00</span>
+            </div>
+            <div class="mini-result">
+              <strong>True net</strong>
+              <span id="topTrueNet">$0.00</span>
+            </div>
+            <div class="mini-result">
+              <strong>True / hour</strong>
+              <span id="topTrueHour">$0.00</span>
+            </div>
           </div>
           <div class="results-grid" id="resultsGrid"></div>
           <div class="recommendation" id="recommendation">Calculate to see the final recommendation.</div>
           <div class="alerts" id="alerts"></div>
         </div>
 
-        <div class="panel">
-          <div class="panel-heading compact">
+        <div class="glass-card">
+          <div class="card-heading">
+            <div class="step-badge">08</div>
             <div>
-              <span class="section-kicker">Breakdown</span>
               <h2>Summary table</h2>
+              <p>Main result details and formulas.</p>
             </div>
-            <span class="hint">Main result details</span>
           </div>
           <div class="table-wrap">
             <table>
@@ -367,24 +393,24 @@
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-heading compact">
+        <div class="glass-card">
+          <div class="card-heading">
+            <div class="step-badge">09</div>
             <div>
-              <span class="section-kicker">History insight</span>
               <h2>Analytics</h2>
+              <p>Based on saved shift history.</p>
             </div>
-            <span class="hint">Based on saved shift history.</span>
           </div>
           <div class="analytics-grid" id="analyticsGrid"></div>
         </div>
 
-        <div class="panel" id="historySection">
-          <div class="panel-heading compact">
+        <div class="glass-card" id="historySection">
+          <div class="card-heading">
+            <div class="step-badge">10</div>
             <div>
-              <span class="section-kicker">Records</span>
               <h2>Shift history</h2>
+              <p>Saved locally in this browser.</p>
             </div>
-            <span class="hint">Saved locally in this browser.</span>
           </div>
           <div class="history-actions">
             <button id="clearHistoryBtn" class="danger" type="button">Clear history</button>
@@ -411,11 +437,12 @@
           <div id="historyEmpty" class="empty-state">No saved shifts yet. Click "Save result" after a calculation to build your history.</div>
         </div>
 
-        <div class="panel" id="notesSection">
-          <div class="panel-heading compact">
+        <div class="glass-card" id="notesSection">
+          <div class="card-heading">
+            <div class="step-badge">11</div>
             <div>
-              <span class="section-kicker">Disclaimer</span>
               <h2>Notes</h2>
+              <p>Your data stays on your device.</p>
             </div>
           </div>
           <div class="notes">
@@ -445,6 +472,8 @@
       <span id="mobileTrueHour">$0.00</span>
     </div>
   </div>
+  <script src="utils.js"></script>
+  <script src="ui.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
