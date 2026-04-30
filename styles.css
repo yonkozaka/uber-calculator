@@ -1175,3 +1175,7 @@
       border-color: rgba(255, 226, 122, 0.95);
       box-shadow: 0 0 0 3px rgba(244, 200, 74, 0.18), 0 15px 34px rgba(0, 0, 0, 0.28);
     }
+
+    button {
+      border: 1px solid transparent;
+    }

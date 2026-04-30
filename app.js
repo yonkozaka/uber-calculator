@@ -140,6 +140,47 @@
       }
     }
 
+    function safeStorageGet(key, fallback = null) {
+      try {
+        const value = localStorage.getItem(key);
+        return value === null ? fallback : value;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function safeStorageSet(key, value, failureMessage = 'Storage is full or unavailable') {
+      try {
+        localStorage.setItem(key, value);
+        return true;
+      } catch (error) {
+        setElementText(els.savedStatus, failureMessage);
+        return false;
+      }
+    }
+
+    function safeStorageRemove(key, failureMessage = 'Storage is unavailable') {
+      try {
+        localStorage.removeItem(key);
+        return true;
+      } catch (error) {
+        setElementText(els.savedStatus, failureMessage);
+        return false;
+      }
+    }
+
+    function setElementText(element, value) {
+      if (element) element.textContent = safeText(value);
+    }
+
+    function setElementClass(element, value) {
+      if (element) element.className = safeText(value);
+    }
+
+    function setElementDisplay(element, value) {
+      if (element) element.style.display = value;
+    }
+
     function formatMoney(value) {
       const amount = safeNumber(value);
       return new Intl.NumberFormat('en-US', {
@@ -181,8 +222,8 @@
 
     function openFeature(feature, targetId) {
       const text = featureDetails[feature] || '';
-      els.featureDetails.textContent = text;
-      els.featureDetails.classList.toggle('active', Boolean(text));
+      setElementText(els.featureDetails, text);
+      if (els.featureDetails) els.featureDetails.classList.toggle('active', Boolean(text));
 
       const target = document.getElementById(targetId);
       if (target) {
@@ -208,39 +249,31 @@
     }
 
     function saveInputs() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(getInputs()));
-      } catch (error) {
-        els.savedStatus.textContent = 'Storage is full or unavailable';
-      }
+      safeStorageSet(STORAGE_KEY, JSON.stringify(getInputs()));
     }
 
     function readJson(key, fallback) {
-      try {
-        const stored = localStorage.getItem(key);
-        return safeJSONParse(stored, fallback);
-      } catch (error) {
-        localStorage.removeItem(key);
-        return fallback;
-      }
+      const stored = safeStorageGet(key, null);
+      return safeJSONParse(stored, fallback);
     }
 
     function restoreInputs() {
-      const saved = readJson(STORAGE_KEY, null) || readJson(LEGACY_STORAGE_KEY, {});
+      const stored = readJson(STORAGE_KEY, null) || readJson(LEGACY_STORAGE_KEY, {});
+      const saved = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
       periodInputSource = saved.periodInputSource === 'totals' ? 'totals' : 'averages';
       setInputs({ ...defaults, ...saved });
     }
 
     function syncMode() {
       const isDaily = fields.mode.value === 'daily';
-      els.periodInputs.classList.toggle('active', !isDaily);
+      if (els.periodInputs) els.periodInputs.classList.toggle('active', !isDaily);
 
-      labels.income.textContent = isDaily ? 'Total Uber income ($)' : 'Calculated income ($)';
-      labels.hours.textContent = isDaily ? 'Total working hours' : 'Calculated working hours';
-      labels.miles.textContent = isDaily ? 'Total miles driven' : 'Calculated miles driven';
-      labels.trips.textContent = isDaily ? 'Number of trips' : 'Average trips per day';
-      labels.tolls.textContent = isDaily ? 'Parking/tolls cost ($)' : 'Parking/tolls for period ($)';
-      labels.additional.textContent = isDaily ? 'Additional expenses ($)' : 'Additional expenses for period ($)';
+      setElementText(labels.income, isDaily ? 'Total Uber income ($)' : 'Calculated income ($)');
+      setElementText(labels.hours, isDaily ? 'Total working hours' : 'Calculated working hours');
+      setElementText(labels.miles, isDaily ? 'Total miles driven' : 'Calculated miles driven');
+      setElementText(labels.trips, isDaily ? 'Number of trips' : 'Average trips per day');
+      setElementText(labels.tolls, isDaily ? 'Parking/tolls cost ($)' : 'Parking/tolls for period ($)');
+      setElementText(labels.additional, isDaily ? 'Additional expenses ($)' : 'Additional expenses for period ($)');
 
       fields.income.readOnly = false;
       fields.hours.readOnly = false;
@@ -249,6 +282,7 @@
 
     function setPeriodFieldValue(id, value, activeId) {
       if (id === activeId) return;
+      if (!fields[id]) return;
       const safeValue = safeNumber(value);
       fields[id].value = safeValue.toFixed(periodDecimals[id] ?? 2);
     }
@@ -535,9 +569,11 @@
     }
 
     function setTone(element, value, warningLimit) {
+      if (!element) return;
+      const safeValue = safeNumber(value);
       element.classList.remove('positive', 'negative', 'warning', 'info');
-      if (value < 0) element.classList.add('negative');
-      else if (typeof warningLimit === 'number' && value < warningLimit) element.classList.add('warning');
+      if (safeValue < 0) element.classList.add('negative');
+      else if (typeof warningLimit === 'number' && safeValue < warningLimit) element.classList.add('warning');
       else element.classList.add('positive');
     }
 
@@ -574,7 +610,7 @@
         { label: 'True profit per mile', value: money(result.trueProfitPerMile), toneValue: result.trueProfitPerMile, warningLimit: result.targetProfitMile, type: 'wear' }
       ];
 
-      els.resultsGrid.replaceChildren(...cards.map(renderCard));
+      if (els.resultsGrid) els.resultsGrid.replaceChildren(...cards.map(renderCard));
       renderTopSummary(result);
       renderRecommendation(result);
       renderAlerts(result);
@@ -595,14 +631,14 @@
       ];
 
       values.forEach(([element, value, warningLimit]) => {
-        element.textContent = compactMoney(value);
+        setElementText(element, compactMoney(value));
         setTone(element, value, warningLimit);
       });
     }
 
     function renderRecommendation(result) {
-      els.recommendation.textContent = result.recommendation.text;
-      els.recommendation.className = `recommendation ${result.recommendation.type}`;
+      setElementText(els.recommendation, result.recommendation.text);
+      setElementClass(els.recommendation, `recommendation ${result.recommendation.type}`);
     }
 
     function renderAlerts(result) {
@@ -620,6 +656,7 @@
         messages.push({ text: 'Not worth it: true profit is below your goal settings.', type: 'bad' });
       }
 
+      if (!els.alerts) return;
       els.alerts.innerHTML = messages.map((message) => {
         const className = message.type === 'good' ? 'good' : message.type === 'bad' ? 'bad' : message.type === 'info' ? 'info' : '';
         return `<div class="alert ${className}">${escapeHtml(message.text)}</div>`;
@@ -658,6 +695,7 @@
         ['Goal status', result.goalStatus.label, 'Based on daily, hourly, and per-mile targets']
       ];
 
+      if (!els.summaryBody) return;
       els.summaryBody.innerHTML = rows.map((row) => `
         <tr>
           <td>${escapeHtml(row[0])}</td>
@@ -683,11 +721,11 @@
     }
 
     function resetForm() {
-      localStorage.removeItem(STORAGE_KEY);
+      safeStorageRemove(STORAGE_KEY, 'Could not clear saved inputs');
       setInputs(defaults);
       periodInputSource = 'averages';
       lastMode = fields.mode.value;
-      els.savedStatus.textContent = 'Inputs reset';
+      setElementText(els.savedStatus, 'Inputs reset');
       calculate();
     }
 
@@ -712,21 +750,20 @@
       };
 
       history.unshift(entry);
-      try {
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-        localStorage.setItem(RESULT_KEY, JSON.stringify(result));
-        els.savedStatus.textContent = `Shift saved at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      const savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(history), 'Could not save shift history');
+      const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
+
+      if (savedHistory && savedResult) {
+        setElementText(els.savedStatus, `Shift saved at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
         renderHistory();
         renderAnalytics();
-      } catch (error) {
-        els.savedStatus.textContent = 'Could not save shift history';
       }
     }
 
     function getHistory() {
       const rawHistory = readJson(HISTORY_KEY, []);
       if (!Array.isArray(rawHistory)) {
-        localStorage.removeItem(HISTORY_KEY);
+        safeStorageRemove(HISTORY_KEY, 'Could not clear corrupted shift history');
         return [];
       }
 
@@ -752,7 +789,8 @@
 
     function renderHistory() {
       const history = getHistory();
-      els.historyEmpty.style.display = history.length ? 'none' : 'block';
+      setElementDisplay(els.historyEmpty, history.length ? 'none' : 'block');
+      if (!els.historyBody) return;
       els.historyBody.innerHTML = history.map((entry) => `
         <tr>
           <td>${escapeHtml(new Date(entry.savedAt).toLocaleString())}</td>
@@ -770,17 +808,17 @@
 
     function deleteShift(id) {
       const history = getHistory().filter((entry) => entry.id !== id);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      safeStorageSet(HISTORY_KEY, JSON.stringify(history), 'Could not delete shift');
       renderHistory();
       renderAnalytics();
     }
 
     function clearHistory() {
       if (!confirm('Clear all saved shift history?')) return;
-      localStorage.removeItem(HISTORY_KEY);
+      safeStorageRemove(HISTORY_KEY, 'Could not clear history');
       renderHistory();
       renderAnalytics();
-      els.savedStatus.textContent = 'History cleared';
+      setElementText(els.savedStatus, 'History cleared');
     }
 
     function renderAnalytics() {
@@ -826,6 +864,7 @@
         ['Avg net/shift', money(averageNetShift)]
       ];
 
+      if (!els.analyticsGrid) return;
       els.analyticsGrid.innerHTML = metrics.map(([label, value]) => `
         <div class="metric">
           <strong>${escapeHtml(label)}</strong>
@@ -859,6 +898,7 @@
       const bestIndex = scenarioInputs.reduce((winnerIndex, item, index, list) => (
         item.result.trueNetAfterWear > list[winnerIndex].result.trueNetAfterWear ? index : winnerIndex
       ), 0);
+      if (!els.scenarioBody) return;
       els.scenarioBody.innerHTML = scenarioInputs.map((item, index) => {
         const isBest = index === bestIndex;
         return `
@@ -1011,28 +1051,29 @@
 
       setInputs(presets[name] || {});
       lastMode = fields.mode.value;
-      els.savedStatus.textContent = 'Preset applied';
+      setElementText(els.savedStatus, 'Preset applied');
       calculate();
     }
 
     inputIds.forEach((id) => {
       if (id === 'mode') return;
+      if (!fields[id]) return;
       fields[id].addEventListener('input', () => {
         calculate(id);
-        els.savedStatus.textContent = 'Auto-saves inputs';
+        setElementText(els.savedStatus, 'Auto-saves inputs');
       });
     });
 
-    fields.mode.addEventListener('change', () => {
+    fields.mode?.addEventListener('change', () => {
       preparePeriodModeAfterModeChange();
       calculate('mode');
     });
-    document.getElementById('calculateBtn').addEventListener('click', calculate);
-    document.getElementById('resetBtn').addEventListener('click', resetForm);
-    document.getElementById('saveBtn').addEventListener('click', saveResult);
-    document.getElementById('downloadBtn').addEventListener('click', downloadResult);
-    document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
-    document.getElementById('exportHistoryBtn').addEventListener('click', exportHistoryCsv);
+    document.getElementById('calculateBtn')?.addEventListener('click', calculate);
+    document.getElementById('resetBtn')?.addEventListener('click', resetForm);
+    document.getElementById('saveBtn')?.addEventListener('click', saveResult);
+    document.getElementById('downloadBtn')?.addEventListener('click', downloadResult);
+    document.getElementById('clearHistoryBtn')?.addEventListener('click', clearHistory);
+    document.getElementById('exportHistoryBtn')?.addEventListener('click', exportHistoryCsv);
 
     document.querySelectorAll('[data-preset]').forEach((button) => {
       button.addEventListener('click', () => applyPreset(button.dataset.preset));
@@ -1044,7 +1085,7 @@
       });
     });
 
-    els.historyBody.addEventListener('click', (event) => {
+    els.historyBody?.addEventListener('click', (event) => {
       const button = event.target.closest('[data-delete-shift]');
       if (button) deleteShift(button.dataset.deleteShift);
     });
