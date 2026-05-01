@@ -1,30 +1,34 @@
 :root {
   color-scheme: dark;
 
-  --bg-main: #050817;
-  --bg-page-2: #08112a;
-  --bg-page-3: #0d1635;
-  --bg-card: rgba(12, 22, 47, 0.78);
-  --bg-card-strong: rgba(14, 26, 58, 0.95);
-  --bg-glass: rgba(23, 37, 78, 0.58);
-  --bg-field: rgba(7, 14, 32, 0.86);
-  --bg-field-hover: rgba(13, 27, 58, 0.96);
+  --bg-main: #050707;
+  --bg-page-2: #081012;
+  --bg-page-3: #111827;
+  --bg-card: rgba(12, 18, 24, 0.84);
+  --bg-card-strong: rgba(16, 23, 31, 0.96);
+  --bg-glass: rgba(20, 31, 38, 0.68);
+  --bg-field: rgba(6, 10, 13, 0.92);
+  --bg-field-hover: rgba(13, 21, 27, 0.98);
+  --bg-raised: rgba(22, 31, 39, 0.94);
+  --bg-rail: rgba(4, 7, 9, 0.72);
 
-  --primary-blue: #64d8ff;
-  --primary-purple: #9b6cff;
-  --primary-pink: #ff6fc7;
-  --primary: linear-gradient(135deg, var(--primary-blue), var(--primary-purple) 58%, var(--primary-pink));
-  --accent-green: #38f8a5;
-  --accent-yellow: #ffbd4a;
-  --accent-red: #ff5f7e;
+  --primary-blue: #6de7ff;
+  --primary-purple: #a78bfa;
+  --primary-pink: #ff6ab7;
+  --primary: linear-gradient(135deg, #6de7ff, #42f5a7 48%, #f7c948);
+  --accent-green: #42f5a7;
+  --accent-yellow: #f7c948;
+  --accent-red: #ff5d7d;
+  --accent-orange: #ff9f43;
+  --accent-teal: #36f2d0;
 
-  --text-main: #f8fbff;
-  --text-secondary: #9facd1;
-  --text-soft: #d7e1fb;
-  --text-muted: #7786aa;
-  --border-subtle: rgba(162, 179, 255, 0.16);
-  --border-strong: rgba(119, 205, 255, 0.38);
-  --border-glow: rgba(100, 216, 255, 0.42);
+  --text-main: #f7fbf8;
+  --text-secondary: #a9b8ba;
+  --text-soft: #d9e8e4;
+  --text-muted: #76888c;
+  --border-subtle: rgba(190, 223, 217, 0.14);
+  --border-strong: rgba(109, 231, 255, 0.36);
+  --border-glow: rgba(66, 245, 167, 0.36);
 
   --space-1: 4px;
   --space-2: 8px;
@@ -38,18 +42,19 @@
   --space-12: 48px;
   --space-14: 56px;
 
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
-  --radius-2xl: 30px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
 
-  --shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.32);
-  --shadow-card: 0 28px 88px rgba(0, 0, 0, 0.46);
-  --shadow-lift: 0 24px 70px rgba(2, 8, 26, 0.52);
-  --shadow-glow-blue: 0 0 0 3px rgba(100, 216, 255, 0.14), 0 0 34px rgba(100, 216, 255, 0.11);
-  --shadow-glow-green: 0 0 0 3px rgba(56, 248, 165, 0.13), 0 0 34px rgba(56, 248, 165, 0.13);
-  --shadow-glow-purple: 0 0 0 3px rgba(155, 108, 255, 0.14), 0 0 34px rgba(155, 108, 255, 0.12);
+  --shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.34);
+  --shadow-card: 0 30px 90px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 24px 70px rgba(0, 0, 0, 0.54);
+  --shadow-glow-blue: 0 0 0 3px rgba(109, 231, 255, 0.14), 0 0 34px rgba(109, 231, 255, 0.11);
+  --shadow-glow-green: 0 0 0 3px rgba(66, 245, 167, 0.13), 0 0 34px rgba(66, 245, 167, 0.13);
+  --shadow-glow-purple: 0 0 0 3px rgba(167, 139, 250, 0.13), 0 0 34px rgba(167, 139, 250, 0.12);
+  --focus-ring: 0 0 0 3px rgba(66, 245, 167, 0.2), 0 0 0 1px rgba(66, 245, 167, 0.58);
 
   --transition-fast: 150ms ease;
   --transition-med: 220ms ease;

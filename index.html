@@ -8,18 +8,18 @@
   <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="premium-dashboard">
   <main class="app-shell">
-    <header class="topbar">
+    <header class="topbar command-topbar">
       <div class="brand">
         <div class="logo-mark" aria-hidden="true"></div>
         <div>
           <div class="title-row">
-            <span class="eyebrow">Rideshare fintech command center</span>
+            <span class="eyebrow">Rideshare finance console</span>
             <span class="year-badge">2026</span>
           </div>
           <h1>Uber Profit Calculator</h1>
-          <p>Forecast gross pay, operating costs, taxes, vehicle wear, and the real profit behind every shift.</p>
+          <p>Forecast gross pay, operating costs, taxes, vehicle wear, and the real margin behind every shift.</p>
         </div>
       </div>
 
@@ -31,6 +31,7 @@
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
           </select>
+          <small>Live model period</small>
         </div>
         <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
       </div>
@@ -46,6 +47,20 @@
         <div class="hero-score">
           <span>Live operating readout</span>
           <strong id="heroReadout">True-profit dashboard</strong>
+        </div>
+        <div class="hero-metrics" aria-label="Model priorities">
+          <div>
+            <strong>Margin</strong>
+            <span>True net after wear</span>
+          </div>
+          <div>
+            <strong>Reserve</strong>
+            <span>Tax set-aside view</span>
+          </div>
+          <div>
+            <strong>Quality</strong>
+            <span>Hourly and mile goals</span>
+          </div>
         </div>
         <div class="quick-stats" aria-label="Calculator highlights">
           <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
@@ -308,9 +323,9 @@
             <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
           </div>
           <div class="actions">
-            <button id="calculateBtn" type="button">Calculate</button>
-            <button id="saveBtn" class="blue" type="button">Save result</button>
-            <button id="downloadBtn" class="secondary" type="button">Export current TXT</button>
+            <button id="calculateBtn" class="primary-action" type="button">Calculate</button>
+            <button id="saveBtn" class="blue success-action" type="button">Save result</button>
+            <button id="downloadBtn" class="secondary export-action" type="button">Export current TXT</button>
           </div>
         </div>
 
@@ -421,11 +436,11 @@
               <strong>After tax</strong>
               <span id="topAfterTax">$0.00</span>
             </div>
-            <div class="mini-result">
+            <div class="mini-result priority-metric">
               <strong>True net</strong>
               <span id="topTrueNet">$0.00</span>
             </div>
-            <div class="mini-result">
+            <div class="mini-result priority-metric">
               <strong>True / hour</strong>
               <span id="topTrueHour">$0.00</span>
             </div>
