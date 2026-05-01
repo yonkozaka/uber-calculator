@@ -1290,6 +1290,27 @@ tr.best-row td {
     rgba(4, 9, 11, 0.58);
 }
 
+.logo-mark,
+.tip-icon {
+  overflow: hidden;
+  background:
+    url("assets/uber-profit-logo.png") center / 116% 116% no-repeat,
+    linear-gradient(145deg, rgba(66, 245, 167, 0.14), rgba(109, 231, 255, 0.08)),
+    #07100f;
+}
+
+.logo-mark::before,
+.logo-mark::after {
+  display: none;
+}
+
+.tip-icon {
+  color: transparent;
+  font-size: 0;
+  text-indent: -999px;
+  box-shadow: 0 16px 34px rgba(66, 245, 167, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
