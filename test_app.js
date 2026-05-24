@@ -161,6 +161,27 @@ try {
     console.log("✓ Utils.escapeHtml handles html characters and edge cases correctly");
 
 
+    console.log("Running UI tests...");
+    const UI = sandbox.window.CalculatorUI;
+
+    // Test: UI.setElementText
+    // Happy path
+    const mockEl = { textContent: '' };
+    UI.setElementText(mockEl, 'Hello');
+    assert.strictEqual(mockEl.textContent, 'Hello', "setElementText should set textContent");
+
+    // Edge cases
+    assert.doesNotThrow(() => {
+        UI.setElementText(null, 'Hello');
+    }, "setElementText should not throw when element is null");
+
+    assert.doesNotThrow(() => {
+        UI.setElementText(undefined, 'Hello');
+    }, "setElementText should not throw when element is undefined");
+
+    console.log("✓ UI.setElementText handles null and normal elements correctly");
+
+
     console.log("Running app.js tests...");
 
     // Test 1: App initialization loads default values into elements
