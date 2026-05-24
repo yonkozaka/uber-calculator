@@ -177,7 +177,39 @@ try {
     assert.strictEqual(elementStore['savedStatus'].textContent, 'Auto-saves inputs');
     console.log("✓ Input change triggers auto-save");
 
+
+    console.log("Test 4: getHistory corruption handling");
+    // Reset storage and setup corrupted data
+    for (let k in storageData) delete storageData[k];
+    storageData['uberCalculatorShiftHistoryV1'] = '{"corrupted": true}';
+
+    // Setup fresh sandbox to force app.js to re-initialize and trigger getHistory
+    const sandbox2 = {
+        window: {
+            CalculatorUtils: {}, CalculatorUI: {}, localStorage: mockLocalStorage,
+            addEventListener: (event, callback) => {
+                if (!listeners['window']) listeners['window'] = {};
+                if (!listeners['window'][event]) listeners['window'][event] = [];
+                listeners['window'][event].push(callback);
+            },
+            clearInterval: () => {}, setInterval: () => 123
+        },
+        document: mockDocument, localStorage: mockLocalStorage, confirm: () => true,
+        Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
+        Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
+        setTimeout: setTimeout, clearTimeout: clearTimeout,
+    };
+    vm.createContext(sandbox2);
+    vm.runInContext(utilsCode, sandbox2);
+    vm.runInContext(uiCode, sandbox2);
+    vm.runInContext(appCode, sandbox2);
+
+    // Verify the corrupted data was cleared
+    assert.strictEqual(storageData['uberCalculatorShiftHistoryV1'], undefined, "Corrupted history should be removed from localStorage");
+    console.log("✓ Corrupted shift history is cleared safely");
+
     console.log("All tests passed!");
+
     process.exit(0);
 
 } catch (err) {
