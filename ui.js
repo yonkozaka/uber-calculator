@@ -191,19 +191,24 @@
   }
 
   function renderAnalytics(els, history) {
-    const totals = history.reduce((acc, entry) => {
-      acc.income += entry.income;
-      acc.miles += entry.miles;
-      acc.hours += entry.hours;
-      acc.gasCost += entry.gasCost;
-      acc.totalExpenses += entry.totalExpenses;
-      acc.netProfit += entry.netProfit;
-      acc.afterTaxProfit += entry.afterTaxProfit;
-      return acc;
-    }, { income: 0, miles: 0, hours: 0, gasCost: 0, totalExpenses: 0, netProfit: 0, afterTaxProfit: 0 });
+    const { totals, best, worst } = history.reduce((acc, entry) => {
+      acc.totals.income += entry.income;
+      acc.totals.miles += entry.miles;
+      acc.totals.hours += entry.hours;
+      acc.totals.gasCost += entry.gasCost;
+      acc.totals.totalExpenses += entry.totalExpenses;
+      acc.totals.netProfit += entry.netProfit;
+      acc.totals.afterTaxProfit += entry.afterTaxProfit;
 
-    const best = history.reduce((winner, entry) => !winner || entry.trueNetAfterWear > winner.trueNetAfterWear ? entry : winner, null);
-    const worst = history.reduce((loser, entry) => !loser || entry.trueNetAfterWear < loser.trueNetAfterWear ? entry : loser, null);
+      if (!acc.best || entry.trueNetAfterWear > acc.best.trueNetAfterWear) acc.best = entry;
+      if (!acc.worst || entry.trueNetAfterWear < acc.worst.trueNetAfterWear) acc.worst = entry;
+
+      return acc;
+    }, {
+      totals: { income: 0, miles: 0, hours: 0, gasCost: 0, totalExpenses: 0, netProfit: 0, afterTaxProfit: 0 },
+      best: null,
+      worst: null
+    });
     const metrics = [
       ['Total saved shifts', history.length.toString()],
       ['Total income', U.money(totals.income)],
