@@ -147,8 +147,7 @@
     return { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget };
   };
 
-  Utils.calculateCore = function calculateCore(input) {
-    const period = resolvePeriod(input);
+  function calculateExpenses(input, period) {
     const monthlyFixedCosts =
       Utils.cleanNumber(input.insurance) +
       Utils.cleanNumber(input.maintenance) +
@@ -163,7 +162,12 @@
       : monthlyFixedCosts * Utils.safeDivide(period.workingDays, 22);
     const totalExpenses = variableExpenses + fixedCostShare;
     const netProfit = period.income - totalExpenses;
+    return {
+      monthlyFixedCosts, mpg, gasUsed, gasCost, variableExpenses, fixedCostShare, totalExpenses, netProfit
+    };
+  }
 
+  function calculateTaxes(input, period, totalExpenses, netProfit) {
     const mileageDeduction = period.miles * Utils.cleanNumber(input.mileageRate);
     const actualExpenseDeduction = totalExpenses;
     const selectedDeduction = input.deductionMode === 'standard'
@@ -179,7 +183,12 @@
     const estimatedTaxOwed = Math.max(0, taxableProfit * totalTaxRate);
     const suggestedTaxSetAside = Math.max(0, netProfit * totalTaxRate);
     const afterTaxProfit = netProfit - estimatedTaxOwed;
+    return {
+      mileageDeduction, actualExpenseDeduction, selectedDeduction, taxableProfit, totalTaxRate, estimatedTaxOwed, suggestedTaxSetAside, afterTaxProfit
+    };
+  }
 
+  function calculateWear(input, period, afterTaxProfit, netProfit) {
     const depreciationCost = period.miles * Utils.cleanNumber(input.depreciationPerMile);
     const tireWearCost = period.miles * Utils.cleanNumber(input.tireWearPerMile);
     const brakeWearCost = period.miles * Utils.cleanNumber(input.brakeWearPerMile);
@@ -190,12 +199,29 @@
     const profitPerMile = Utils.safeDivide(netProfit, period.miles);
     const trueProfitPerHour = Utils.safeDivide(trueNetAfterWear, period.hours);
     const trueProfitPerMile = Utils.safeDivide(trueNetAfterWear, period.miles);
+    return {
+      depreciationCost, tireWearCost, brakeWearCost, wearRate, vehicleWearCost, trueNetAfterWear, profitPerHour, profitPerMile, trueProfitPerHour, trueProfitPerMile
+    };
+  }
 
+  function calculateTargets(input, period, netProfit, trueProfitPerHour, trueProfitPerMile) {
     const dailyNetProfit = input.mode === 'daily' ? netProfit : Utils.safeDivide(netProfit, period.workingDays);
     const hitDailyTarget = dailyNetProfit >= Utils.cleanNumber(input.targetDailyProfit);
     const incomeNeededForDailyTarget = Math.max(0, Utils.cleanNumber(input.targetDailyProfit) - dailyNetProfit);
     const incomeNeededForPeriodTarget = incomeNeededForDailyTarget * (input.mode === 'daily' ? 1 : period.workingDays);
     const { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget } = Utils.evaluateTargets(trueProfitPerHour, trueProfitPerMile, input);
+    return {
+      dailyNetProfit, hitDailyTarget, incomeNeededForDailyTarget, incomeNeededForPeriodTarget, targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget
+    };
+  }
+
+  Utils.calculateCore = function calculateCore(input) {
+    const period = resolvePeriod(input);
+
+    const expenses = calculateExpenses(input, period);
+    const taxes = calculateTaxes(input, period, expenses.totalExpenses, expenses.netProfit);
+    const wear = calculateWear(input, period, taxes.afterTaxProfit, expenses.netProfit);
+    const targets = calculateTargets(input, period, expenses.netProfit, wear.trueProfitPerHour, wear.trueProfitPerMile);
 
     const result = {
       mode: input.mode,
@@ -205,45 +231,45 @@
       trips: period.trips,
       miles: period.miles,
       gasPrice: input.gasPrice,
-      mpg,
-      gasUsed,
-      gasCost,
+      mpg: expenses.mpg,
+      gasUsed: expenses.gasUsed,
+      gasCost: expenses.gasCost,
       tolls: input.tolls,
       additional: input.additional,
-      monthlyFixedCosts,
-      fixedCostShare,
-      variableExpenses,
-      totalExpenses,
-      netProfit,
-      profitPerHour,
-      profitPerMile,
+      monthlyFixedCosts: expenses.monthlyFixedCosts,
+      fixedCostShare: expenses.fixedCostShare,
+      variableExpenses: expenses.variableExpenses,
+      totalExpenses: expenses.totalExpenses,
+      netProfit: expenses.netProfit,
+      profitPerHour: wear.profitPerHour,
+      profitPerMile: wear.profitPerMile,
       averageIncomePerTrip: Utils.safeDivide(period.income, period.trips),
-      averageProfitPerTrip: Utils.safeDivide(netProfit, period.trips),
+      averageProfitPerTrip: Utils.safeDivide(expenses.netProfit, period.trips),
       deductionMode: input.deductionMode,
-      mileageDeduction,
-      actualExpenseDeduction,
-      selectedDeduction,
-      taxableProfit,
-      totalTaxRate,
-      estimatedTaxOwed,
-      suggestedTaxSetAside,
-      afterTaxProfit,
-      depreciationCost,
-      tireWearCost,
-      brakeWearCost,
-      wearRate,
-      vehicleWearCost,
-      trueNetAfterWear,
-      trueProfitPerHour,
-      trueProfitPerMile,
-      dailyNetProfit,
-      hitDailyTarget,
-      incomeNeededForDailyTarget,
-      incomeNeededForPeriodTarget,
-      hitHourlyTarget,
-      hitMileTarget,
-      targetProfitHour,
-      targetProfitMile,
+      mileageDeduction: taxes.mileageDeduction,
+      actualExpenseDeduction: taxes.actualExpenseDeduction,
+      selectedDeduction: taxes.selectedDeduction,
+      taxableProfit: taxes.taxableProfit,
+      totalTaxRate: taxes.totalTaxRate,
+      estimatedTaxOwed: taxes.estimatedTaxOwed,
+      suggestedTaxSetAside: taxes.suggestedTaxSetAside,
+      afterTaxProfit: taxes.afterTaxProfit,
+      depreciationCost: wear.depreciationCost,
+      tireWearCost: wear.tireWearCost,
+      brakeWearCost: wear.brakeWearCost,
+      wearRate: wear.wearRate,
+      vehicleWearCost: wear.vehicleWearCost,
+      trueNetAfterWear: wear.trueNetAfterWear,
+      trueProfitPerHour: wear.trueProfitPerHour,
+      trueProfitPerMile: wear.trueProfitPerMile,
+      dailyNetProfit: targets.dailyNetProfit,
+      hitDailyTarget: targets.hitDailyTarget,
+      incomeNeededForDailyTarget: targets.incomeNeededForDailyTarget,
+      incomeNeededForPeriodTarget: targets.incomeNeededForPeriodTarget,
+      hitHourlyTarget: targets.hitHourlyTarget,
+      hitMileTarget: targets.hitMileTarget,
+      targetProfitHour: targets.targetProfitHour,
+      targetProfitMile: targets.targetProfitMile,
       targetDailyProfit: input.targetDailyProfit,
       validation: validateInputs(input)
     };
