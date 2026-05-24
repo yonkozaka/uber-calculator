@@ -130,6 +130,17 @@ try {
     console.log("Running Utils tests...");
     const Utils = sandbox.window.CalculatorUtils;
 
+    // Test: Utils.safeNumber
+    assert.strictEqual(Utils.safeNumber(10), 10, "Valid number should return itself");
+    assert.strictEqual(Utils.safeNumber('10'), 10, "String number should be parsed to number");
+    assert.strictEqual(Utils.safeNumber('abc'), 0, "Invalid string should return default fallback 0");
+    assert.strictEqual(Utils.safeNumber(undefined), 0, "Undefined should return default fallback 0");
+    assert.strictEqual(Utils.safeNumber(null), 0, "Null should return default fallback 0");
+    assert.strictEqual(Utils.safeNumber(NaN), 0, "NaN should return default fallback 0");
+    assert.strictEqual(Utils.safeNumber(Infinity), 0, "Infinity should return default fallback 0");
+    assert.strictEqual(Utils.safeNumber('abc', 5), 5, "Invalid string should return custom fallback 5");
+    console.log("✓ Utils.safeNumber handles normal numbers and edge cases correctly");
+
     // Test: Utils.safeDivide
     assert.strictEqual(Utils.safeDivide(10, 2), 5, "10 / 2 should be 5");
     assert.strictEqual(Utils.safeDivide(10, 0), 0, "10 / 0 should return default fallback 0");
