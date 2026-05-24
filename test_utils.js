@@ -78,6 +78,9 @@ try {
     assert.deepStrictEqual(Utils.safeJSONParse('{"a":1}', null), {a: 1});
     assert.strictEqual(Utils.safeJSONParse('invalid', 'fb'), 'fb');
     assert.strictEqual(Utils.safeJSONParse(null, 'fb'), 'fb');
+    assert.strictEqual(Utils.safeJSONParse(undefined, 'fb'), 'fb');
+    assert.strictEqual(Utils.safeJSONParse('', 'fb'), 'fb');
+    assert.strictEqual(Utils.safeJSONParse('{bad_json}', 'fb'), 'fb');
     console.log("✓ Utils.safeJSONParse");
 
     // Test: Utils.formatMoney / Utils.money
