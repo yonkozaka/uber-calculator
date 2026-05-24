@@ -1,4 +1,7 @@
-/* Clean, Apple/Stripe inspired tokens */
+import re
+
+with open('variables.css', 'w') as f:
+    f.write('''/* Clean, Apple/Stripe inspired tokens */
 :root {
   color-scheme: dark;
 
@@ -61,3 +64,4 @@
   --transition-med: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+''')
