@@ -5,9 +5,9 @@ section[id],
 
 .app-shell {
   position: relative;
-  width: min(1840px, calc(100% - 30px));
+  width: min(1600px, calc(100% - 48px));
   margin: 0 auto;
-  padding: var(--space-5) 0 112px;
+  padding: var(--space-8) 0 112px;
 }
 
 .topbar {
@@ -15,13 +15,11 @@ section[id],
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  min-height: 126px;
+  min-height: 100px;
   padding: var(--space-6) var(--space-8);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-  background:
-    linear-gradient(120deg, rgba(100, 216, 255, 0.08), transparent 34%),
-    rgba(4, 8, 22, 0.86);
+  background: var(--bg-card);
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(24px);
 }
@@ -77,10 +75,7 @@ section[id],
   border-right: 1px solid var(--border-subtle);
   border-left: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
-  background:
-    radial-gradient(circle at 0% 50%, rgba(155, 108, 255, 0.14), transparent 22rem),
-    rgba(5, 10, 26, 0.64);
-  backdrop-filter: blur(24px);
+  background: var(--bg-card-strong);
 }
 
 .hero-copy,
@@ -157,9 +152,7 @@ section[id],
   border-bottom: 1px solid var(--border-subtle);
   border-left: 1px solid var(--border-subtle);
   border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
-  background:
-    linear-gradient(90deg, rgba(100, 216, 255, 0.05), transparent 42%, rgba(155, 108, 255, 0.05)),
-    rgba(3, 7, 18, 0.66);
+  background: var(--bg-main);
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(24px);
 }
@@ -887,9 +880,7 @@ section[id],
   grid-template-columns: minmax(0, 1fr) minmax(430px, 0.78fr);
   gap: 24px;
   padding: 24px;
-  background:
-    linear-gradient(90deg, rgba(66, 245, 167, 0.04), transparent 45%, rgba(247, 201, 72, 0.035)),
-    rgba(3, 6, 8, 0.75);
+  background: var(--bg-main);
 }
 
 .input-column,
@@ -907,13 +898,18 @@ section[id],
 }
 
 .section-kicker span {
-  color: #89fbd0;
-  font-size: 0.7rem;
+  color: var(--accent-green);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .section-kicker strong {
-  color: #d9e8e4;
-  font-size: 0.9rem;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .card-heading,
@@ -935,8 +931,8 @@ section[id],
 }
 
 .form-grid {
-  gap: 14px;
-  padding: 20px;
+  gap: 20px;
+  padding: 24px;
 }
 
 .form-grid > div,
@@ -972,8 +968,8 @@ section[id],
 }
 
 .stacked-fields {
-  gap: 14px;
-  padding: 20px;
+  gap: 20px;
+  padding: 24px;
 }
 
 .priority-card {
@@ -1059,8 +1055,8 @@ section[id],
 }
 
 .scenario-editor {
-  gap: 12px;
-  padding: 20px;
+  gap: 20px;
+  padding: 24px;
 }
 
 .scenario-card {
@@ -1090,8 +1086,8 @@ section[id],
 
 .top-results,
 .results-grid {
-  gap: 12px;
-  padding: 0 20px 20px;
+  gap: 16px;
+  padding: 0 24px 24px;
 }
 
 .top-results {
@@ -1106,7 +1102,8 @@ section[id],
 }
 
 .mini-result.priority-metric span {
-  font-size: clamp(1.55rem, 2.8vw, 2.35rem);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--accent-green);
 }
 
 .results-grid {
@@ -1134,8 +1131,8 @@ section[id],
 }
 
 .analytics-grid {
-  gap: 12px;
-  padding: 20px;
+  gap: 16px;
+  padding: 24px;
 }
 
 .metric {
@@ -1168,17 +1165,24 @@ section[id],
 }
 
 .mobile-summary {
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  border-color: rgba(66, 245, 167, 0.38);
-  border-radius: var(--radius-lg);
-  background: rgba(5, 8, 10, 0.95);
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card-strong);
+  box-shadow: var(--shadow-card);
+  padding: 12px;
+  gap: 8px;
 }
 
 .mobile-summary div {
   border-radius: var(--radius-md);
-  background: rgba(13, 21, 24, 0.92);
+  background: var(--bg-field);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 @media (max-width: 1480px) {
