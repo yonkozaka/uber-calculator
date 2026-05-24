@@ -16,3 +16,13 @@ with open('styles.css', 'r') as f:
         print("Styles issue")
 
 print("Checks complete")
+import subprocess
+import sys
+
+print("Running test_app.js...")
+result = subprocess.run(['node', 'test_app.js'], capture_output=True, text=True)
+print(result.stdout)
+if result.returncode != 0:
+    print(result.stderr)
+    print("JS tests failed!")
+    sys.exit(1)
