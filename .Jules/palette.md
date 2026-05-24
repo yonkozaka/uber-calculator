@@ -1,0 +1,3 @@
+## 2024-05-24 - Contextual confirmations and screen-reader labels for deletion actions
+**Learning:** Icon-only buttons or repetitive text buttons (like a list of "Delete" buttons) without proper context make it difficult for screen reader users to identify which item they're taking action on. Also, instant destructive actions without confirmation can lead to data loss and poor user experience, particularly in mobile or touch environments where accidental taps are common.
+**Action:** Added a `confirm` dialog that mentions the specific shift's date before deleting a history entry. Also added an `aria-label` to the delete button in the UI layer that dynamically includes the shift's date to provide context for screen readers.

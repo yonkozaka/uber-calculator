@@ -478,7 +478,13 @@
   }
 
   function deleteShift(id) {
-    safeStorageSet(HISTORY_KEY, JSON.stringify(getHistory().filter((entry) => entry.id !== id)), 'Could not delete shift');
+    const history = getHistory();
+    const entry = history.find((e) => e.id === id);
+    if (!entry) return;
+    const dateStr = new Date(entry.savedAt).toLocaleString();
+    if (!confirm(`Delete saved shift from ${dateStr}?`)) return;
+
+    safeStorageSet(HISTORY_KEY, JSON.stringify(history.filter((e) => e.id !== id)), 'Could not delete shift');
     renderHistory();
     renderAnalytics();
   }
