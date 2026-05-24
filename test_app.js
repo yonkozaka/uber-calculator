@@ -28,6 +28,11 @@ function createMockElement(id) {
                 remove: function() {}
             },
             style: {},
+            setAttribute: function(name, value) {
+                if (!this.attributes) this.attributes = {};
+                this.attributes[name] = String(value);
+                if (name === 'data-delete-shift') this.dataset.deleteShift = value;
+            },
             addEventListener: function(event, callback) {
                 if (!listeners[id]) listeners[id] = {};
                 if (!listeners[id][event]) listeners[id][event] = [];
