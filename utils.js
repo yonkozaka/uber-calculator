@@ -124,6 +124,13 @@
     return { text: 'Okay shift: positive profit, but one or more targets are below your goal.', type: 'warn' };
   }
 
+
+  Utils.calculateWearRate = function calculateWearRate(input) {
+    return Utils.cleanNumber(input.depreciationPerMile) +
+      Utils.cleanNumber(input.tireWearPerMile) +
+      Utils.cleanNumber(input.brakeWearPerMile);
+  };
+
   Utils.calculateCore = function calculateCore(input) {
     const period = resolvePeriod(input);
     const monthlyFixedCosts =
@@ -160,10 +167,7 @@
     const depreciationCost = period.miles * Utils.cleanNumber(input.depreciationPerMile);
     const tireWearCost = period.miles * Utils.cleanNumber(input.tireWearPerMile);
     const brakeWearCost = period.miles * Utils.cleanNumber(input.brakeWearPerMile);
-    const wearRate =
-      Utils.cleanNumber(input.depreciationPerMile) +
-      Utils.cleanNumber(input.tireWearPerMile) +
-      Utils.cleanNumber(input.brakeWearPerMile);
+    const wearRate = Utils.calculateWearRate(input);
     const vehicleWearCost = depreciationCost + tireWearCost + brakeWearCost;
     const trueNetAfterWear = afterTaxProfit - vehicleWearCost;
     const profitPerHour = Utils.safeDivide(netProfit, period.hours);
@@ -252,10 +256,7 @@
     const totalMiles = tripMiles + pickupMiles;
     const mpg = Utils.cleanNumber(input.mpg);
     const gasCost = mpg > 0 ? Utils.safeDivide(totalMiles, mpg) * Utils.cleanNumber(input.gasPrice) : 0;
-    const wearRate =
-      Utils.cleanNumber(input.depreciationPerMile) +
-      Utils.cleanNumber(input.tireWearPerMile) +
-      Utils.cleanNumber(input.brakeWearPerMile);
+    const wearRate = Utils.calculateWearRate(input);
     const vehicleWearCost = totalMiles * wearRate;
     const trueProfit = offeredPay - gasCost - vehicleWearCost - tollsParking;
     const payPerHour = Utils.safeDivide(offeredPay, totalHours);
