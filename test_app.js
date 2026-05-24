@@ -140,6 +140,16 @@ try {
     assert.strictEqual(Utils.safeDivide(10, 'xyz', -1), -1, "invalid bottom should trigger custom fallback");
     console.log("✓ Utils.safeDivide handles normal division and edge cases correctly");
 
+    // Test: Utils.escapeHtml
+    assert.strictEqual(Utils.escapeHtml('hello'), 'hello', "Normal string should be unchanged");
+    assert.strictEqual(Utils.escapeHtml('<div>&"\'</div>'), '&lt;div&gt;&amp;&quot;&#039;&lt;/div&gt;', "HTML chars should be escaped");
+    assert.strictEqual(Utils.escapeHtml(null), '', "Null should return empty string");
+    assert.strictEqual(Utils.escapeHtml(undefined), '', "Undefined should return empty string");
+    assert.strictEqual(Utils.escapeHtml(123), '123', "Numbers should be converted to string");
+    assert.strictEqual(Utils.escapeHtml(true), 'true', "Booleans should be converted to string");
+    console.log("✓ Utils.escapeHtml handles html characters and edge cases correctly");
+
+
     console.log("Running app.js tests...");
 
     // Test 1: App initialization loads default values into elements
