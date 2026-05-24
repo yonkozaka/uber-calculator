@@ -27,6 +27,14 @@ if result_utils.returncode != 0:
     print("Utils tests failed!")
     sys.exit(1)
 
+print("Running test_ui.js...")
+result_ui = subprocess.run(['node', 'test_ui.js'], capture_output=True, text=True)
+print(result_ui.stdout)
+if result_ui.returncode != 0:
+    print(result_ui.stderr)
+    print("UI tests failed!")
+    sys.exit(1)
+
 print("Running test_app.js...")
 result = subprocess.run(['node', 'test_app.js'], capture_output=True, text=True)
 print(result.stdout)
