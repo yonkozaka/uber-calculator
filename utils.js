@@ -139,6 +139,14 @@
       Utils.cleanNumber(input.brakeWearPerMile);
   };
 
+  Utils.evaluateTargets = function evaluateTargets(hourlyRate, mileRate, input) {
+    const targetProfitHour = Utils.cleanNumber(input.targetProfitHour);
+    const targetProfitMile = Utils.cleanNumber(input.targetProfitMile);
+    const hitHourlyTarget = hourlyRate >= targetProfitHour;
+    const hitMileTarget = mileRate >= targetProfitMile;
+    return { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget };
+  };
+
   Utils.calculateCore = function calculateCore(input) {
     const period = resolvePeriod(input);
     const monthlyFixedCosts =
@@ -187,8 +195,7 @@
     const hitDailyTarget = dailyNetProfit >= Utils.cleanNumber(input.targetDailyProfit);
     const incomeNeededForDailyTarget = Math.max(0, Utils.cleanNumber(input.targetDailyProfit) - dailyNetProfit);
     const incomeNeededForPeriodTarget = incomeNeededForDailyTarget * (input.mode === 'daily' ? 1 : period.workingDays);
-    const hitHourlyTarget = trueProfitPerHour >= Utils.cleanNumber(input.targetProfitHour);
-    const hitMileTarget = trueProfitPerMile >= Utils.cleanNumber(input.targetProfitMile);
+    const { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget } = Utils.evaluateTargets(trueProfitPerHour, trueProfitPerMile, input);
 
     const result = {
       mode: input.mode,
@@ -235,8 +242,8 @@
       incomeNeededForPeriodTarget,
       hitHourlyTarget,
       hitMileTarget,
-      targetProfitHour: input.targetProfitHour,
-      targetProfitMile: input.targetProfitMile,
+      targetProfitHour,
+      targetProfitMile,
       targetDailyProfit: input.targetDailyProfit,
       validation: validateInputs(input)
     };
@@ -271,10 +278,7 @@
     const payPerMile = Utils.safeDivide(offeredPay, totalMiles);
     const trueProfitPerHour = Utils.safeDivide(trueProfit, totalHours);
     const trueProfitPerMile = Utils.safeDivide(trueProfit, totalMiles);
-    const targetProfitHour = Utils.cleanNumber(input.targetProfitHour);
-    const targetProfitMile = Utils.cleanNumber(input.targetProfitMile);
-    const hitsHourlyTarget = payPerHour >= targetProfitHour;
-    const hitsMileTarget = payPerMile >= targetProfitMile;
+    const { targetProfitHour, targetProfitMile, hitHourlyTarget: hitsHourlyTarget, hitMileTarget: hitsMileTarget } = Utils.evaluateTargets(payPerHour, payPerMile, input);
 
     let decision = 'MAYBE';
     let type = 'warn';
