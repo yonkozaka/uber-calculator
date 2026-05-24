@@ -127,6 +127,19 @@ try {
     vm.runInContext(appCode, sandbox);
 
     // 3. Write Tests
+    console.log("Running Utils tests...");
+    const Utils = sandbox.window.CalculatorUtils;
+
+    // Test: Utils.safeDivide
+    assert.strictEqual(Utils.safeDivide(10, 2), 5, "10 / 2 should be 5");
+    assert.strictEqual(Utils.safeDivide(10, 0), 0, "10 / 0 should return default fallback 0");
+    assert.strictEqual(Utils.safeDivide(10, 0, null), null, "10 / 0 with null fallback should return null");
+    assert.strictEqual(Utils.safeDivide('10', '2'), 5, "string numbers should be parsed");
+    assert.strictEqual(Utils.safeDivide('abc', 2), 0, "invalid top should return 0 / 2 = 0");
+    assert.strictEqual(Utils.safeDivide(10, 'xyz'), 0, "invalid bottom should trigger default fallback 0");
+    assert.strictEqual(Utils.safeDivide(10, 'xyz', -1), -1, "invalid bottom should trigger custom fallback");
+    console.log("✓ Utils.safeDivide handles normal division and edge cases correctly");
+
     console.log("Running app.js tests...");
 
     // Test 1: App initialization loads default values into elements
