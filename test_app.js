@@ -208,7 +208,45 @@ try {
     assert.strictEqual(storageData['uberCalculatorShiftHistoryV1'], undefined, "Corrupted history should be removed from localStorage");
     console.log("✓ Corrupted shift history is cleared safely");
 
+
+    console.log("Test 5: safeStorageSet error handling");
+    const mockFailingLocalStorage = {
+        getItem: (key) => null,
+        setItem: (key, val) => { throw new Error('QuotaExceededError'); },
+        removeItem: (key) => {},
+        clear: () => {}
+    };
+
+    const sandbox3 = {
+        window: {
+            CalculatorUtils: {}, CalculatorUI: {}, localStorage: mockFailingLocalStorage,
+            addEventListener: (event, callback) => {
+                if (!listeners['window']) listeners['window'] = {};
+                if (!listeners['window'][event]) listeners['window'][event] = [];
+                listeners['window'][event].push(callback);
+            },
+            clearInterval: () => {}, setInterval: () => 123
+        },
+        document: mockDocument, localStorage: mockFailingLocalStorage, confirm: () => true,
+        Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
+        Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
+        setTimeout: setTimeout, clearTimeout: clearTimeout,
+    };
+    vm.createContext(sandbox3);
+    vm.runInContext(utilsCode, sandbox3);
+    vm.runInContext(uiCode, sandbox3);
+    vm.runInContext(appCode, sandbox3);
+
+    // Simulate saving a result, which calls safeStorageSet internally
+    const saveBtn3 = elementStore['saveBtn'];
+    saveBtn3.dispatchEvent('click');
+
+    const statusText = elementStore['savedStatus'].textContent;
+    assert.strictEqual(statusText, 'Could not save latest result', "safeStorageSet should update UI with failure message on throw");
+    console.log("✓ safeStorageSet handles errors and updates UI");
+
     console.log("All tests passed!");
+
 
     process.exit(0);
 
