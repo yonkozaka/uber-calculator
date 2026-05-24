@@ -317,81 +317,115 @@
     };
   };
 
+
+  function checkDownsideRisk(result) {
+    if (result.trueNetAfterWear <= 0) {
+      return {
+        title: 'Protect your downside',
+        text: `True net is ${Utils.money(result.trueNetAfterWear)}. Reduce miles, fixed-cost exposure, or skip this pattern until pay improves.`,
+        type: 'bad'
+      };
+    }
+    return null;
+  }
+
+  function checkHourlyEfficiency(result) {
+    if (result.trueProfitPerHour < result.targetProfitHour) {
+      return {
+        title: 'Raise hourly efficiency',
+        text: `True profit/hour is ${Utils.money(result.trueProfitPerHour)} vs. your ${Utils.money(result.targetProfitHour)} goal. Avoid long waits and slow pickup zones.`,
+        type: 'warn'
+      };
+    }
+    return null;
+  }
+
+  function checkDollarDensity(result) {
+    if (result.trueProfitPerMile < result.targetProfitMile) {
+      return {
+        title: 'Improve dollar density',
+        text: `True profit/mile is ${Utils.money(result.trueProfitPerMile)} vs. your ${Utils.money(result.targetProfitMile)} goal. Favor shorter pickups and stronger fare density.`,
+        type: 'warn'
+      };
+    }
+    return null;
+  }
+
+  function checkFuelPressure(result, gasShare) {
+    if (gasShare >= 12 || result.mpg <= 20) {
+      return {
+        title: 'Fuel is pressuring margin',
+        text: `Gas is ${Utils.pct(gasShare)} of income. Better routes, fewer dead miles, or improved MPG will lift true profit fastest.`,
+        type: gasShare >= 18 ? 'bad' : 'warn'
+      };
+    }
+    return null;
+  }
+
+  function checkVehicleWear(result, wearShare) {
+    if (wearShare >= 10 || result.miles >= 150) {
+      return {
+        title: 'Vehicle wear is meaningful',
+        text: `Estimated wear is ${Utils.money(result.vehicleWearCost)} at ${Utils.money(result.wearRate)} per mile. High-mile shifts need stronger pay per mile.`,
+        type: wearShare >= 16 ? 'bad' : 'warn'
+      };
+    }
+    return null;
+  }
+
+  function checkTaxSeparation(result, taxShare) {
+    if (taxShare >= 8) {
+      return {
+        title: 'Keep tax cash separate',
+        text: `Set aside about ${Utils.money(result.suggestedTaxSetAside)} from this result so tax planning does not eat into operating cash.`,
+        type: 'info'
+      };
+    }
+    return null;
+  }
+
+  function checkExpenseLoad(result, expenseShare) {
+    if (expenseShare >= 35) {
+      return {
+        title: 'Audit expense load',
+        text: `Cash expenses are ${Utils.pct(expenseShare)} of income. Review tolls, parking, gas, and fixed monthly costs for quick wins.`,
+        type: 'warn'
+      };
+    }
+    return null;
+  }
+
+  function checkStrongPattern(result) {
+    if (result.hitDailyTarget && result.hitHourlyTarget && result.hitMileTarget) {
+      return {
+        title: 'Strong operating pattern',
+        text: 'This setup clears daily, hourly, and per-mile goals. Save it as a reference shift and compare future offers against it.',
+        type: 'good'
+      };
+    }
+    return null;
+  }
+
   Utils.buildSmartSuggestions = function buildSmartSuggestions(result) {
     if (!result) {
       return [{ title: 'Run the calculator', text: 'Enter a shift estimate to unlock personalized profit suggestions.', type: 'info' }];
     }
 
-    const suggestions = [];
     const gasShare = Utils.safeDivide(result.gasCost, result.income) * 100;
     const wearShare = Utils.safeDivide(result.vehicleWearCost, result.income) * 100;
     const expenseShare = Utils.safeDivide(result.totalExpenses, result.income) * 100;
     const taxShare = Utils.safeDivide(result.suggestedTaxSetAside, result.income) * 100;
 
-    if (result.trueNetAfterWear <= 0) {
-      suggestions.push({
-        title: 'Protect your downside',
-        text: `True net is ${Utils.money(result.trueNetAfterWear)}. Reduce miles, fixed-cost exposure, or skip this pattern until pay improves.`,
-        type: 'bad'
-      });
-    }
-
-    if (result.trueProfitPerHour < result.targetProfitHour) {
-      suggestions.push({
-        title: 'Raise hourly efficiency',
-        text: `True profit/hour is ${Utils.money(result.trueProfitPerHour)} vs. your ${Utils.money(result.targetProfitHour)} goal. Avoid long waits and slow pickup zones.`,
-        type: 'warn'
-      });
-    }
-
-    if (result.trueProfitPerMile < result.targetProfitMile) {
-      suggestions.push({
-        title: 'Improve dollar density',
-        text: `True profit/mile is ${Utils.money(result.trueProfitPerMile)} vs. your ${Utils.money(result.targetProfitMile)} goal. Favor shorter pickups and stronger fare density.`,
-        type: 'warn'
-      });
-    }
-
-    if (gasShare >= 12 || result.mpg <= 20) {
-      suggestions.push({
-        title: 'Fuel is pressuring margin',
-        text: `Gas is ${Utils.pct(gasShare)} of income. Better routes, fewer dead miles, or improved MPG will lift true profit fastest.`,
-        type: gasShare >= 18 ? 'bad' : 'warn'
-      });
-    }
-
-    if (wearShare >= 10 || result.miles >= 150) {
-      suggestions.push({
-        title: 'Vehicle wear is meaningful',
-        text: `Estimated wear is ${Utils.money(result.vehicleWearCost)} at ${Utils.money(result.wearRate)} per mile. High-mile shifts need stronger pay per mile.`,
-        type: wearShare >= 16 ? 'bad' : 'warn'
-      });
-    }
-
-    if (taxShare >= 8) {
-      suggestions.push({
-        title: 'Keep tax cash separate',
-        text: `Set aside about ${Utils.money(result.suggestedTaxSetAside)} from this result so tax planning does not eat into operating cash.`,
-        type: 'info'
-      });
-    }
-
-    if (expenseShare >= 35) {
-      suggestions.push({
-        title: 'Audit expense load',
-        text: `Cash expenses are ${Utils.pct(expenseShare)} of income. Review tolls, parking, gas, and fixed monthly costs for quick wins.`,
-        type: 'warn'
-      });
-    }
-
-    if (result.hitDailyTarget && result.hitHourlyTarget && result.hitMileTarget) {
-      suggestions.push({
-        title: 'Strong operating pattern',
-        text: 'This setup clears daily, hourly, and per-mile goals. Save it as a reference shift and compare future offers against it.',
-        type: 'good'
-      });
-    }
-
+    const suggestions = [
+      checkDownsideRisk(result),
+      checkHourlyEfficiency(result),
+      checkDollarDensity(result),
+      checkFuelPressure(result, gasShare),
+      checkVehicleWear(result, wearShare),
+      checkTaxSeparation(result, taxShare),
+      checkExpenseLoad(result, expenseShare),
+      checkStrongPattern(result)
+    ].filter(Boolean);
     if (!suggestions.length) {
       suggestions.push({
         title: 'Healthy but watch the margins',
