@@ -25,6 +25,14 @@
     }
   };
 
+  Utils.debounce = function debounce(func, wait = 300) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  };
+
   Utils.formatMoney = function formatMoney(value) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
