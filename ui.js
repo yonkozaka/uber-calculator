@@ -175,19 +175,41 @@
   function renderHistory(els, history) {
     setElementDisplay(els.historyEmpty, history.length ? 'none' : 'block');
     if (!els.historyBody) return;
-    els.historyBody.innerHTML = history.map((entry) => `
-      <tr>
-        <td>${U.escapeHtml(new Date(entry.savedAt).toLocaleString())}</td>
-        <td>${U.money(entry.income)}</td>
-        <td>${U.safeNumber(entry.hours).toFixed(1)}</td>
-        <td>${U.safeNumber(entry.miles).toFixed(1)}</td>
-        <td>${U.money(entry.netProfit)}</td>
-        <td>${U.money(entry.afterTaxProfit)}</td>
-        <td>${U.money(entry.trueNetAfterWear)}</td>
-        <td>${U.money(entry.profitPerHour)}</td>
-        <td><button class="small danger" type="button" aria-label="Delete shift from ${U.escapeHtml(new Date(entry.savedAt).toLocaleString())}" data-delete-shift="${U.escapeHtml(entry.id)}">Delete</button></td>
-      </tr>
-    `).join('');
+
+    const rows = history.map(entry => {
+      const tr = document.createElement('tr');
+
+      const savedAt = new Date(entry.savedAt).toLocaleString();
+
+      const createCell = (text) => {
+        const td = document.createElement('td');
+        td.textContent = text;
+        return td;
+      };
+
+      tr.appendChild(createCell(savedAt));
+      tr.appendChild(createCell(U.money(entry.income)));
+      tr.appendChild(createCell(U.safeNumber(entry.hours).toFixed(1)));
+      tr.appendChild(createCell(U.safeNumber(entry.miles).toFixed(1)));
+      tr.appendChild(createCell(U.money(entry.netProfit)));
+      tr.appendChild(createCell(U.money(entry.afterTaxProfit)));
+      tr.appendChild(createCell(U.money(entry.trueNetAfterWear)));
+      tr.appendChild(createCell(U.money(entry.profitPerHour)));
+
+      const tdBtn = document.createElement('td');
+      const btn = document.createElement('button');
+      btn.className = 'small danger';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `Delete shift from ${savedAt}`);
+      btn.setAttribute('data-delete-shift', entry.id);
+      btn.textContent = 'Delete';
+      tdBtn.appendChild(btn);
+
+      tr.appendChild(tdBtn);
+      return tr;
+    });
+
+    els.historyBody.replaceChildren(...rows);
   }
 
   function renderAnalytics(els, history) {
