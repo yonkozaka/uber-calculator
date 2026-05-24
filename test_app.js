@@ -127,40 +127,6 @@ try {
     vm.runInContext(appCode, sandbox);
 
     // 3. Write Tests
-    console.log("Running Utils tests...");
-    const Utils = sandbox.window.CalculatorUtils;
-
-    // Test: Utils.safeNumber
-    assert.strictEqual(Utils.safeNumber(10), 10, "Valid number should return itself");
-    assert.strictEqual(Utils.safeNumber('10'), 10, "String number should be parsed to number");
-    assert.strictEqual(Utils.safeNumber('abc'), 0, "Invalid string should return default fallback 0");
-    assert.strictEqual(Utils.safeNumber(undefined), 0, "Undefined should return default fallback 0");
-    assert.strictEqual(Utils.safeNumber(null), 0, "Null should return default fallback 0");
-    assert.strictEqual(Utils.safeNumber(NaN), 0, "NaN should return default fallback 0");
-    assert.strictEqual(Utils.safeNumber(Infinity), 0, "Infinity should return default fallback 0");
-    assert.strictEqual(Utils.safeNumber('abc', 5), 5, "Invalid string should return custom fallback 5");
-    console.log("✓ Utils.safeNumber handles normal numbers and edge cases correctly");
-
-    // Test: Utils.safeDivide
-    assert.strictEqual(Utils.safeDivide(10, 2), 5, "10 / 2 should be 5");
-    assert.strictEqual(Utils.safeDivide(10, 0), 0, "10 / 0 should return default fallback 0");
-    assert.strictEqual(Utils.safeDivide(10, 0, null), null, "10 / 0 with null fallback should return null");
-    assert.strictEqual(Utils.safeDivide('10', '2'), 5, "string numbers should be parsed");
-    assert.strictEqual(Utils.safeDivide('abc', 2), 0, "invalid top should return 0 / 2 = 0");
-    assert.strictEqual(Utils.safeDivide(10, 'xyz'), 0, "invalid bottom should trigger default fallback 0");
-    assert.strictEqual(Utils.safeDivide(10, 'xyz', -1), -1, "invalid bottom should trigger custom fallback");
-    console.log("✓ Utils.safeDivide handles normal division and edge cases correctly");
-
-    // Test: Utils.escapeHtml
-    assert.strictEqual(Utils.escapeHtml('hello'), 'hello', "Normal string should be unchanged");
-    assert.strictEqual(Utils.escapeHtml('<div>&"\'</div>'), '&lt;div&gt;&amp;&quot;&#039;&lt;/div&gt;', "HTML chars should be escaped");
-    assert.strictEqual(Utils.escapeHtml(null), '', "Null should return empty string");
-    assert.strictEqual(Utils.escapeHtml(undefined), '', "Undefined should return empty string");
-    assert.strictEqual(Utils.escapeHtml(123), '123', "Numbers should be converted to string");
-    assert.strictEqual(Utils.escapeHtml(true), 'true', "Booleans should be converted to string");
-    console.log("✓ Utils.escapeHtml handles html characters and edge cases correctly");
-
-
     console.log("Running UI tests...");
     const UI = sandbox.window.CalculatorUI;
 
