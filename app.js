@@ -565,10 +565,14 @@
     if (els.advisorInput) els.advisorInput.value = '';
   }
 
+  const debouncedCalculate = U.debounce((id) => {
+    calculate(id);
+  }, 300);
+
   inputIds.forEach((id) => {
     if (id === 'mode' || !fields[id]) return;
     fields[id].addEventListener('input', () => {
-      calculate(id);
+      debouncedCalculate(id);
       UI.setElementText(els.savedStatus, 'Auto-saves inputs');
     });
   });
