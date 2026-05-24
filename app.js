@@ -403,14 +403,21 @@
     proTipsPaused = false;
   }
 
+  let historyCache = null;
+
   function getHistory() {
+    if (historyCache !== null) {
+      return historyCache;
+    }
+
     const rawHistory = readJson(HISTORY_KEY, []);
     if (!Array.isArray(rawHistory)) {
       safeStorageRemove(HISTORY_KEY, 'Could not clear corrupted shift history');
-      return [];
+      historyCache = [];
+      return historyCache;
     }
 
-    return rawHistory
+    historyCache = rawHistory
       .filter((entry) => entry && typeof entry === 'object')
       .map((entry, index) => ({
         id: String(entry.id || `${entry.savedAt || 'shift'}-${index}`),
@@ -428,6 +435,8 @@
         profitPerHour: U.cleanNumber(entry.profitPerHour),
         profitPerMile: U.cleanNumber(entry.profitPerMile)
       }));
+
+    return historyCache;
   }
 
   function renderHistory() {
@@ -468,6 +477,7 @@
     };
 
     history.unshift(entry);
+    historyCache = history;
     const savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(history), 'Could not save shift history');
     const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
     if (savedHistory && savedResult) {
@@ -484,7 +494,8 @@
     const dateStr = new Date(entry.savedAt).toLocaleString();
     if (!confirm(`Delete saved shift from ${dateStr}?`)) return;
 
-    safeStorageSet(HISTORY_KEY, JSON.stringify(history.filter((e) => e.id !== id)), 'Could not delete shift');
+    historyCache = history.filter((e) => e.id !== id);
+    safeStorageSet(HISTORY_KEY, JSON.stringify(historyCache), 'Could not delete shift');
     renderHistory();
     renderAnalytics();
   }
@@ -492,6 +503,7 @@
   function clearHistory() {
     if (!confirm('Clear all saved shift history?')) return;
     safeStorageRemove(HISTORY_KEY, 'Could not clear history');
+    historyCache = [];
     renderHistory();
     renderAnalytics();
     UI.setElementText(els.savedStatus, 'History cleared');
@@ -568,6 +580,14 @@
   const debouncedCalculate = U.debounce((id) => {
     calculate(id);
   }, 300);
+
+  window.addEventListener('storage', (event) => {
+    if (event.key === HISTORY_KEY) {
+      historyCache = null;
+      renderHistory();
+      renderAnalytics();
+    }
+  });
 
   inputIds.forEach((id) => {
     if (id === 'mode' || !fields[id]) return;
