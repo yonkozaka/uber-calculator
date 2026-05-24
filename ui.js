@@ -185,7 +185,7 @@
         <td>${U.money(entry.afterTaxProfit)}</td>
         <td>${U.money(entry.trueNetAfterWear)}</td>
         <td>${U.money(entry.profitPerHour)}</td>
-        <td><button class="small danger" type="button" data-delete-shift="${U.escapeHtml(entry.id)}">Delete</button></td>
+        <td><button class="small danger" type="button" aria-label="Delete shift from ${U.escapeHtml(new Date(entry.savedAt).toLocaleString())}" data-delete-shift="${U.escapeHtml(entry.id)}">Delete</button></td>
       </tr>
     `).join('');
   }
