@@ -245,6 +245,42 @@ try {
     assert.strictEqual(statusText, 'Could not save latest result', "safeStorageSet should update UI with failure message on throw");
     console.log("✓ safeStorageSet handles errors and updates UI");
 
+
+    console.log("Test 6: safeStorageGet error handling");
+    const mockFailingGetLocalStorage = {
+        getItem: (key) => { throw new Error('Access Denied'); },
+        setItem: (key, val) => {},
+        removeItem: (key) => {},
+        clear: () => {}
+    };
+
+    const sandbox4 = {
+        window: {
+            CalculatorUtils: {}, CalculatorUI: {}, localStorage: mockFailingGetLocalStorage,
+            addEventListener: (event, callback) => {
+                if (!listeners['window']) listeners['window'] = {};
+                if (!listeners['window'][event]) listeners['window'][event] = [];
+                listeners['window'][event].push(callback);
+            },
+            clearInterval: () => {}, setInterval: () => 123
+        },
+        document: mockDocument, localStorage: mockFailingGetLocalStorage, confirm: () => true,
+        Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
+        Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
+        setTimeout: setTimeout, clearTimeout: clearTimeout,
+    };
+    vm.createContext(sandbox4);
+    vm.runInContext(utilsCode, sandbox4);
+    vm.runInContext(uiCode, sandbox4);
+    vm.runInContext(appCode, sandbox4);
+
+    // We expect app initialization to gracefully handle the error and use defaults.
+    // Specifically, restoreInputs() will be called, which calls readJson, which calls safeStorageGet.
+    // Because safeStorageGet catches the error and returns null, restoreInputs will use `defaults`.
+    // We can verify this by checking that the income input was populated with the default value of 220.
+    assert.strictEqual(elementStore['income'].value, 220, "App should initialize with default income even if localStorage.getItem throws");
+    console.log("✓ safeStorageGet handles errors and allows app initialization");
+
     console.log("All tests passed!");
 
 
