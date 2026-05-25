@@ -216,6 +216,50 @@ try {
     assert.strictEqual(Math.round(tripResult.trueProfit * 10) / 10, 12.9);
     console.log("✓ Utils.calculateTripDecision");
 
+    // Test: Utils.calculateTripDecision - Decision Branches
+    const baseTripInput = {
+        offeredPay: 20, tripTimeMinutes: 20, tripMiles: 10, pickupMiles: 5, pickupTimeMinutes: 10, tollsParking: 2, mpg: 25, gasPrice: 3.5, depreciationPerMile: 0.1, tireWearPerMile: 0.05, brakeWearPerMile: 0.05, targetProfitHour: 20, targetProfitMile: 1.0
+    };
+
+    // ACCEPT: hits both targets
+    const acceptInput = Object.assign({}, baseTripInput, { offeredPay: 30 });
+    const acceptResult = Utils.calculateTripDecision(acceptInput);
+    assert.strictEqual(acceptResult.decision, 'ACCEPT');
+    assert.strictEqual(acceptResult.type, 'good');
+
+    // MAYBE: hits one target
+    const maybeInput = Object.assign({}, baseTripInput, { offeredPay: 14 });
+    const maybeResult = Utils.calculateTripDecision(maybeInput);
+    assert.strictEqual(maybeResult.decision, 'MAYBE');
+    assert.strictEqual(maybeResult.type, 'warn');
+
+    // REJECT (targets): misses both targets
+    const rejectTargetInput = Object.assign({}, baseTripInput, { offeredPay: 9 });
+    const rejectTargetResult = Utils.calculateTripDecision(rejectTargetInput);
+    assert.strictEqual(rejectTargetResult.decision, 'REJECT');
+    assert.strictEqual(rejectTargetResult.type, 'bad');
+    assert.ok(rejectTargetResult.reason.includes('below your target goals'));
+
+    // REJECT (loss): negative true profit
+    const rejectLossInput = Object.assign({}, baseTripInput, { offeredPay: 5 });
+    const rejectLossResult = Utils.calculateTripDecision(rejectLossInput);
+    assert.strictEqual(rejectLossResult.decision, 'REJECT');
+    assert.strictEqual(rejectLossResult.type, 'bad');
+    assert.ok(rejectLossResult.reason.includes('lose money'));
+
+    // REJECT (zero/negative pay)
+    const rejectZeroPayInput = Object.assign({}, baseTripInput, { offeredPay: 0 });
+    const rejectZeroPayResult = Utils.calculateTripDecision(rejectZeroPayInput);
+    assert.strictEqual(rejectZeroPayResult.decision, 'REJECT');
+    assert.strictEqual(rejectZeroPayResult.type, 'bad');
+    assert.ok(rejectZeroPayResult.reason.includes('positive offered pay'));
+
+    console.log("✓ Utils.calculateTripDecision decision branches");
+
+
+
+
+
     // Test: Utils.buildSmartSuggestions
     const suggestions1 = Utils.buildSmartSuggestions(null);
     assert.strictEqual(suggestions1[0].title, 'Run the calculator');
