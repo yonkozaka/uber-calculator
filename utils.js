@@ -38,6 +38,26 @@
     currency: 'USD'
   });
 
+  const compactMoneyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  });
+
+  const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  });
+
+  Utils.formatDateTime = function formatDateTime(dateInput) {
+    const dateObj = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    return isNaN(dateObj.getTime()) ? '' : dateFormatter.format(dateObj);
+  };
+
   Utils.formatMoney = function formatMoney(value) {
     return moneyFormatter.format(Utils.safeNumber(value));
   };
@@ -46,7 +66,7 @@
 
   Utils.compactMoney = function compactMoney(value) {
     const number = Utils.safeNumber(value);
-    return Math.abs(number) >= 1000 ? `$${Math.round(number).toLocaleString()}` : Utils.money(number);
+    return Math.abs(number) >= 1000 ? compactMoneyFormatter.format(Math.round(number)) : Utils.money(number);
   };
 
   Utils.pct = function pct(value) {
@@ -566,7 +586,7 @@
   Utils.buildTextReport = function buildTextReport(result) {
     return [
       'Uber Earnings & Expense Calculator Report',
-      `Date: ${new Date().toLocaleString()}`,
+      `Date: ${Utils.formatDateTime(new Date())}`,
       `Mode: ${Utils.capitalize(result.mode)}`,
       '',
       'Inputs',

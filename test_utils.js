@@ -92,7 +92,7 @@ try {
 
     // Test: Utils.compactMoney
     assert.strictEqual(Utils.compactMoney(1500.5), '$1,501');
-    assert.strictEqual(Utils.compactMoney(-1200), '$-1,200');
+    assert.strictEqual(Utils.compactMoney(-1200), '-$1,200');
     assert.strictEqual(Utils.compactMoney(999), '$999.00');
     console.log("✓ Utils.compactMoney");
 

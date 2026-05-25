@@ -498,7 +498,7 @@
     const history = getHistory();
     const entry = history.find((e) => e.id === id);
     if (!entry) return;
-    const dateStr = new Date(entry.savedAt).toLocaleString();
+    const dateStr = U.formatDateTime(entry.savedAt);
     if (!confirm(`Delete saved shift from ${dateStr}?`)) return;
 
     historyCache = history.filter((e) => e.id !== id);
@@ -536,7 +536,7 @@
     const rows = [
       ['Date', 'Mode', 'Income', 'Hours', 'Miles', 'Trips', 'Gas cost', 'Total expenses', 'Net profit', 'After-tax profit', 'True net after wear', 'Profit/hour', 'Profit/mile'],
       ...getHistory().map((entry) => [
-        new Date(entry.savedAt).toLocaleString(),
+        U.formatDateTime(entry.savedAt),
         entry.mode,
         entry.income,
         entry.hours,
