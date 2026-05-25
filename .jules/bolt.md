@@ -1,7 +1,3 @@
-## 2024-05-25 - Instantiating Intl.NumberFormat and object allocation in string replace
-**Learning:** Calling `new Intl.NumberFormat` on every formatting operation is a significant performance bottleneck in JavaScript. Furthermore, creating a new object literal inside a `String.prototype.replace` replacer function causes unnecessary object allocations on every character match.
-**Action:** Extract `Intl.NumberFormat` instances and static maps (like those used for HTML escaping) into module-level or closure variables to cache them for reuse, especially in frequently called utility functions like `formatMoney` or `escapeHtml`.
-
-## 2024-05-25 - Extracting Intl formatters to replace toLocaleString
-**Learning:** `Date.prototype.toLocaleString()` and `Number.prototype.toLocaleString()` implicitly create and destroy `Intl.DateTimeFormat` and `Intl.NumberFormat` instances under the hood. Using them inside loops (like mapping over a large history array to render rows or export CSVs) causes substantial garbage collection pressure and slowness.
-**Action:** Replace `.toLocaleString()` with explicitly cached `Intl` formatter instances at the module scope and expose a helper function (like `formatDateTime`) to reuse them.
+## 2024-06-12 - Optimize Array Filtering
+**Learning:** Instantiating an array with multiple function calls only to call `.filter(Boolean)` on it is inefficient, especially inside a heavily used function. The array and its falsy elements are allocated and then immediately discarded.
+**Action:** Replace `.filter(Boolean)` patterns with explicit `if` statements and `.push()` to a new array when performance is critical. Use a temporary variable to capture truthy results before pushing.
