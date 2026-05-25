@@ -120,8 +120,11 @@ try {
     UI.renderSmartSuggestions(els, [
         { type: 'good', title: 'Tip', text: 'Desc' }
     ]);
-    assert.ok(els.smartSuggestions.innerHTML.includes('Tip'), 'Should render suggestion title');
-    assert.ok(els.smartSuggestions.innerHTML.includes('Desc'), 'Should render suggestion desc');
+    assert.strictEqual(els.smartSuggestions.children.length, 1, 'Should render one suggestion');
+    assert.strictEqual(els.smartSuggestions.children[0].tagName, 'ARTICLE', 'Suggestion should be an article');
+    assert.ok(els.smartSuggestions.children[0].className.includes('good'), 'Suggestion should have the correct type class');
+    assert.strictEqual(els.smartSuggestions.children[0].children[0].textContent, 'Tip', 'Should render suggestion title');
+    assert.strictEqual(els.smartSuggestions.children[0].children[1].textContent, 'Desc', 'Should render suggestion desc');
 
     // Test: renderProTip
     const elsTip = { proTipTitle: createMockElement('proTipTitle'), proTipText: createMockElement('proTipText'), proTipCategory: createMockElement('proTipCategory') };

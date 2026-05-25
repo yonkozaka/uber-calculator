@@ -164,12 +164,21 @@
   function renderSmartSuggestions(els, suggestions) {
     if (!els.smartSuggestions) return;
     const list = Array.isArray(suggestions) ? suggestions : [];
-    els.smartSuggestions.innerHTML = list.map((suggestion) => `
-      <article class="suggestion-item ${U.escapeHtml(suggestion.type || 'info')}">
-        <strong>${U.escapeHtml(suggestion.title)}</strong>
-        <p>${U.escapeHtml(suggestion.text)}</p>
-      </article>
-    `).join('');
+    const articles = list.map((suggestion) => {
+      const article = document.createElement('article');
+      article.className = `suggestion-item ${suggestion.type || 'info'}`;
+
+      const strong = document.createElement('strong');
+      strong.textContent = suggestion.title;
+
+      const p = document.createElement('p');
+      p.textContent = suggestion.text;
+
+      article.appendChild(strong);
+      article.appendChild(p);
+      return article;
+    });
+    els.smartSuggestions.replaceChildren(...articles);
   }
 
   function renderHistory(els, history) {
