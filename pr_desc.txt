@@ -1,0 +1,9 @@
+🎯 **What:** The testing gap in `Utils.calculateCore` was addressed by adding assertions for the missing calculated properties on the core object, and creating a new test case explicitly designed to hit branches related to `actual` deduction mode and non-daily (`weekly`) calculations.
+
+📊 **Coverage:**
+- Added assertions for `mileageDeduction`, `actualExpenseDeduction`, `selectedDeduction`, `estimatedTaxOwed`, `suggestedTaxSetAside`, `afterTaxProfit`.
+- Added assertions for wear-related variables: `depreciationCost`, `tireWearCost`, `brakeWearCost`, `wearRate`.
+- Added assertions for profitability: `trueNetAfterWear`, `profitPerHour`, `profitPerMile`, `trueProfitPerHour`, `trueProfitPerMile`, `dailyNetProfit`.
+- Created a new test case for `weekly` mode using `actual` deduction to ensure correct calculations of `fixedCostShare` scaling and actual expense deduction paths.
+
+✨ **Result:** Test coverage for `Utils.calculateCore` is now complete, increasing the safety net when refactoring or modifying the core calculator engine algorithms and accurately guarding all nested property return values.
