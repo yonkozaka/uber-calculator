@@ -25,12 +25,22 @@
   function renderCard({ label, value, note, type = '', toneValue, warningLimit }) {
     const card = document.createElement('div');
     card.className = `result-card ${type}`;
-    card.innerHTML = `
-      <strong>${U.escapeHtml(label)}</strong>
-      <span>${U.escapeHtml(value)}</span>
-      ${note ? `<small>${U.escapeHtml(note)}</small>` : ''}
-    `;
-    if (toneValue !== undefined) setTone(card.querySelector('span'), toneValue, warningLimit);
+
+    const strong = document.createElement('strong');
+    strong.textContent = label;
+    card.appendChild(strong);
+
+    const span = document.createElement('span');
+    span.textContent = value;
+    card.appendChild(span);
+
+    if (note) {
+      const small = document.createElement('small');
+      small.textContent = note;
+      card.appendChild(small);
+    }
+
+    if (toneValue !== undefined) setTone(span, toneValue, warningLimit);
     return card;
   }
 
@@ -72,10 +82,14 @@
     }
 
     if (!els.alerts) return;
-    els.alerts.innerHTML = messages.map((message) => {
+    const alertElements = messages.map((message) => {
       const className = message.type === 'good' ? 'good' : message.type === 'bad' ? 'bad' : message.type === 'info' ? 'info' : '';
-      return `<div class="alert ${className}">${U.escapeHtml(message.text)}</div>`;
-    }).join('');
+      const div = document.createElement('div');
+      div.className = `alert ${className}`;
+      div.textContent = message.text;
+      return div;
+    });
+    els.alerts.replaceChildren(...alertElements);
   }
 
   function renderSummary(els, result) {
@@ -262,12 +276,21 @@
     ];
 
     if (!els.analyticsGrid) return;
-    els.analyticsGrid.innerHTML = metrics.map(([label, value]) => `
-      <div class="metric">
-        <strong>${U.escapeHtml(label)}</strong>
-        <span>${U.escapeHtml(value)}</span>
-      </div>
-    `).join('');
+    const metricElements = metrics.map(([label, value]) => {
+      const div = document.createElement('div');
+      div.className = 'metric';
+
+      const strong = document.createElement('strong');
+      strong.textContent = label;
+      div.appendChild(strong);
+
+      const span = document.createElement('span');
+      span.textContent = value;
+      div.appendChild(span);
+
+      return div;
+    });
+    els.analyticsGrid.replaceChildren(...metricElements);
   }
 
   function renderScenarioComparison(els, scenarioInputs) {
@@ -336,14 +359,15 @@
 
   function renderProTipDots(els, tips, activeIndex) {
     if (!els.proTipDots) return;
-    els.proTipDots.innerHTML = tips.map((tip, index) => `
-      <button
-        class="tip-dot ${index === activeIndex ? 'active' : ''}"
-        type="button"
-        data-tip-index="${index}"
-        aria-label="Show tip ${index + 1}: ${U.escapeHtml(tip.category)}"
-      ></button>
-    `).join('');
+    const dotElements = tips.map((tip, index) => {
+      const button = document.createElement('button');
+      button.className = `tip-dot ${index === activeIndex ? 'active' : ''}`;
+      button.type = 'button';
+      button.setAttribute('data-tip-index', index);
+      button.setAttribute('aria-label', `Show tip ${index + 1}: ${tip.category}`);
+      return button;
+    });
+    els.proTipDots.replaceChildren(...dotElements);
   }
 
   function appendAdvisorMessage(container, role, text) {

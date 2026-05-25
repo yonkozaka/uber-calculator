@@ -1,0 +1,8 @@
+🎯 **What:** The vulnerability fixed
+Multiple functions (`renderCard`, `renderAlerts`, `renderAnalytics`, and `renderProTipDots`) inside `ui.js` were using `innerHTML` to construct DOM elements from data. The `innerHTML` properties have been replaced with safe DOM API equivalents such as `document.createElement`, `textContent`, `setAttribute`, and `replaceChildren`.
+
+⚠️ **Risk:** The potential impact if left unfixed
+Using `innerHTML` to set DOM elements introduces a significant Cross-Site Scripting (XSS) vulnerability. If data escapes validation logic or `escapeHtml` fails, untrusted data can execute malicious scripts directly in the user's browser, potentially leading to unauthorized actions, data theft, and session hijacking. Although escaping was attempted via `U.escapeHtml()`, bypassing `innerHTML` altogether is a far safer security strategy against DOM-based XSS attacks.
+
+🛡️ **Solution:** How the fix addresses the vulnerability
+All instances of `innerHTML` assignment in `ui.js` have been removed. Instead, the application now programmatically builds the DOM hierarchy using `document.createElement`, setting text securely with `textContent`, and using `replaceChildren` or `appendChild` to mount the generated elements into the DOM structure safely. This completely eliminates the parsing of raw HTML strings, thoroughly neutralizing the XSS risk vector.
