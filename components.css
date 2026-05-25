@@ -99,7 +99,7 @@ p {
   width: 42px;
   height: 28px;
   border: 4px solid transparent;
-  border-top-color: var(--primary-blue);
+  border-top-color: var(--accent-green);
   border-left-color: var(--primary-purple);
   border-right-color: var(--accent-green);
   border-radius: 44px 44px 10px 10px;
@@ -115,7 +115,7 @@ p {
   left: 33px;
   bottom: 18px;
   border-radius: 99px;
-  background: linear-gradient(180deg, var(--accent-green), var(--primary-blue));
+  background: linear-gradient(180deg, var(--accent-green), var(--accent-green));
   transform: rotate(44deg);
   transform-origin: bottom center;
   box-shadow: 0 0 18px rgba(56, 248, 165, 0.42);
@@ -255,14 +255,8 @@ button.secondary:focus-visible,
   box-shadow: var(--shadow-glow-blue);
 }
 
-button.blue {
-  color: #06101d;
-  background: linear-gradient(180deg, #8ee7ff, #48c3f0);
-  box-shadow: 0 16px 36px rgba(100, 216, 255, 0.17);
-}
-
 button.danger {
-  color: #fff;
+  color: #031014;
   background: linear-gradient(180deg, #ff7d97, #d33857);
 }
 
@@ -301,8 +295,8 @@ button.pill:focus-visible {
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 13px;
-  color: #fff;
-  background: var(--primary);
+  color: #031014;
+  background: var(--accent-green);
   font-weight: 950;
   box-shadow: 0 14px 32px rgba(155, 108, 255, 0.24);
 }
@@ -408,7 +402,7 @@ button.pill:focus-visible {
 .positive { color: var(--accent-green) !important; }
 .negative { color: var(--accent-red) !important; }
 .warning { color: var(--accent-yellow) !important; }
-.info { color: var(--primary-blue) !important; }
+.info { color: var(--accent-green) !important; }
 
 .recommendation,
 .alert {
@@ -454,7 +448,7 @@ button.pill:focus-visible {
 .suggestion-item.info {
   border-color: rgba(100, 216, 255, 0.32);
   background: rgba(100, 216, 255, 0.1);
-  color: var(--primary-blue);
+  color: var(--accent-green);
 }
 
 .suggestion-item {
@@ -621,7 +615,7 @@ tr.best-row td {
 .tip-dot.active {
   width: 30px;
   min-width: 30px;
-  background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+  background: linear-gradient(90deg, var(--accent-green), var(--primary-purple));
   box-shadow: 0 0 18px rgba(100, 216, 255, 0.34);
 }
 
@@ -844,7 +838,7 @@ body::before {
 
 h1 {
   max-width: 860px;
-  color: #ffffff;
+  color: #031014fff;
   font-size: clamp(2.25rem, 4.2vw, 5.25rem);
   line-height: 0.92;
 }
@@ -897,7 +891,7 @@ p {
   width: 40px;
   height: 24px;
   border-top-color: var(--accent-green);
-  border-left-color: var(--primary-blue);
+  border-left-color: var(--accent-green);
   border-right-color: var(--accent-yellow);
   border-radius: 40px 40px 6px 6px;
 }
@@ -935,9 +929,9 @@ p {
 
 .feature-details {
   border-radius: var(--radius-lg);
-  border: 1px solid var(--primary-blue);
+  border: 1px solid var(--accent-green);
   color: var(--text-main);
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(50, 215, 75, 0.1);
   padding: 16px;
   font-weight: 500;
 }
@@ -972,62 +966,20 @@ input:focus,
 select:focus,
 input:focus-visible,
 select:focus-visible {
-  border-color: var(--primary-blue);
+  border-color: var(--accent-green);
   box-shadow: var(--focus-ring);
   outline: none;
 }
 
-button {
-  min-height: 44px;
-  border-radius: var(--radius-md);
-  color: #fff;
-  background: var(--primary-blue);
-  box-shadow: var(--shadow-soft);
-  border: none;
-  font-weight: 600;
-  transition: all var(--transition-fast);
-}
-
-button:hover,
-button:focus-visible {
-  transform: translateY(-1px);
-  background: #0071E3; /* Darker Apple Blue */
-  box-shadow: var(--shadow-card);
-}
-
-button:focus-visible,
-.tip-dot:focus-visible,
-.advisor-chip:focus-visible {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
-
-button.secondary,
-.icon-button {
-  color: var(--text-main);
-  background: var(--bg-raised);
-  border: 1px solid var(--border-subtle);
-  box-shadow: none;
-}
-
-button.secondary:hover,
-button.secondary:focus-visible,
-.icon-button:hover,
-.icon-button:focus-visible {
-  border-color: var(--border-strong);
-  background: #3a3a3c;
-  box-shadow: var(--shadow-soft);
-}
-
-button.blue {
-  color: #fff;
-  background: var(--primary-blue);
+button.accent {
+  color: #031014;
+  background: var(--accent-green);
   box-shadow: none;
   border: none;
 }
 
 button.danger {
-  color: #fff;
+  color: #031014;
   background: var(--accent-red);
   box-shadow: none;
   border: none;
@@ -1063,8 +1015,8 @@ button.pill:focus-visible,
 
 .step-badge {
   border-radius: 50%;
-  color: #fff;
-  background: var(--primary-blue);
+  color: #031014;
+  background: var(--accent-green);
   box-shadow: none;
   width: 32px;
   height: 32px;
@@ -1113,7 +1065,7 @@ button.pill:focus-visible,
   left: 0;
   width: 4px;
   height: 100%;
-  background: var(--primary-blue);
+  background: var(--accent-green);
   border-radius: 4px 0 0 4px;
 }
 
@@ -1151,7 +1103,7 @@ button.pill:focus-visible,
 .positive { color: var(--accent-green) !important; }
 .negative { color: var(--accent-red) !important; }
 .warning { color: var(--accent-yellow) !important; }
-.info { color: var(--primary-blue) !important; }
+.info { color: var(--accent-green) !important; }
 
 .recommendation,
 .alert {
@@ -1163,9 +1115,9 @@ button.pill:focus-visible,
 }
 
 .recommendation {
-  border: 1px solid var(--primary-blue);
+  border: 1px solid var(--accent-green);
   color: var(--text-main);
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(50, 215, 75, 0.1);
 }
 
 .recommendation.good,
@@ -1194,8 +1146,8 @@ button.pill:focus-visible,
 
 .alert.info,
 .suggestion-item.info {
-  border: 1px solid var(--primary-blue);
-  background: rgba(10, 132, 255, 0.1);
+  border: 1px solid var(--accent-green);
+  background: rgba(50, 215, 75, 0.1);
   color: var(--text-main);
 }
 
@@ -1259,13 +1211,13 @@ tr.best-row td {
 }
 
 .pro-tip-card h2 {
-  color: #ffffff;
+  color: #031014fff;
 }
 
 .tip-icon {
   border-radius: var(--radius-md);
   color: #06100c;
-  background: linear-gradient(135deg, var(--accent-green), var(--primary-blue));
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-green));
 }
 
 .tip-dot {
@@ -1280,7 +1232,7 @@ tr.best-row td {
 }
 
 .tip-dot.active {
-  background: linear-gradient(90deg, var(--accent-green), var(--primary-blue));
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-green));
   box-shadow: 0 0 18px rgba(66, 245, 167, 0.32);
 }
 
@@ -1303,8 +1255,8 @@ tr.best-row td {
 }
 
 .advisor-message.user {
-  background: var(--primary-blue);
-  color: white;
+  background: var(--accent-green);
+  color: #031014;
   align-self: flex-end;
   border-bottom-right-radius: 4px;
 }
@@ -1406,7 +1358,7 @@ input[type="number"]:focus,
 input[type="text"]:focus,
 select:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--accent-green);
   box-shadow: var(--focus-ring);
   background: var(--bg-card-strong);
 }
@@ -1427,8 +1379,8 @@ button {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  background: var(--primary);
-  color: #fff;
+  background: var(--accent-green);
+  color: #031014;
   border: none;
   border-radius: var(--radius-full);
   padding: var(--space-3) var(--space-6);
@@ -1436,29 +1388,6 @@ button {
   font-size: 1rem;
   transition: var(--transition-fast);
   box-shadow: var(--shadow-glow-blue);
-}
-
-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
-  box-shadow: var(--shadow-lift), var(--shadow-glow-blue);
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-button.secondary {
-  background: var(--bg-raised);
-  color: var(--text-main);
-  border: 1px solid var(--border-strong);
-  box-shadow: var(--shadow-soft);
-}
-
-button.secondary:hover {
-  background: var(--bg-field-hover);
-  border-color: var(--text-soft);
-  box-shadow: var(--shadow-card);
 }
 
 /* Labels and Eyebrows */
@@ -1476,7 +1405,7 @@ label {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--primary);
+  color: var(--accent-green);
   margin-bottom: var(--space-2);
 }
 

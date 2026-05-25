@@ -13,7 +13,7 @@
   --bg-field-hover: rgba(255, 255, 255, 0.08);
   --bg-raised: #2c2c2e;
   --bg-rail: rgba(255, 255, 255, 0.05);
-  --bg-highlight: rgba(10, 132, 255, 0.1);
+  --bg-highlight: rgba(50, 215, 75, 0.1);
 
   --primary-blue: #0A84FF;
   --primary-purple: #BF5AF2;
@@ -32,7 +32,7 @@
 
   --border-subtle: rgba(255, 255, 255, 0.1);
   --border-strong: rgba(255, 255, 255, 0.2);
-  --border-glow: rgba(10, 132, 255, 0.3);
+  --border-glow: rgba(50, 215, 75, 0.3);
 
   /* Spacing */
   --space-1: 4px;
@@ -59,10 +59,10 @@
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.2);
   --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.3);
-  --shadow-glow-blue: 0 4px 12px rgba(10, 132, 255, 0.2);
+  --shadow-glow-blue: 0 4px 12px rgba(50, 215, 75, 0.2);
   --shadow-glow-green: 0 4px 12px rgba(50, 215, 75, 0.2);
   --shadow-glow-purple: 0 4px 12px rgba(191, 90, 242, 0.2);
-  --focus-ring: 0 0 0 4px rgba(10, 132, 255, 0.3);
+  --focus-ring: 0 0 0 4px rgba(50, 215, 75, 0.3);
 
   --glass-blur: blur(16px);
   --glass-blur-sm: blur(8px);
