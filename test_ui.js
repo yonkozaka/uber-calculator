@@ -184,6 +184,48 @@ try {
     assert.strictEqual(rowB.children[0].textContent, 'Scenario B - Best', 'Row B name should have - Best');
     assert.strictEqual(rowB.children[1].textContent, U.money(150), 'Row B income should match');
 
+
+    // Test: renderSummary
+    const summaryEls = { summaryBody: createMockElement('summaryBody') };
+    const dummyResult = {
+        mode: 'daily',
+        trips: 5,
+        gasUsed: 2,
+        variableExpenses: 10,
+        fixedCostShare: 5,
+        totalExpenses: 15,
+        averageIncomePerTrip: 20,
+        averageProfitPerTrip: 15,
+        mileageDeduction: 5,
+        miles: 50,
+        taxableProfit: 80,
+        deductionMode: 'standard',
+        estimatedTaxOwed: 20,
+        totalTaxRate: 0.25,
+        suggestedTaxSetAside: 25,
+        afterTaxProfit: 60,
+        depreciationCost: 5,
+        tireWearCost: 2,
+        brakeWearCost: 1,
+        vehicleWearCost: 8,
+        wearRate: 0.16,
+        trueNetAfterWear: 52,
+        trueProfitPerHour: 10,
+        targetProfitHour: 20,
+        trueProfitPerMile: 1,
+        targetProfitMile: 1.5,
+        goalStatus: { label: 'Missed' }
+    };
+
+    UI.renderSummary(summaryEls, dummyResult);
+
+    assert.ok(summaryEls.summaryBody.children.length > 0, 'Should render summary rows');
+    const firstRow = summaryEls.summaryBody.children[0];
+    assert.strictEqual(firstRow.tagName, 'TR', 'Row should be a TR');
+    assert.strictEqual(firstRow.children.length, 3, 'Row should have 3 TD cells');
+    assert.strictEqual(firstRow.children[0].tagName, 'TD', 'Cell should be a TD');
+    assert.strictEqual(firstRow.children[0].textContent, 'Mode', 'First cell should contain the correct label text');
+
     console.log("All UI tests passed!");
     process.exit(0);
 

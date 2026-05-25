@@ -105,13 +105,18 @@
     ];
 
     if (!els.summaryBody) return;
-    els.summaryBody.innerHTML = rows.map((row) => `
-      <tr>
-        <td>${U.escapeHtml(row[0])}</td>
-        <td>${U.escapeHtml(row[1])}</td>
-        <td>${U.escapeHtml(row[2])}</td>
-      </tr>
-    `).join('');
+
+    const trElements = rows.map((row) => {
+      const tr = document.createElement('tr');
+      row.forEach((cellText) => {
+        const td = document.createElement('td');
+        td.textContent = cellText;
+        tr.appendChild(td);
+      });
+      return tr;
+    });
+
+    els.summaryBody.replaceChildren(...trElements);
   }
 
   function renderResults(els, result, renderScenarioComparison) {
@@ -357,6 +362,7 @@
     setElementText,
     setElementClass,
     setElementDisplay,
+    renderSummary,
     renderResults,
     renderTripDecision,
     renderSmartSuggestions,
