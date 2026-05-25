@@ -261,12 +261,97 @@ try {
 
 
     // Test: Utils.buildSmartSuggestions
+
+    // 1. Test null case
     const suggestions1 = Utils.buildSmartSuggestions(null);
     assert.strictEqual(suggestions1[0].title, 'Run the calculator');
 
-    const badCoreResult = Object.assign({}, coreResult, { trueProfitPerHour: 10, targetProfitHour: 25, trueProfitPerMile: 0.5, targetProfitMile: 1.5, trueNetAfterWear: -10, goalStatus: {type: 'bad'} });
-    const suggestions2 = Utils.buildSmartSuggestions(badCoreResult);
-    assert.ok(suggestions2.length > 0);
+    // Base healthy result that triggers NO suggestions
+    const healthyBaseResult = {
+        income: 100,
+        gasCost: 5,
+        vehicleWearCost: 5,
+        totalExpenses: 20,
+        suggestedTaxSetAside: 5,
+        trueNetAfterWear: 50,
+        trueProfitPerHour: 25, targetProfitHour: 20,
+        trueProfitPerMile: 1.5, targetProfitMile: 1.0,
+        mpg: 30,
+        miles: 50,
+        wearRate: 0.2,
+        hitDailyTarget: false, hitHourlyTarget: true, hitMileTarget: true
+    };
+
+    // 2. Test healthy fallback
+    const healthySuggestions = Utils.buildSmartSuggestions(healthyBaseResult);
+    assert.strictEqual(healthySuggestions.length, 1);
+    assert.strictEqual(healthySuggestions[0].title, 'Healthy but watch the margins');
+
+    // 3. Test checkDownsideRisk
+    const downsideResult = Object.assign({}, healthyBaseResult, { trueNetAfterWear: 0 });
+    const downsideSuggestions = Utils.buildSmartSuggestions(downsideResult);
+    assert.ok(downsideSuggestions.some(s => s.title === 'Protect your downside' && s.type === 'bad'));
+
+    // 4. Test checkHourlyEfficiency
+    const hourlyResult = Object.assign({}, healthyBaseResult, { trueProfitPerHour: 15 });
+    const hourlySuggestions = Utils.buildSmartSuggestions(hourlyResult);
+    assert.ok(hourlySuggestions.some(s => s.title === 'Raise hourly efficiency' && s.type === 'warn'));
+
+    // 5. Test checkDollarDensity
+    const densityResult = Object.assign({}, healthyBaseResult, { trueProfitPerMile: 0.5 });
+    const densitySuggestions = Utils.buildSmartSuggestions(densityResult);
+    assert.ok(densitySuggestions.some(s => s.title === 'Improve dollar density' && s.type === 'warn'));
+
+    // 6. Test checkFuelPressure
+    const fuelWarnResult = Object.assign({}, healthyBaseResult, { gasCost: 12 });
+    const fuelWarnSuggestions = Utils.buildSmartSuggestions(fuelWarnResult);
+    assert.ok(fuelWarnSuggestions.some(s => s.title === 'Fuel is pressuring margin' && s.type === 'warn'));
+
+    const fuelBadResult = Object.assign({}, healthyBaseResult, { gasCost: 18 });
+    const fuelBadSuggestions = Utils.buildSmartSuggestions(fuelBadResult);
+    assert.ok(fuelBadSuggestions.some(s => s.title === 'Fuel is pressuring margin' && s.type === 'bad'));
+
+    const fuelMpgResult = Object.assign({}, healthyBaseResult, { mpg: 15 });
+    const fuelMpgSuggestions = Utils.buildSmartSuggestions(fuelMpgResult);
+    assert.ok(fuelMpgSuggestions.some(s => s.title === 'Fuel is pressuring margin' && s.type === 'warn'));
+
+    // 7. Test checkVehicleWear
+    const wearWarnResult = Object.assign({}, healthyBaseResult, { vehicleWearCost: 10 });
+    const wearWarnSuggestions = Utils.buildSmartSuggestions(wearWarnResult);
+    assert.ok(wearWarnSuggestions.some(s => s.title === 'Vehicle wear is meaningful' && s.type === 'warn'));
+
+    const wearBadResult = Object.assign({}, healthyBaseResult, { vehicleWearCost: 16 });
+    const wearBadSuggestions = Utils.buildSmartSuggestions(wearBadResult);
+    assert.ok(wearBadSuggestions.some(s => s.title === 'Vehicle wear is meaningful' && s.type === 'bad'));
+
+    const wearMilesResult = Object.assign({}, healthyBaseResult, { miles: 160 });
+    const wearMilesSuggestions = Utils.buildSmartSuggestions(wearMilesResult);
+    assert.ok(wearMilesSuggestions.some(s => s.title === 'Vehicle wear is meaningful' && s.type === 'warn'));
+
+    // 8. Test checkTaxSeparation
+    const taxResult = Object.assign({}, healthyBaseResult, { suggestedTaxSetAside: 8 });
+    const taxSuggestions = Utils.buildSmartSuggestions(taxResult);
+    assert.ok(taxSuggestions.some(s => s.title === 'Keep tax cash separate' && s.type === 'info'));
+
+    // 9. Test checkExpenseLoad
+    const expenseResult = Object.assign({}, healthyBaseResult, { totalExpenses: 35 });
+    const expenseSuggestions = Utils.buildSmartSuggestions(expenseResult);
+    assert.ok(expenseSuggestions.some(s => s.title === 'Audit expense load' && s.type === 'warn'));
+
+    // 10. Test checkStrongPattern
+    const patternResult = Object.assign({}, healthyBaseResult, { hitDailyTarget: true });
+    const patternSuggestions = Utils.buildSmartSuggestions(patternResult);
+    assert.ok(patternSuggestions.some(s => s.title === 'Strong operating pattern' && s.type === 'good'));
+
+    // 11. Test max 6 suggestions slicing
+    const maxSuggestionsResult = {
+        income: 100, gasCost: 20, vehicleWearCost: 20, totalExpenses: 40, suggestedTaxSetAside: 10,
+        trueNetAfterWear: -5, trueProfitPerHour: 10, targetProfitHour: 20, trueProfitPerMile: 0.5, targetProfitMile: 1.0,
+        mpg: 30, miles: 50, wearRate: 0.2, hitDailyTarget: false, hitHourlyTarget: false, hitMileTarget: false
+    };
+    const maxSuggestions = Utils.buildSmartSuggestions(maxSuggestionsResult);
+    assert.strictEqual(maxSuggestions.length, 6);
+
     console.log("✓ Utils.buildSmartSuggestions");
 
     // Test: Utils.getProfitTipData
