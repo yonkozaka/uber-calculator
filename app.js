@@ -144,8 +144,14 @@
 
   function safeStorageGet(key, fallback = null) {
     try {
-      const value = localStorage.getItem(key);
-      return value === null ? fallback : value;
+      let value = localStorage.getItem(key);
+      if (value === null) return fallback;
+      try {
+        value = decodeURIComponent(atob(value));
+      } catch (decodeError) {
+        // Fallback for existing unencoded data
+      }
+      return value;
     } catch (error) {
       return fallback;
     }
@@ -153,7 +159,8 @@
 
   function safeStorageSet(key, value, failureMessage = 'Storage is full or unavailable') {
     try {
-      localStorage.setItem(key, value);
+      const encodedValue = btoa(encodeURIComponent(value));
+      localStorage.setItem(key, encodedValue);
       return true;
     } catch (error) {
       UI.setElementText(els.savedStatus, failureMessage);

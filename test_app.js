@@ -112,6 +112,10 @@ const sandbox = {
     URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
     setTimeout: setTimeout,
     clearTimeout: clearTimeout,
+    btoa: btoa,
+    atob: atob,
+    encodeURIComponent: encodeURIComponent,
+    decodeURIComponent: decodeURIComponent,
 };
 
 // 2. Load the scripts into the sandbox
@@ -164,7 +168,7 @@ try {
 
     const savedResult = storageData['uberCalculatorSavedResult'];
     assert.ok(savedResult, "Result should be saved to localStorage");
-    const parsedResult = JSON.parse(savedResult);
+    const parsedResult = JSON.parse(decodeURIComponent(atob(savedResult)));
     assert.strictEqual(parsedResult.income, 220, "Saved result should contain income 220");
     console.log("✓ Saving result updates localStorage");
 
@@ -198,6 +202,7 @@ try {
         Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
         Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
         setTimeout: setTimeout, clearTimeout: clearTimeout,
+        btoa: btoa, atob: atob, encodeURIComponent: encodeURIComponent, decodeURIComponent: decodeURIComponent,
     };
     vm.createContext(sandbox2);
     vm.runInContext(utilsCode, sandbox2);
@@ -231,6 +236,7 @@ try {
         Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
         Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
         setTimeout: setTimeout, clearTimeout: clearTimeout,
+        btoa: btoa, atob: atob, encodeURIComponent: encodeURIComponent, decodeURIComponent: decodeURIComponent,
     };
     vm.createContext(sandbox3);
     vm.runInContext(utilsCode, sandbox3);
@@ -268,6 +274,7 @@ try {
         Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
         Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
         setTimeout: setTimeout, clearTimeout: clearTimeout,
+        btoa: btoa, atob: atob, encodeURIComponent: encodeURIComponent, decodeURIComponent: decodeURIComponent,
     };
     vm.createContext(sandbox4);
     vm.runInContext(utilsCode, sandbox4);
