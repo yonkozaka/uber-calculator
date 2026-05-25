@@ -350,10 +350,16 @@
     if (!container) return;
     const message = document.createElement('div');
     message.className = `advisor-message ${role === 'user' ? 'user' : 'assistant'}`;
-    message.innerHTML = `
-      <strong>${role === 'user' ? 'You' : 'Advisor'}</strong>
-      <p>${U.escapeHtml(text)}</p>
-    `;
+
+    const strong = document.createElement('strong');
+    strong.textContent = role === 'user' ? 'You' : 'Advisor';
+
+    const p = document.createElement('p');
+    p.textContent = text;
+
+    message.appendChild(strong);
+    message.appendChild(p);
+
     container.appendChild(message);
     container.scrollTop = container.scrollHeight;
   }

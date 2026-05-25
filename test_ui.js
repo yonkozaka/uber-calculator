@@ -107,7 +107,11 @@ try {
     assert.strictEqual(container.children.length, 1, "Should append one child");
     const appendedEl = container.children[0];
     assert.strictEqual(appendedEl.tagName, 'DIV', "Appended child should be a div");
-    assert.ok(appendedEl.innerHTML.includes('Hello Advisor'), "innerHTML should contain the message text");
+    assert.strictEqual(appendedEl.children.length, 2, "Appended child should have 2 children (strong, p)");
+    assert.strictEqual(appendedEl.children[0].tagName, 'STRONG', "First child should be STRONG");
+    assert.strictEqual(appendedEl.children[0].textContent, 'You', "First child text should be 'You'");
+    assert.strictEqual(appendedEl.children[1].tagName, 'P', "Second child should be P");
+    assert.strictEqual(appendedEl.children[1].textContent, 'Hello Advisor', "Second child text should contain the message text");
     assert.ok(appendedEl.className.includes('advisor-message'), "Should have advisor-message class");
 
     // Test: setTone (indirectly tests U.safeNumber usage)
