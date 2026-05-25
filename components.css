@@ -1360,3 +1360,135 @@ tr.best-row td {
 .history-actions button {
   flex: 1;
 }
+
+
+/* --- Modern SaaS Components --- */
+
+.card, .panel {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-med);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lift);
+  border-color: var(--border-strong);
+}
+
+/* Inputs & Selects */
+input[type="number"],
+input[type="text"],
+select {
+  width: 100%;
+  background: var(--bg-field);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="number"]:hover,
+input[type="text"]:hover,
+select:hover {
+  background: var(--bg-field-hover);
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  background: var(--bg-card-strong);
+}
+
+/* Select arrow styling */
+select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 1em;
+  padding-right: var(--space-8);
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-6);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: var(--shadow-lift), var(--shadow-glow-blue);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.secondary {
+  background: var(--bg-raised);
+  color: var(--text-main);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+button.secondary:hover {
+  background: var(--bg-field-hover);
+  border-color: var(--text-soft);
+  box-shadow: var(--shadow-card);
+}
+
+/* Labels and Eyebrows */
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: var(--space-2);
+}
+
+.metric-value {
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
