@@ -271,21 +271,48 @@
     ), 0);
 
     if (!els.scenarioBody) return;
-    els.scenarioBody.innerHTML = scenarioInputs.map((item, index) => {
+
+    const rows = scenarioInputs.map((item, index) => {
       const isBest = index === bestIndex;
-      return `
-        <tr class="${isBest ? 'best-row' : ''}">
-          <td>${U.escapeHtml(item.name)}${isBest ? ' - Best' : ''}</td>
-          <td>${U.money(item.result.income)}</td>
-          <td>${U.money(item.result.totalExpenses)}</td>
-          <td>${U.money(item.result.netProfit)}</td>
-          <td>${U.money(item.result.afterTaxProfit)}</td>
-          <td>${U.money(item.result.trueNetAfterWear)}</td>
-          <td>${U.money(item.result.trueProfitPerHour)}</td>
-          <td>${U.money(item.result.trueProfitPerMile)}</td>
-        </tr>
-      `;
-    }).join('');
+      const tr = document.createElement('tr');
+      if (isBest) tr.className = 'best-row';
+
+      const tdName = document.createElement('td');
+      tdName.textContent = item.name + (isBest ? ' - Best' : '');
+      tr.appendChild(tdName);
+
+      const tdIncome = document.createElement('td');
+      tdIncome.textContent = U.money(item.result.income);
+      tr.appendChild(tdIncome);
+
+      const tdExpenses = document.createElement('td');
+      tdExpenses.textContent = U.money(item.result.totalExpenses);
+      tr.appendChild(tdExpenses);
+
+      const tdNetProfit = document.createElement('td');
+      tdNetProfit.textContent = U.money(item.result.netProfit);
+      tr.appendChild(tdNetProfit);
+
+      const tdAfterTaxProfit = document.createElement('td');
+      tdAfterTaxProfit.textContent = U.money(item.result.afterTaxProfit);
+      tr.appendChild(tdAfterTaxProfit);
+
+      const tdTrueNetAfterWear = document.createElement('td');
+      tdTrueNetAfterWear.textContent = U.money(item.result.trueNetAfterWear);
+      tr.appendChild(tdTrueNetAfterWear);
+
+      const tdTrueProfitPerHour = document.createElement('td');
+      tdTrueProfitPerHour.textContent = U.money(item.result.trueProfitPerHour);
+      tr.appendChild(tdTrueProfitPerHour);
+
+      const tdTrueProfitPerMile = document.createElement('td');
+      tdTrueProfitPerMile.textContent = U.money(item.result.trueProfitPerMile);
+      tr.appendChild(tdTrueProfitPerMile);
+
+      return tr;
+    });
+
+    els.scenarioBody.replaceChildren(...rows);
   }
 
   function renderProTip(els, tip) {

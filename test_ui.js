@@ -132,6 +132,58 @@ try {
     assert.strictEqual(elsTip.proTipTitle.textContent, 'Title');
     assert.strictEqual(elsTip.proTipText.textContent, 'Desc');
 
+    // Test: renderScenarioComparison
+    const scenarioEls = { scenarioBody: createMockElement('scenarioBody') };
+    const mockScenarios = [
+        {
+            name: 'Scenario A',
+            result: {
+                income: 100,
+                totalExpenses: 20,
+                netProfit: 80,
+                afterTaxProfit: 60,
+                trueNetAfterWear: 50,
+                trueProfitPerHour: 25,
+                trueProfitPerMile: 0.5
+            }
+        },
+        {
+            name: 'Scenario B',
+            result: {
+                income: 150,
+                totalExpenses: 30,
+                netProfit: 120,
+                afterTaxProfit: 90,
+                trueNetAfterWear: 75,
+                trueProfitPerHour: 35,
+                trueProfitPerMile: 0.6
+            }
+        }
+    ];
+
+    UI.renderScenarioComparison(scenarioEls, mockScenarios);
+
+    assert.strictEqual(scenarioEls.scenarioBody.children.length, 2, 'Should render 2 rows');
+
+    const rowA = scenarioEls.scenarioBody.children[0];
+    const rowB = scenarioEls.scenarioBody.children[1];
+
+    assert.strictEqual(rowA.tagName, 'TR', 'Row A should be a TR');
+    assert.strictEqual(rowB.tagName, 'TR', 'Row B should be a TR');
+
+    assert.ok(!rowA.className.includes('best-row'), 'Row A should not be best row');
+    assert.ok(rowB.className.includes('best-row'), 'Row B should be best row');
+
+    // Check Row A cells
+    assert.strictEqual(rowA.children.length, 8, 'Row A should have 8 cells');
+    assert.strictEqual(rowA.children[0].textContent, 'Scenario A', 'Row A name should be Scenario A');
+    assert.strictEqual(rowA.children[1].textContent, U.money(100), 'Row A income should match');
+
+    // Check Row B cells
+    assert.strictEqual(rowB.children.length, 8, 'Row B should have 8 cells');
+    assert.strictEqual(rowB.children[0].textContent, 'Scenario B - Best', 'Row B name should have - Best');
+    assert.strictEqual(rowB.children[1].textContent, U.money(150), 'Row B income should match');
+
     console.log("All UI tests passed!");
     process.exit(0);
 
