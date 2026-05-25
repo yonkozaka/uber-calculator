@@ -581,63 +581,68 @@
     calculate(id);
   }, 300);
 
-  window.addEventListener('storage', (event) => {
-    if (event.key === HISTORY_KEY) {
-      historyCache = null;
-      renderHistory();
-      renderAnalytics();
-    }
-  });
 
-  inputIds.forEach((id) => {
-    if (id === 'mode' || !fields[id]) return;
-    fields[id].addEventListener('input', () => {
-      debouncedCalculate(id);
-      UI.setElementText(els.savedStatus, 'Auto-saves inputs');
+  function init() {
+    window.addEventListener('storage', (event) => {
+      if (event.key === HISTORY_KEY) {
+        historyCache = null;
+        renderHistory();
+        renderAnalytics();
+      }
     });
-  });
 
-  fields.mode?.addEventListener('change', () => {
-    preparePeriodModeAfterModeChange();
-    calculate('mode');
-  });
-  document.getElementById('calculateBtn')?.addEventListener('click', () => calculate());
-  document.getElementById('resetBtn')?.addEventListener('click', resetForm);
-  document.getElementById('saveBtn')?.addEventListener('click', saveResult);
-  document.getElementById('downloadBtn')?.addEventListener('click', downloadResult);
-  document.getElementById('clearHistoryBtn')?.addEventListener('click', clearHistory);
-  document.getElementById('exportHistoryBtn')?.addEventListener('click', exportHistoryCsv);
-  document.querySelectorAll('[data-preset]').forEach((button) => {
-    button.addEventListener('click', () => applyPreset(button.dataset.preset));
-  });
-  document.querySelectorAll('[data-feature]').forEach((button) => {
-    button.addEventListener('click', () => openFeature(button.dataset.feature, button.dataset.jumpTarget));
-  });
-  els.proTipsCard?.addEventListener('mouseenter', pauseProTips);
-  els.proTipsCard?.addEventListener('mouseleave', resumeProTips);
-  els.proTipsCard?.addEventListener('focusin', pauseProTips);
-  els.proTipsCard?.addEventListener('focusout', resumeProTips);
-  els.proTipDots?.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-tip-index]');
-    if (button) showTip(U.safeNumber(button.dataset.tipIndex));
-  });
-  els.advisorSendBtn?.addEventListener('click', () => sendAdvisorQuestion(els.advisorInput?.value));
-  els.advisorInput?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') sendAdvisorQuestion(els.advisorInput.value);
-  });
-  document.querySelectorAll('[data-advisor-question]').forEach((button) => {
-    button.addEventListener('click', () => sendAdvisorQuestion(button.dataset.advisorQuestion));
-  });
-  els.historyBody?.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-delete-shift]');
-    if (button) deleteShift(button.dataset.deleteShift);
-  });
+    inputIds.forEach((id) => {
+      if (id === 'mode' || !fields[id]) return;
+      fields[id].addEventListener('input', () => {
+        debouncedCalculate(id);
+        UI.setElementText(els.savedStatus, 'Auto-saves inputs');
+      });
+    });
 
-  restoreInputs();
-  lastMode = fields.mode?.value || 'daily';
-  calculate();
-  renderActiveProTip();
-  startProTips();
-  renderHistory();
-  renderAnalytics();
+    fields.mode?.addEventListener('change', () => {
+      preparePeriodModeAfterModeChange();
+      calculate('mode');
+    });
+    document.getElementById('calculateBtn')?.addEventListener('click', () => calculate());
+    document.getElementById('resetBtn')?.addEventListener('click', resetForm);
+    document.getElementById('saveBtn')?.addEventListener('click', saveResult);
+    document.getElementById('downloadBtn')?.addEventListener('click', downloadResult);
+    document.getElementById('clearHistoryBtn')?.addEventListener('click', clearHistory);
+    document.getElementById('exportHistoryBtn')?.addEventListener('click', exportHistoryCsv);
+    document.querySelectorAll('[data-preset]').forEach((button) => {
+      button.addEventListener('click', () => applyPreset(button.dataset.preset));
+    });
+    document.querySelectorAll('[data-feature]').forEach((button) => {
+      button.addEventListener('click', () => openFeature(button.dataset.feature, button.dataset.jumpTarget));
+    });
+    els.proTipsCard?.addEventListener('mouseenter', pauseProTips);
+    els.proTipsCard?.addEventListener('mouseleave', resumeProTips);
+    els.proTipsCard?.addEventListener('focusin', pauseProTips);
+    els.proTipsCard?.addEventListener('focusout', resumeProTips);
+    els.proTipDots?.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-tip-index]');
+      if (button) showTip(U.safeNumber(button.dataset.tipIndex));
+    });
+    els.advisorSendBtn?.addEventListener('click', () => sendAdvisorQuestion(els.advisorInput?.value));
+    els.advisorInput?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') sendAdvisorQuestion(els.advisorInput.value);
+    });
+    document.querySelectorAll('[data-advisor-question]').forEach((button) => {
+      button.addEventListener('click', () => sendAdvisorQuestion(button.dataset.advisorQuestion));
+    });
+    els.historyBody?.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-delete-shift]');
+      if (button) deleteShift(button.dataset.deleteShift);
+    });
+
+    restoreInputs();
+    lastMode = fields.mode?.value || 'daily';
+    calculate();
+    renderActiveProTip();
+    startProTips();
+    renderHistory();
+    renderAnalytics();
+  }
+
+  init();
 }());
