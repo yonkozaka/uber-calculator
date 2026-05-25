@@ -1401,3 +1401,70 @@ section[id],
     display: grid;
   }
 }
+
+/* --- SaaS Dashboard Layout --- */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-4) 100px var(--space-4); /* Space for mobile nav */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    grid-template-columns: minmax(320px, 400px) 1fr;
+    grid-template-rows: auto 1fr;
+    padding: var(--space-8);
+  }
+
+  .topbar {
+    grid-column: 1 / -1;
+    margin-bottom: var(--space-6);
+  }
+
+  .workspace-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 400px) 1fr;
+    gap: var(--space-8);
+    align-items: start;
+    width: 100%;
+  }
+
+  .sidebar-zone {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .main-zone {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+}
+
+/* Metric formatting for the new layout */
+.top-metric {
+  padding: var(--space-4);
+  background: var(--bg-card-strong);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.top-metric .eyebrow {
+  margin-bottom: 0;
+  color: var(--text-secondary);
+}
+
+.top-metric .value {
+  font-size: clamp(1.5rem, 2vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
