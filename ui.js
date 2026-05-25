@@ -336,14 +336,15 @@
 
   function renderProTipDots(els, tips, activeIndex) {
     if (!els.proTipDots) return;
-    els.proTipDots.innerHTML = tips.map((tip, index) => `
-      <button
-        class="tip-dot ${index === activeIndex ? 'active' : ''}"
-        type="button"
-        data-tip-index="${index}"
-        aria-label="Show tip ${index + 1}: ${U.escapeHtml(tip.category)}"
-      ></button>
-    `).join('');
+    const buttons = tips.map((tip, index) => {
+      const button = document.createElement('button');
+      button.className = `tip-dot ${index === activeIndex ? 'active' : ''}`;
+      button.type = 'button';
+      button.setAttribute('data-tip-index', index);
+      button.setAttribute('aria-label', `Show tip ${index + 1}: ${tip.category}`);
+      return button;
+    });
+    els.proTipDots.replaceChildren(...buttons);
   }
 
   function appendAdvisorMessage(container, role, text) {
