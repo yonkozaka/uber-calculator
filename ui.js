@@ -209,7 +209,7 @@
     const rows = history.map(entry => {
       const tr = document.createElement('tr');
 
-      const savedAt = new Date(entry.savedAt).toLocaleString();
+      const savedAt = U.formatDateTime(entry.savedAt);
 
       const createCell = (text) => {
         const td = document.createElement('td');
