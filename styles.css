@@ -178,7 +178,7 @@ section[id],
 }
 
 .section-kicker span {
-  color: var(--primary-blue);
+  color: var(--accent-green);
   font-size: 0.74rem;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -357,7 +357,7 @@ section[id],
   border-radius: 999px;
   background:
     radial-gradient(circle at 65% 28%, var(--primary-pink) 0 18%, transparent 19%),
-    radial-gradient(circle at 42% 48%, var(--primary-blue) 0 25%, transparent 26%),
+    radial-gradient(circle at 42% 48%, var(--accent-green) 0 25%, transparent 26%),
     radial-gradient(circle at 73% 64%, var(--accent-yellow) 0 10%, transparent 11%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
   filter: drop-shadow(0 20px 30px rgba(155, 108, 255, 0.28));
@@ -453,7 +453,7 @@ section[id],
 .notes p {
   margin: 0;
   padding-left: 14px;
-  border-left: 3px solid var(--primary-blue);
+  border-left: 3px solid var(--accent-green);
 }
 
 .mobile-summary {
