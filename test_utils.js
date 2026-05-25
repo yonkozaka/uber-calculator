@@ -189,6 +189,85 @@ try {
     assert.strictEqual(coreResult.netProfit, 161); // 200 - 39
     assert.strictEqual(coreResult.taxableProfit, 133); // 200 - 67 = 133
     assert.strictEqual(coreResult.vehicleWearCost, 20); // 100 * 0.2
+
+    // New missing coverage assertions for coreInput
+    assert.strictEqual(coreResult.mileageDeduction, 67); // 100 * 0.67
+    assert.strictEqual(coreResult.actualExpenseDeduction, 39); // totalExpenses
+    assert.strictEqual(coreResult.selectedDeduction, 67); // standard mode uses mileageDeduction
+    assert.strictEqual(coreResult.totalTaxRate, 0.303); // (15.3 + 10 + 5) / 100
+    // taxableProfit is 133
+    // estimatedTaxOwed = 133 * 0.303 = 40.299
+    assert.strictEqual(Math.round(coreResult.estimatedTaxOwed * 1000) / 1000, 40.299);
+    // netProfit = 161
+    // suggestedTaxSetAside = 161 * 0.303 = 48.783
+    assert.strictEqual(Math.round(coreResult.suggestedTaxSetAside * 1000) / 1000, 48.783);
+    // afterTaxProfit = 161 - 40.299 = 120.701
+    assert.strictEqual(Math.round(coreResult.afterTaxProfit * 1000) / 1000, 120.701);
+
+    // Wear properties
+    assert.strictEqual(coreResult.depreciationCost, 10); // 100 * 0.10
+    assert.strictEqual(coreResult.tireWearCost, 5); // 100 * 0.05
+    assert.strictEqual(coreResult.brakeWearCost, 5); // 100 * 0.05
+    assert.strictEqual(coreResult.wearRate, 0.20); // 0.10 + 0.05 + 0.05
+
+    // True Profit & Targeting properties
+    // trueNetAfterWear = 120.701 - 20 = 100.701
+    assert.strictEqual(Math.round(coreResult.trueNetAfterWear * 1000) / 1000, 100.701);
+    assert.strictEqual(coreResult.profitPerHour, 161 / 8);
+    assert.strictEqual(coreResult.profitPerMile, 161 / 100);
+    assert.strictEqual(Math.round(coreResult.trueProfitPerHour * 1000) / 1000, 12.588); // 100.701 / 8
+    assert.strictEqual(Math.round(coreResult.trueProfitPerMile * 1000) / 1000, 1.007); // 100.701 / 100
+    assert.strictEqual(coreResult.dailyNetProfit, 161);
+
+    // Test: Utils.calculateCore with weekly mode and actual deduction
+    const weeklyCoreInput = {
+        mode: 'weekly',
+        workingDays: 5,
+        avgIncome: 200,
+        avgHours: 8,
+        avgMiles: 100,
+        avgTrips: 15,
+        gasPrice: 3.5,
+        mpg: 25,
+        tolls: 50,
+        additional: 25,
+        insurance: 100,
+        maintenance: 50,
+        phone: 50,
+        otherFixed: 20,
+        deductionMode: 'actual',
+        mileageRate: 0.67,
+        selfEmploymentTax: 15.3,
+        federalTax: 10,
+        stateTax: 5,
+        depreciationPerMile: 0.10,
+        tireWearPerMile: 0.05,
+        brakeWearPerMile: 0.05,
+        targetDailyProfit: 150,
+        targetProfitHour: 20,
+        targetProfitMile: 1.0
+    };
+
+    const weeklyCoreResult = Utils.calculateCore(weeklyCoreInput);
+
+    // In weekly mode:
+    // period.income = 200 * 5 = 1000
+    // period.miles = 100 * 5 = 500
+    // gasUsed = 500 / 25 = 20
+    // gasCost = 20 * 3.5 = 70
+    // variableExpenses = 70 + 50 + 25 = 145
+    // fixedCostShare = 220 * (5/22) = 50
+    // totalExpenses = 145 + 50 = 195
+    assert.strictEqual(weeklyCoreResult.fixedCostShare, 50);
+    assert.strictEqual(weeklyCoreResult.actualExpenseDeduction, 195);
+    // mode is actual, so selectedDeduction should be actualExpenseDeduction
+    assert.strictEqual(weeklyCoreResult.selectedDeduction, 195);
+    // netProfit = 1000 - 195 = 805
+    assert.strictEqual(weeklyCoreResult.netProfit, 805);
+    // dailyNetProfit in weekly mode = netProfit / workingDays = 805 / 5 = 161
+    assert.strictEqual(weeklyCoreResult.dailyNetProfit, 161);
+    assert.strictEqual(weeklyCoreResult.workingDays, 5);
+
     console.log("✓ Utils.calculateCore");
 
     // Test: Utils.calculateTripDecision
