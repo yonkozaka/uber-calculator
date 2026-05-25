@@ -642,6 +642,12 @@
       if (button) deleteShift(button.dataset.deleteShift);
     });
 
+    document.querySelectorAll('input[type="number"]').forEach((input) => {
+      input.addEventListener('focus', function() {
+        this.select();
+      });
+    });
+
     restoreInputs();
     lastMode = fields.mode?.value || 'daily';
     calculate();
