@@ -1,0 +1,3 @@
+## 2024-05-25 - Instantiating Intl.NumberFormat and object allocation in string replace
+**Learning:** Calling `new Intl.NumberFormat` on every formatting operation is a significant performance bottleneck in JavaScript. Furthermore, creating a new object literal inside a `String.prototype.replace` replacer function causes unnecessary object allocations on every character match.
+**Action:** Extract `Intl.NumberFormat` instances and static maps (like those used for HTML escaping) into module-level or closure variables to cache them for reuse, especially in frequently called utility functions like `formatMoney` or `escapeHtml`.

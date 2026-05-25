@@ -33,11 +33,13 @@
     };
   };
 
+  const moneyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
+
   Utils.formatMoney = function formatMoney(value) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(Utils.safeNumber(value));
+    return moneyFormatter.format(Utils.safeNumber(value));
   };
 
   Utils.money = Utils.formatMoney;
@@ -55,14 +57,16 @@
     return Utils.safeNumber(value);
   };
 
+  const htmlMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
   Utils.escapeHtml = function escapeHtml(value) {
-    return Utils.safeText(value).replace(/[&<>"']/g, (char) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    }[char]));
+    return Utils.safeText(value).replace(/[&<>"']/g, (char) => htmlMap[char]);
   };
 
   Utils.capitalize = function capitalize(value) {
