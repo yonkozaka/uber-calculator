@@ -297,8 +297,7 @@
     };
   }
 
-  function getSharedSettings() {
-    const input = getMainInputObject();
+  function getSharedSettings(input = getMainInputObject()) {
     return {
       gasPrice: input.gasPrice,
       mpg: input.mpg,
@@ -322,9 +321,9 @@
     };
   }
 
-  function buildScenarioInput(incomeId, hoursId, milesId, tripsId) {
+  function buildScenarioInput(incomeId, hoursId, milesId, tripsId, mainInput) {
     return {
-      ...getSharedSettings(),
+      ...getSharedSettings(mainInput),
       mode: 'daily',
       income: numberValue(incomeId),
       hours: numberValue(hoursId),
@@ -356,11 +355,11 @@
     };
   }
 
-  function renderScenarioComparison(currentResult) {
+  function renderScenarioComparison(currentResult, mainInput) {
     UI.renderScenarioComparison(els, [
       { name: 'Current', result: currentResult },
-      { name: 'Scenario A', result: U.calculateCore(buildScenarioInput('scenarioAIncome', 'scenarioAHours', 'scenarioAMiles', 'scenarioATrips')) },
-      { name: 'Scenario B', result: U.calculateCore(buildScenarioInput('scenarioBIncome', 'scenarioBHours', 'scenarioBMiles', 'scenarioBTrips')) }
+      { name: 'Scenario A', result: U.calculateCore(buildScenarioInput('scenarioAIncome', 'scenarioAHours', 'scenarioAMiles', 'scenarioATrips', mainInput)) },
+      { name: 'Scenario B', result: U.calculateCore(buildScenarioInput('scenarioBIncome', 'scenarioBHours', 'scenarioBMiles', 'scenarioBTrips', mainInput)) }
     ]);
   }
 
@@ -370,7 +369,7 @@
     const mainInput = getMainInputObject();
     latestResult = U.calculateCore(mainInput);
     const tripDecision = U.calculateTripDecision(buildTripDecisionInput(mainInput));
-    UI.renderResults(els, latestResult, renderScenarioComparison);
+    UI.renderResults(els, latestResult, (res) => renderScenarioComparison(res, mainInput));
     UI.renderTripDecision(els, tripDecision);
     UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult));
     UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`);
