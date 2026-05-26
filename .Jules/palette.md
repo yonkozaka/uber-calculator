@@ -5,3 +5,6 @@
 ## 2025-05-25 - Auto-selecting numeric inputs on focus
 **Learning:** In data-heavy calculator interfaces, users frequently need to completely replace existing numeric values. Forcing them to manually delete existing digits or highlight them creates friction. Auto-selecting text on focus is a critical UX pattern that makes data entry significantly smoother.
 **Action:** Attached a global focus event listener to all `input[type="number"]` elements that calls `this.select()`, instantly selecting the entire value when the user tabs into or clicks the field.
+## 2025-05-25 - Prevent accidental data loss on global reset actions
+**Learning:** Destructive actions that clear substantial amounts of user input, like a "Reset All" button in a complex form, can lead to significant frustration if clicked accidentally. This is especially true on mobile or smaller screens where mis-taps are more frequent. Providing a confirmation step serves as a critical safety net for these global actions.
+**Action:** Added a native `confirm()` prompt inside the `resetForm` handler to ensure intentionality before wiping all data and localStorage state.
