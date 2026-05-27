@@ -455,7 +455,6 @@
   }
 
   function resetForm() {
-    if (!confirm('Reset all inputs to their default values?')) return;
     safeStorageRemove(STORAGE_KEY, 'Could not clear saved inputs');
     setInputs(defaults);
     periodInputSource = 'averages';
@@ -601,10 +600,14 @@
 
     inputIds.forEach((id) => {
       if (id === 'mode' || !fields[id]) return;
-      fields[id].addEventListener('input', () => {
+      const triggerCalc = () => {
         debouncedCalculate(id);
         UI.setElementText(els.savedStatus, 'Auto-saves inputs');
-      });
+      };
+      fields[id].addEventListener('input', triggerCalc);
+      if (fields[id].tagName === 'SELECT') {
+        fields[id].addEventListener('change', triggerCalc);
+      }
     });
 
     fields.mode?.addEventListener('change', () => {

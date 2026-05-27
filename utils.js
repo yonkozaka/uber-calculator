@@ -479,16 +479,16 @@
     const expenseShare = Utils.safeDivide(result.totalExpenses, result.income) * 100;
     const taxShare = Utils.safeDivide(result.suggestedTaxSetAside, result.income) * 100;
 
-    const suggestions = [];
-    let s;
-    if ((s = checkDownsideRisk(result))) suggestions.push(s);
-    if ((s = checkHourlyEfficiency(result))) suggestions.push(s);
-    if ((s = checkDollarDensity(result))) suggestions.push(s);
-    if ((s = checkFuelPressure(result, gasShare))) suggestions.push(s);
-    if ((s = checkVehicleWear(result, wearShare))) suggestions.push(s);
-    if ((s = checkTaxSeparation(result, taxShare))) suggestions.push(s);
-    if ((s = checkExpenseLoad(result, expenseShare))) suggestions.push(s);
-    if ((s = checkStrongPattern(result))) suggestions.push(s);
+    const suggestions = [
+      checkDownsideRisk(result),
+      checkHourlyEfficiency(result),
+      checkDollarDensity(result),
+      checkFuelPressure(result, gasShare),
+      checkVehicleWear(result, wearShare),
+      checkTaxSeparation(result, taxShare),
+      checkExpenseLoad(result, expenseShare),
+      checkStrongPattern(result)
+    ].filter(Boolean);
     if (!suggestions.length) {
       suggestions.push({
         title: 'Healthy but watch the margins',

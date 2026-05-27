@@ -1,38 +1,38 @@
-/* Clean, Apple/Stripe inspired SaaS tokens */
+/* Clean, Apple/Stripe inspired Fintech SaaS tokens */
 :root {
   /* Default Dark Mode Theme */
   color-scheme: dark;
 
-  --bg-main: #000000;
-  --bg-page-2: #0a0a0a;
-  --bg-page-3: #111111;
-  --bg-card: rgba(28, 28, 30, 0.6);
-  --bg-card-strong: #1c1c1e;
-  --bg-glass: rgba(28, 28, 30, 0.4);
-  --bg-field: rgba(255, 255, 255, 0.05);
-  --bg-field-hover: rgba(255, 255, 255, 0.08);
-  --bg-raised: #2c2c2e;
-  --bg-rail: rgba(255, 255, 255, 0.05);
-  --bg-highlight: rgba(10, 132, 255, 0.1);
+  --bg-main: #08090b; /* Deep Slate Graphite */
+  --bg-page-2: #0c0e12; /* Slate Graphite Page Background */
+  --bg-page-3: #12151b; /* Slate Medium Background */
+  --bg-card: rgba(20, 24, 30, 0.45); /* High-end Slate Glass Card */
+  --bg-card-strong: #14181f; /* Premium Dark Slate Solid Card */
+  --bg-glass: rgba(20, 24, 30, 0.35); /* Translucent Slate Glass */
+  --bg-field: rgba(255, 255, 255, 0.03); /* Modern Subtle Input Field */
+  --bg-field-hover: rgba(255, 255, 255, 0.05); /* Modern Input Hover */
+  --bg-raised: #191e27; /* Premium Slate Raised Container */
+  --bg-rail: rgba(255, 255, 255, 0.04);
+  --bg-highlight: rgba(16, 185, 129, 0.08); /* Transparent Emerald Highlight */
 
-  --primary-blue: #0A84FF;
+  --primary-blue: #10B981; /* Emerald Green */
   --primary-purple: #BF5AF2;
   --primary-pink: #FF375F;
-  --primary: #0A84FF;
-  --accent-green: #32D74B;
+  --primary: #10B981; /* Emerald Green */
+  --accent-green: #10B981; /* Standard Emerald Green */
   --accent-yellow: #FFD60A;
   --accent-red: #FF453A;
   --accent-orange: #FF9F0A;
   --accent-teal: #64D2FF;
 
   --text-main: #F5F5F7;
-  --text-secondary: #86868B;
+  --text-secondary: #8E8E93; /* Clean Muted Slate Grey */
   --text-soft: #A1A1A6;
-  --text-muted: #6E6E73;
+  --text-muted: #8E8E93; /* Increased contrast from #6E6E73 for A11y AA guidelines on dark slate card */
 
-  --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.2);
-  --border-glow: rgba(10, 132, 255, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.09);
+  --border-glow: rgba(16, 185, 129, 0.25); /* Translucent Emerald Glow */
 
   /* Spacing */
   --space-1: 4px;
@@ -56,17 +56,17 @@
   --radius-full: 9999px;
 
   /* Shadows & Glass */
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.2);
-  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.3);
-  --shadow-glow-blue: 0 4px 12px rgba(10, 132, 255, 0.2);
-  --shadow-glow-green: 0 4px 12px rgba(50, 215, 75, 0.2);
-  --shadow-glow-purple: 0 4px 12px rgba(191, 90, 242, 0.2);
-  --focus-ring: 0 0 0 4px rgba(10, 132, 255, 0.3);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-glow-blue: 0 4px 12px rgba(16, 185, 129, 0.15); /* Soft emerald glow */
+  --shadow-glow-green: 0 4px 12px rgba(16, 185, 129, 0.15);
+  --shadow-glow-purple: 0 4px 12px rgba(191, 90, 242, 0.15);
+  --focus-ring: 0 0 0 4px rgba(16, 185, 129, 0.2); /* High-end focus ring glow */
 
-  --glass-blur: blur(16px);
-  --glass-blur-sm: blur(8px);
-  --glass-blur-lg: blur(24px);
+  --glass-blur: blur(20px);
+  --glass-blur-sm: blur(10px);
+  --glass-blur-lg: blur(30px);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -78,43 +78,43 @@
   :root {
     color-scheme: light;
 
-    --bg-main: #F5F5F7;
-    --bg-page-2: #E5E5EA;
-    --bg-page-3: #D1D1D6;
+    --bg-main: #F4F5F6;
+    --bg-page-2: #E9EBEE;
+    --bg-page-3: #DFE2E6;
     --bg-card: rgba(255, 255, 255, 0.7);
     --bg-card-strong: #FFFFFF;
-    --bg-glass: rgba(255, 255, 255, 0.5);
-    --bg-field: rgba(0, 0, 0, 0.05);
-    --bg-field-hover: rgba(0, 0, 0, 0.08);
+    --bg-glass: rgba(255, 255, 255, 0.55);
+    --bg-field: rgba(0, 0, 0, 0.04);
+    --bg-field-hover: rgba(0, 0, 0, 0.06);
     --bg-raised: #FFFFFF;
-    --bg-rail: rgba(0, 0, 0, 0.05);
-    --bg-highlight: rgba(0, 122, 255, 0.1);
+    --bg-rail: rgba(0, 0, 0, 0.04);
+    --bg-highlight: rgba(5, 150, 105, 0.08);
 
-    --primary-blue: #007AFF;
+    --primary-blue: #059669; /* Light mode dark emerald green */
     --primary-purple: #AF52DE;
     --primary-pink: #FF2D55;
-    --primary: #007AFF;
-    --accent-green: #34C759;
+    --primary: #059669; /* Light mode dark emerald green */
+    --accent-green: #059669;
     --accent-yellow: #FFCC00;
     --accent-red: #FF3B30;
     --accent-orange: #FF9500;
     --accent-teal: #5AC8FA;
 
     --text-main: #1D1D1F;
-    --text-secondary: #86868B;
-    --text-soft: #A1A1A6;
-    --text-muted: #6E6E73;
+    --text-secondary: #6E6E73;
+    --text-soft: #86868B;
+    --text-muted: #86868B;
 
-    --border-subtle: rgba(0, 0, 0, 0.05);
-    --border-strong: rgba(0, 0, 0, 0.1);
-    --border-glow: rgba(0, 122, 255, 0.3);
+    --border-subtle: rgba(0, 0, 0, 0.04);
+    --border-strong: rgba(0, 0, 0, 0.08);
+    --border-glow: rgba(5, 150, 105, 0.25);
 
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.08);
-    --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.12);
-    --shadow-glow-blue: 0 4px 12px rgba(0, 122, 255, 0.2);
-    --shadow-glow-green: 0 4px 12px rgba(52, 199, 89, 0.2);
-    --shadow-glow-purple: 0 4px 12px rgba(175, 82, 222, 0.2);
-    --focus-ring: 0 0 0 4px rgba(0, 122, 255, 0.3);
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.15);
+    --shadow-glow-blue: 0 4px 12px rgba(5, 150, 105, 0.15);
+    --shadow-glow-green: 0 4px 12px rgba(5, 150, 105, 0.15);
+    --shadow-glow-purple: 0 4px 12px rgba(175, 82, 222, 0.15);
+    --focus-ring: 0 0 0 4px rgba(5, 150, 105, 0.2);
   }
 }
