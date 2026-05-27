@@ -26,30 +26,47 @@ A standalone dark-dashboard web app for estimating rideshare earnings, expenses,
 6. Click **Save result** to store a shift in this browser.
 7. Use **Export current TXT** or **Export history CSV** to download reports.
 
-## Open Locally
+## Development and Production Environment
 
-No install step is required.
+This project has been upgraded with a modern architectural and build system using **Vite**.
 
-Open the project folder and double-click:
+### Development Mode
+To run the local development server with hot-module reloading:
+1. Run `npm run dev` in your project workspace.
+2. Open the displayed local server URL (e.g. `http://localhost:5173`) in your browser.
 
-```text
-index.html
-```
+### Production Build
+To bundle the modular ES6 assets into a single compiled file:
+1. Run `npm run build` inside the project root.
+2. The bundled production assets are compiled into the `dist/index.html` bundle.
 
-The app is designed to keep working when opened directly as a local file, such as:
+### Offline and Local-First Usage
+Because of standard browser security limits on native ES6 modules over the `file:///` protocol, the source-level `index.html` should be accessed via `npm run dev`.
 
-```text
-file:///.../index.html
-```
+However, the compiled production build in the `dist` folder is fully self-contained and offline-first:
+1. Open the `dist` directory.
+2. Double-click the compiled `dist/index.html` file to run it locally over the local filesystem protocol:
+   ```text
+   file:///.../dist/index.html
+   ```
+   All calculations, saves, presets, and chatbot answers keep functioning completely offline.
 
 ## Project Structure
 
 ```text
 .
-├── index.html    # HTML structure and page content
-├── styles.css    # Dashboard layout, responsive styling, and UI states
-├── app.js        # Calculator logic, localStorage, exports, history, and events
-└── README.md     # Project documentation
+├── index.html        # Main dashboard entry structure
+├── variables.css     # CSS variables and SaaS themes
+├── components.css    # UI component stylings
+├── styles.css        # Dashboard grids and mobile overrides
+├── utils.js          # Math calculations, AI Advisor, and reporting
+├── ui.js             # DOM selectors and cockpit rendering
+├── app.js            # Unified State Store and event listeners
+├── package.json      # npm scripts and dependency definitions
+├── vite.config.js    # Vite compilation single-file configurations
+├── dist/             # Compiled production directory
+│   └── index.html    # Bundled single-file offline utility
+└── README.md         # Project documentation
 ```
 
 ## Limitations And Disclaimer

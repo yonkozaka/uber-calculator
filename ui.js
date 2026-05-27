@@ -1,5 +1,4 @@
-(function () {
-  const U = window.CalculatorUtils;
+import U from './utils.js';
 
   function setElementText(element, value) {
     if (element) element.textContent = U.safeText(value);
@@ -392,7 +391,7 @@
     container.scrollTop = container.scrollHeight;
   }
 
-  window.CalculatorUI = {
+const CalculatorUI = {
     setElementText,
     setElementClass,
     setElementDisplay,
@@ -407,4 +406,8 @@
     renderProTipDots,
     appendAdvisorMessage
   };
-}());
+
+export default CalculatorUI;
+if (typeof window !== 'undefined') {
+  window.CalculatorUI = CalculatorUI;
+}

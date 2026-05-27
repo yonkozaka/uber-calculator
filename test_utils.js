@@ -21,7 +21,13 @@ const sandbox = {
 };
 
 // 2. Load the script into the sandbox
-const utilsCode = fs.readFileSync('utils.js', 'utf8');
+let utilsCode = fs.readFileSync('utils.js', 'utf8');
+
+// Strip ES6 modules exports and imports for Node VM compatibility
+utilsCode = utilsCode
+    .replace(/import\s+[\s\S]*?\s+from\s+['"].*?['"];?/g, '')
+    .replace(/export\s+default\s+\w+;?/g, '')
+    .replace(/export\s+(const|let|function|class)/g, '$1');
 
 vm.createContext(sandbox);
 

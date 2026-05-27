@@ -1,5 +1,4 @@
-(function () {
-  const Utils = {};
+const Utils = {};
 
   Utils.safeNumber = function safeNumber(value, fallback = 0) {
     const number = Number(value);
@@ -634,5 +633,7 @@
     ].join('\n');
   };
 
+export default Utils;
+if (typeof window !== 'undefined') {
   window.CalculatorUtils = Utils;
-}());
+}

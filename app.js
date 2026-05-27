@@ -1,6 +1,5 @@
-(function () {
-  const U = window.CalculatorUtils;
-  const UI = window.CalculatorUI;
+import U from './utils.js';
+import UI from './ui.js';
 
   const STORAGE_KEY = 'uberCalculatorInputsV2';
   const LEGACY_STORAGE_KEY = 'uberCalculatorInputs';
@@ -126,6 +125,29 @@
     exports: 'Use Export current TXT for the visible calculation report, or Export history CSV in Shift History for saved shifts.'
   };
 
+  const StateStore = {
+    state: {
+      inputs: {},
+      history: []
+    },
+    listeners: new Set(),
+    subscribe(callback) {
+      this.listeners.add(callback);
+      return () => this.listeners.delete(callback);
+    },
+    updateInputs(newInputs) {
+      Object.assign(this.state.inputs, newInputs);
+      this.notify();
+    },
+    setHistory(newHistory) {
+      this.state.history = newHistory;
+      this.notify();
+    },
+    notify() {
+      this.listeners.forEach((callback) => callback(this.state));
+    }
+  };
+
   let latestResult = null;
   let periodInputSource = 'averages';
   let lastMode = fields.mode?.value || 'daily';
@@ -187,18 +209,14 @@
   }
 
   function getInputs() {
-    const data = {};
-    inputIds.forEach((id) => {
-      data[id] = fields[id]?.value ?? defaults[id] ?? '';
-    });
-    data.periodInputSource = periodInputSource;
-    return data;
+    return { ...StateStore.state.inputs, periodInputSource };
   }
 
   function setInputs(values) {
     Object.entries(values).forEach(([id, value]) => {
       if (fields[id]) fields[id].value = value;
     });
+    StateStore.updateInputs(values);
   }
 
   function saveInputs() {
@@ -209,7 +227,8 @@
     const stored = readJson(STORAGE_KEY, null) || readJson(LEGACY_STORAGE_KEY, {});
     const saved = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
     periodInputSource = saved.periodInputSource === 'totals' ? 'totals' : 'averages';
-    setInputs({ ...defaults, ...saved });
+    const initialInputs = { ...defaults, ...saved };
+    setInputs(initialInputs);
   }
 
   function syncMode() {
@@ -229,6 +248,7 @@
   function setPeriodFieldValue(id, value, activeId) {
     if (id === activeId || !fields[id]) return;
     fields[id].value = U.safeNumber(value).toFixed(periodDecimals[id] ?? 2);
+    StateStore.updateInputs({ [id]: fields[id].value });
   }
 
   function syncPeriodAmounts(activeId = null) {
@@ -264,36 +284,37 @@
   }
 
   function getMainInputObject() {
+    const inputs = StateStore.state.inputs;
     return {
-      mode: fields.mode?.value || 'daily',
+      mode: inputs.mode || 'daily',
       periodInputSource,
-      income: numberValue('income'),
-      hours: numberValue('hours'),
-      trips: numberValue('trips'),
-      miles: numberValue('miles'),
-      workingDays: Math.max(numberValue('workingDays'), 1),
-      avgIncome: numberValue('avgIncome'),
-      avgHours: numberValue('avgHours'),
-      avgMiles: numberValue('avgMiles'),
-      gasPrice: numberValue('gasPrice'),
-      mpg: numberValue('mpg'),
-      tolls: numberValue('tolls'),
-      additional: numberValue('additional'),
-      insurance: numberValue('insurance'),
-      maintenance: numberValue('maintenance'),
-      phone: numberValue('phone'),
-      otherFixed: numberValue('otherFixed'),
-      selfEmploymentTax: numberValue('selfEmploymentTax'),
-      federalTax: numberValue('federalTax'),
-      stateTax: numberValue('stateTax'),
-      deductionMode: fields.deductionMode?.value || 'standard',
-      mileageRate: numberValue('mileageRate'),
-      depreciationPerMile: numberValue('depreciationPerMile'),
-      tireWearPerMile: numberValue('tireWearPerMile'),
-      brakeWearPerMile: numberValue('brakeWearPerMile'),
-      targetDailyProfit: numberValue('targetDailyProfit'),
-      targetProfitHour: numberValue('targetProfitHour'),
-      targetProfitMile: numberValue('targetProfitMile')
+      income: U.safeNumber(inputs.income),
+      hours: U.safeNumber(inputs.hours),
+      trips: U.safeNumber(inputs.trips),
+      miles: U.safeNumber(inputs.miles),
+      workingDays: Math.max(U.safeNumber(inputs.workingDays), 1),
+      avgIncome: U.safeNumber(inputs.avgIncome),
+      avgHours: U.safeNumber(inputs.avgHours),
+      avgMiles: U.safeNumber(inputs.avgMiles),
+      gasPrice: U.safeNumber(inputs.gasPrice),
+      mpg: U.safeNumber(inputs.mpg),
+      tolls: U.safeNumber(inputs.tolls),
+      additional: U.safeNumber(inputs.additional),
+      insurance: U.safeNumber(inputs.insurance),
+      maintenance: U.safeNumber(inputs.maintenance),
+      phone: U.safeNumber(inputs.phone),
+      otherFixed: U.safeNumber(inputs.otherFixed),
+      selfEmploymentTax: U.safeNumber(inputs.selfEmploymentTax),
+      federalTax: U.safeNumber(inputs.federalTax),
+      stateTax: U.safeNumber(inputs.stateTax),
+      deductionMode: inputs.deductionMode || 'standard',
+      mileageRate: U.safeNumber(inputs.mileageRate),
+      depreciationPerMile: U.safeNumber(inputs.depreciationPerMile),
+      tireWearPerMile: U.safeNumber(inputs.tireWearPerMile),
+      brakeWearPerMile: U.safeNumber(inputs.brakeWearPerMile),
+      targetDailyProfit: U.safeNumber(inputs.targetDailyProfit),
+      targetProfitHour: U.safeNumber(inputs.targetProfitHour),
+      targetProfitMile: U.safeNumber(inputs.targetProfitMile)
     };
   }
 
@@ -364,19 +385,68 @@
     ]);
   }
 
+  function updateStateFromDOM() {
+    const data = {};
+    inputIds.forEach((id) => {
+      if (fields[id]) {
+        data[id] = fields[id].value;
+      }
+    });
+    StateStore.updateInputs(data);
+  }
+
   function calculate(activeId = null) {
-    syncMode();
-    syncPeriodAmounts(activeId);
-    const mainInput = getMainInputObject();
-    latestResult = U.calculateCore(mainInput);
-    const tripDecision = U.calculateTripDecision(buildTripDecisionInput(mainInput));
-    UI.renderResults(els, latestResult, renderScenarioComparison);
-    UI.renderTripDecision(els, tripDecision);
-    UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult));
-    UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`);
-    renderActiveProTip();
-    saveInputs();
-    return latestResult;
+    try {
+      updateStateFromDOM();
+      syncMode();
+      syncPeriodAmounts(activeId);
+      const mainInput = getMainInputObject();
+      latestResult = U.calculateCore(mainInput);
+      const tripDecision = U.calculateTripDecision(buildTripDecisionInput(mainInput));
+      
+      try {
+        UI.renderResults(els, latestResult, renderScenarioComparison);
+      } catch (error) {
+        console.error("UI Error in renderResults:", error);
+        UI.setElementText(els.savedStatus, "UI Error. Click Reset All.");
+        if (els.savedStatus) {
+          els.savedStatus.classList.remove('good', 'warn');
+          els.savedStatus.classList.add('bad');
+        }
+      }
+      
+      try {
+        UI.renderTripDecision(els, tripDecision);
+      } catch (error) {
+        console.error("UI Error in renderTripDecision:", error);
+      }
+      
+      try {
+        UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult));
+      } catch (error) {
+        console.error("UI Error in renderSmartSuggestions:", error);
+      }
+      
+      try {
+        UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`);
+      } catch (error) {
+        console.error("UI Error in heroReadout text:", error);
+      }
+      
+      try {
+        renderActiveProTip();
+      } catch (error) {
+        console.error("UI Error in renderActiveProTip:", error);
+      }
+      
+      saveInputs();
+      return latestResult;
+    } catch (calcError) {
+      console.error("Core calculation error:", calcError);
+      UI.setElementText(els.heroReadout, "Calculation error. Click Reset.");
+      UI.setElementText(els.savedStatus, "Error. Click Reset All.");
+      return null;
+    }
   }
 
   function getActiveTip() {
@@ -386,8 +456,12 @@
   }
 
   function renderActiveProTip() {
-    UI.renderProTip(els, getActiveTip());
-    UI.renderProTipDots(els, proTips, activeTipIndex);
+    try {
+      UI.renderProTip(els, getActiveTip());
+      UI.renderProTipDots(els, proTips, activeTipIndex);
+    } catch (error) {
+      console.error("UI Error in renderActiveProTip:", error);
+    }
   }
 
   function showTip(index) {
@@ -447,11 +521,19 @@
   }
 
   function renderHistory() {
-    UI.renderHistory(els, getHistory());
+    try {
+      UI.renderHistory(els, getHistory());
+    } catch (error) {
+      console.error("UI Error in renderHistory:", error);
+    }
   }
 
   function renderAnalytics() {
-    UI.renderAnalytics(els, getHistory());
+    try {
+      UI.renderAnalytics(els, getHistory());
+    } catch (error) {
+      console.error("UI Error in renderAnalytics:", error);
+    }
   }
 
   function resetForm() {
@@ -576,12 +658,20 @@
   }
 
   function sendAdvisorQuestion(rawQuestion) {
-    const question = U.safeText(rawQuestion).trim();
-    if (!question) return;
-    const result = latestResult || calculate();
-    UI.appendAdvisorMessage(els.advisorMessages, 'user', question);
-    UI.appendAdvisorMessage(els.advisorMessages, 'assistant', U.buildAdvisorReply(question, result));
-    if (els.advisorInput) els.advisorInput.value = '';
+    try {
+      const question = U.safeText(rawQuestion).trim();
+      if (!question) return;
+      const result = latestResult || calculate();
+      try {
+        UI.appendAdvisorMessage(els.advisorMessages, 'user', question);
+        UI.appendAdvisorMessage(els.advisorMessages, 'assistant', U.buildAdvisorReply(question, result));
+      } catch (error) {
+        console.error("UI Error in sendAdvisorQuestion UI render:", error);
+      }
+      if (els.advisorInput) els.advisorInput.value = '';
+    } catch (error) {
+      console.error("Error in sendAdvisorQuestion logic:", error);
+    }
   }
 
   const debouncedCalculate = U.debounce((id) => {
@@ -652,6 +742,24 @@
       });
     });
 
+    // Tab switcher controller
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetTab = button.dataset.tab;
+        tabButtons.forEach((btn) => {
+          const isActive = btn === button;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        tabContents.forEach((content) => {
+          const isTarget = content.id === `tab-${targetTab}`;
+          content.classList.toggle('active', isTarget);
+        });
+      });
+    });
+
     restoreInputs();
     lastMode = fields.mode?.value || 'daily';
     calculate();
@@ -662,4 +770,3 @@
   }
 
   init();
-}());

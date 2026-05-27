@@ -70,8 +70,19 @@ const sandbox = {
     JSON: JSON
 };
 
-const utilsCode = fs.readFileSync('utils.js', 'utf8');
-const uiCode = fs.readFileSync('ui.js', 'utf8');
+let utilsCode = fs.readFileSync('utils.js', 'utf8');
+let uiCode = fs.readFileSync('ui.js', 'utf8');
+
+// Strip ES6 modules exports and imports for Node VM compatibility
+const sanitize = (code) => code
+    .replace(/import\s+U\s+from\s+['"].*?['"];?/g, 'var U = U || window.CalculatorUtils;')
+    .replace(/import\s+UI\s+from\s+['"].*?['"];?/g, 'var UI = UI || window.CalculatorUI;')
+    .replace(/import\s+[\s\S]*?\s+from\s+['"].*?['"];?/g, '')
+    .replace(/export\s+default\s+\w+;?/g, '')
+    .replace(/export\s+(const|let|function|class)/g, '$1');
+
+utilsCode = sanitize(utilsCode);
+uiCode = sanitize(uiCode);
 
 vm.createContext(sandbox);
 

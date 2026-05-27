@@ -74,11 +74,14 @@
 
     <div class="dashboard-grid">
       <section class="input-column" aria-label="Calculator inputs">
-        <div class="section-kicker">
-          <span>Input workspace</span>
-          <strong>Build the shift model</strong>
+        <div class="tabs-container" role="tablist" aria-label="Calculator Input Panels">
+          <button class="tab-button active" data-tab="active-shift" role="tab" aria-selected="true" aria-controls="tab-active-shift" type="button">Active Shift</button>
+          <button class="tab-button" data-tab="trip-evaluator" role="tab" aria-selected="false" aria-controls="tab-trip-evaluator" type="button">Trip Evaluator</button>
+          <button class="tab-button" data-tab="operating-costs" role="tab" aria-selected="false" aria-controls="tab-operating-costs" type="button">Operating Costs</button>
+          <button class="tab-button" data-tab="scenario-analysis" role="tab" aria-selected="false" aria-controls="tab-scenario-analysis" type="button">Scenario Analysis</button>
         </div>
 
+        <div class="tab-content active" id="tab-active-shift" role="tabpanel">
         <div class="card input-card priority-card" id="tripSection">
           <div class="card-heading">
             <div class="step-badge">01</div>
@@ -141,6 +144,41 @@
           </div>
         </div>
 
+        <div class="card action-card">
+          <div class="card-heading">
+            <div class="step-badge">06</div>
+            <div>
+              <h2>Presets and actions</h2>
+              <p>Load a reference pattern, calculate, save a shift, or export the current report.</p>
+            </div>
+          </div>
+          <div class="preset-row">
+            <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
+            <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
+            <button class="blue" type="button" data-preset="strong">Strong Uber Day</button>
+            <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
+          </div>
+          <div class="actions">
+            <button id="calculateBtn" class="primary-action" type="button">Calculate</button>
+            <button id="saveBtn" class="blue success-action" type="button">Save result</button>
+            <button id="downloadBtn" class="secondary export-action" type="button">Export current TXT</button>
+          </div>
+        </div>
+
+        <div class="card pro-tip-card" id="proTipsCard" tabindex="0">
+          <div class="tip-icon" aria-hidden="true">PT</div>
+          <div class="tip-content">
+            <span class="eyebrow" id="proTipCategory">Profit strategy</span>
+            <h2 id="proTipTitle">Track the hidden cost of every mile.</h2>
+            <p id="proTipText">Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
+            <small id="proTipMeta">Tips rotate automatically every few seconds.</small>
+            <div class="tip-dots" id="proTipDots" aria-label="Pro tip progress"></div>
+          </div>
+          <div class="tip-art" aria-hidden="true"></div>
+        </div>
+        </div> <!-- Closes tab-active-shift -->
+
+        <div class="tab-content" id="tab-trip-evaluator" role="tabpanel">
         <div class="card trip-decision-card" id="tripDecisionCard">
           <div class="card-heading">
             <div class="step-badge">P1</div>
@@ -193,7 +231,9 @@
             </div>
           </div>
         </div>
+        </div> <!-- Closes tab-trip-evaluator -->
 
+        <div class="tab-content" id="tab-operating-costs" role="tabpanel">
         <div class="card input-card" id="fixedCostsSection">
           <div class="card-heading">
             <div class="step-badge">02</div>
@@ -284,7 +324,7 @@
           </div>
         </div>
 
-        <div class="card input-card">
+        <div class="card input-card" id="goalsSection">
           <div class="card-heading">
             <div class="step-badge">05</div>
             <div>
@@ -307,40 +347,9 @@
             </div>
           </div>
         </div>
+        </div> <!-- Closes tab-operating-costs -->
 
-        <div class="card action-card">
-          <div class="card-heading">
-            <div class="step-badge">06</div>
-            <div>
-              <h2>Presets and actions</h2>
-              <p>Load a reference pattern, calculate, save a shift, or export the current report.</p>
-            </div>
-          </div>
-          <div class="preset-row">
-            <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
-            <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
-            <button class="blue" type="button" data-preset="strong">Strong Uber Day</button>
-            <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
-          </div>
-          <div class="actions">
-            <button id="calculateBtn" class="primary-action" type="button">Calculate</button>
-            <button id="saveBtn" class="blue success-action" type="button">Save result</button>
-            <button id="downloadBtn" class="secondary export-action" type="button">Export current TXT</button>
-          </div>
-        </div>
-
-        <div class="card pro-tip-card" id="proTipsCard" tabindex="0">
-          <div class="tip-icon" aria-hidden="true">PT</div>
-          <div class="tip-content">
-            <span class="eyebrow" id="proTipCategory">Profit strategy</span>
-            <h2 id="proTipTitle">Track the hidden cost of every mile.</h2>
-            <p id="proTipText">Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
-            <small id="proTipMeta">Tips rotate automatically every few seconds.</small>
-            <div class="tip-dots" id="proTipDots" aria-label="Pro tip progress"></div>
-          </div>
-          <div class="tip-art" aria-hidden="true"></div>
-        </div>
-
+        <div class="tab-content" id="tab-scenario-analysis" role="tabpanel">
         <div class="card scenario-panel">
           <div class="card-heading">
             <div class="step-badge">07</div>
@@ -410,6 +419,7 @@
               <tbody id="scenarioBody"></tbody>
             </table>
           </div>
+        </div>
         </div>
       </section>
 
@@ -590,8 +600,6 @@
       <span id="mobileTrueHour">$0.00</span>
     </div>
   </div>
-  <script src="utils.js"></script>
-  <script src="ui.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -64,6 +64,11 @@
   --shadow-glow-purple: 0 4px 12px rgba(191, 90, 242, 0.15);
   --focus-ring: 0 0 0 4px rgba(16, 185, 129, 0.2); /* High-end focus ring glow */
 
+  /* Premium Gradients & Borders */
+  --gradient-emerald: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  --gradient-glow: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0) 100%);
+  --border-glow-premium: rgba(16, 185, 129, 0.35);
+
   --glass-blur: blur(20px);
   --glass-blur-sm: blur(10px);
   --glass-blur-lg: blur(30px);
@@ -116,5 +121,10 @@
     --shadow-glow-green: 0 4px 12px rgba(5, 150, 105, 0.15);
     --shadow-glow-purple: 0 4px 12px rgba(175, 82, 222, 0.15);
     --focus-ring: 0 0 0 4px rgba(5, 150, 105, 0.2);
+
+    /* Premium Gradients & Borders */
+    --gradient-emerald: linear-gradient(180deg, #059669 0%, #047857 100%);
+    --gradient-glow: linear-gradient(180deg, rgba(5, 150, 105, 0.15) 0%, rgba(5, 150, 105, 0) 100%);
+    --border-glow-premium: rgba(5, 150, 105, 0.35);
   }
 }
