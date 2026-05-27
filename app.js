@@ -155,6 +155,9 @@ import UI from './ui.js';
   let proTipTimer = null;
   let proTipsPaused = false;
 
+  // ⚡ Bolt: Performance - Cache Intl formatter
+  const timeFormatter = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' });
+
   const proTips = [
     { key: 'profit', category: 'Profit strategy', title: 'Judge the shift by true net, not gross pay.', text: 'Gross income can look strong while taxes, fuel, and wear quietly erase the margin.' },
     { key: 'gas', category: 'Fuel control', title: 'Gas pressure rises fastest on low-MPG long pickups.', text: 'When gas takes a large share of income, prioritize shorter pickups and denser areas.' },
@@ -570,7 +573,7 @@ import UI from './ui.js';
     const savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(history), 'Could not save shift history');
     const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
     if (savedHistory && savedResult) {
-      UI.setElementText(els.savedStatus, `Shift saved at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+      UI.setElementText(els.savedStatus, `Shift saved at ${timeFormatter.format(new Date())}`);
       renderHistory();
       renderAnalytics();
     }
