@@ -8,3 +8,7 @@
 ## 2025-05-25 - Prevent accidental data loss on global reset actions
 **Learning:** Destructive actions that clear substantial amounts of user input, like a "Reset All" button in a complex form, can lead to significant frustration if clicked accidentally. This is especially true on mobile or smaller screens where mis-taps are more frequent. Providing a confirmation step serves as a critical safety net for these global actions.
 **Action:** Added a native `confirm()` prompt inside the `resetForm` handler to ensure intentionality before wiping all data and localStorage state.
+
+## 2025-05-28 - ARIA live regions for dynamically injected alerts
+**Learning:** In single-page applications where validation messages, alerts, and status indicators (like "Live calculation" or "Shift saved") are dynamically injected into the DOM without a page reload, screen readers will completely ignore these critical updates unless they are wrapped in an ARIA live region. Users relying on assistive technology are left unaware of successful actions or critical errors.
+**Action:** Added `role="alert" aria-live="assertive" aria-atomic="true"` to dynamic error/warning containers, and `role="status" aria-live="polite" aria-atomic="true"` to non-intrusive status indicators, ensuring screen readers announce these DOM updates immediately.
