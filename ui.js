@@ -205,7 +205,9 @@ import U from './utils.js';
     setElementDisplay(els.historyEmpty, history.length ? 'none' : 'block');
     if (!els.historyBody) return;
 
-    const rows = history.map(entry => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    history.forEach(entry => {
       const tr = document.createElement('tr');
 
       const savedAt = U.formatDateTime(entry.savedAt);
@@ -235,10 +237,10 @@ import U from './utils.js';
       tdBtn.appendChild(btn);
 
       tr.appendChild(tdBtn);
-      return tr;
+      fragment.appendChild(tr);
     });
 
-    els.historyBody.replaceChildren(...rows);
+    els.historyBody.replaceChildren(fragment);
   }
 
   function renderAnalytics(els, history) {
