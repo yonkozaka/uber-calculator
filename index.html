@@ -435,7 +435,7 @@
               <h2>Results summary</h2>
               <p>Cash expenses plus fixed cost share, tax estimate, and vehicle wear.</p>
             </div>
-            <span id="savedStatus" class="live-dot">Live calculation</span>
+            <span id="savedStatus" class="live-dot" role="status" aria-live="polite" aria-atomic="true">Live calculation</span>
           </div>
           <div class="top-results" aria-label="Top summary">
             <div class="mini-result">
@@ -457,7 +457,7 @@
           </div>
           <div class="results-grid" id="resultsGrid"></div>
           <div class="recommendation" id="recommendation">Calculate to see the final recommendation.</div>
-          <div class="alerts" id="alerts"></div>
+          <div class="alerts" id="alerts" role="alert" aria-live="assertive" aria-atomic="true"></div>
         </div>
 
         <div class="card smart-suggestions-card" id="smartSuggestionsCard">
