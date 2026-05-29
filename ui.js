@@ -203,6 +203,11 @@ import U from './utils.js';
 
   function renderHistory(els, history) {
     setElementDisplay(els.historyEmpty, history.length ? 'none' : 'block');
+
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+    if (clearHistoryBtn) clearHistoryBtn.disabled = history.length === 0;
+    if (exportHistoryBtn) exportHistoryBtn.disabled = history.length === 0;
     if (!els.historyBody) return;
 
     // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
