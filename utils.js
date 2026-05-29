@@ -95,7 +95,11 @@ const Utils = {};
 
   Utils.toCsv = function toCsv(rows) {
     return rows.map((row) => row.map((cell) => {
-      const value = String(cell ?? '');
+      let value = String(cell ?? '');
+      // Prevent CSV Injection: prepend single quote to formula-like inputs
+      if (/^[=+\-@]/.test(value) && isNaN(Number(value))) {
+        value = `'${value}`;
+      }
       return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
     }).join(',')).join('\n');
   };
