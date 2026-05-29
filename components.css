@@ -946,3 +946,15 @@ select option {
     transition-duration: 0.01ms !important;
   }
 }
+
+button:disabled,
+button.secondary:disabled,
+button.danger:disabled,
+button.blue:disabled,
+.icon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: grayscale(0.5);
+}
