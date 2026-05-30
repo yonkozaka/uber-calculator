@@ -746,23 +746,58 @@ import UI from './ui.js';
     });
 
     // Tab switcher controller
-    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabButtons = Array.from(document.querySelectorAll('.tab-button'));
     const tabContents = document.querySelectorAll('.tab-content');
-    tabButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const targetTab = button.dataset.tab;
-        tabButtons.forEach((btn) => {
-          const isActive = btn === button;
-          btn.classList.toggle('active', isActive);
+
+    function switchTab(targetButton) {
+      if (!targetButton) return;
+      const targetTab = targetButton.dataset?.tab || targetButton.getAttribute('data-tab');
+      if (!targetTab) return;
+      tabButtons.forEach((btn) => {
+        if (!btn) return;
+        const isActive = btn === targetButton;
+        if (btn.classList && btn.classList.toggle) btn.classList.toggle('active', isActive);
+        if (btn.setAttribute) {
           btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        });
-        tabContents.forEach((content) => {
-          const isTarget = content.id === `tab-${targetTab}`;
-          content.classList.toggle('active', isTarget);
-        });
+          btn.setAttribute('tabindex', isActive ? '0' : '-1');
+        }
+      });
+      tabContents.forEach((content) => {
+        if (!content) return;
+        const isTarget = content.id === `tab-${targetTab}`;
+        if (content.classList && content.classList.toggle) content.classList.toggle('active', isTarget);
+      });
+      if (targetButton.focus) targetButton.focus();
+    }
+
+    tabButtons.forEach((button, index) => {
+      if (!button || !button.classList || !button.classList.contains) return;
+      // Set initial tabindex
+      button.setAttribute('tabindex', button.classList.contains('active') ? '0' : '-1');
+
+      button.addEventListener('click', () => switchTab(button));
+
+      button.addEventListener('keydown', (e) => {
+        let newIndex;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          newIndex = (index + 1) % tabButtons.length;
+          e.preventDefault();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          newIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+          e.preventDefault();
+        } else if (e.key === 'Home') {
+          newIndex = 0;
+          e.preventDefault();
+        } else if (e.key === 'End') {
+          newIndex = tabButtons.length - 1;
+          e.preventDefault();
+        }
+
+        if (newIndex !== undefined && tabButtons[newIndex]) {
+          switchTab(tabButtons[newIndex]);
+        }
       });
     });
-
     restoreInputs();
     lastMode = fields.mode?.value || 'daily';
     calculate();
