@@ -124,6 +124,13 @@ try {
     assert.strictEqual(Utils.toCsv([['test"quote']]), '"test""quote"');
     assert.strictEqual(Utils.toCsv([['a,b', 'c']]), '"a,b",c');
     assert.strictEqual(Utils.toCsv([]), '');
+    // CSV Injection tests
+    assert.strictEqual(Utils.toCsv([['=cmd|calc']]), "'=cmd|calc", "Formula starting with = should be quoted");
+    assert.strictEqual(Utils.toCsv([['+A1']]), "'+A1", "Formula starting with + should be quoted");
+    assert.strictEqual(Utils.toCsv([['-B2']]), "'-B2", "Formula starting with - should be quoted");
+    assert.strictEqual(Utils.toCsv([['@SUM(A1:A5)']]), "'@SUM(A1:A5)", "Formula starting with @ should be quoted");
+    assert.strictEqual(Utils.toCsv([['-15.5']]), "-15.5", "Valid negative number should not be quoted");
+    assert.strictEqual(Utils.toCsv([['+42']]), "+42", "Valid positive number should not be quoted");
     console.log("✓ Utils.toCsv");
 
     // Test: Utils.deductionLabel

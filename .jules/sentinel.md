@@ -1,4 +1,4 @@
-## 2025-02-21 - Add Content Security Policy
-**Vulnerability:** The application was lacking a Content Security Policy (CSP), which is a crucial defense-in-depth mechanism to mitigate Cross-Site Scripting (XSS) and other code injection attacks.
-**Learning:** The application is a standalone, client-side web app without a build step or external dependencies. This makes it an ideal candidate for a strict CSP, but since it relies heavily on inline styles for layout adjustments, `unsafe-inline` was required for styles.
-**Prevention:** Always implement a baseline CSP in web applications to restrict the execution of unauthorized scripts and enforce secure resource loading.
+## 2025-02-14 - Prevent CSV Injection in toCsv
+**Vulnerability:** The application's `Utils.toCsv` exported user-generated inputs (like shift history entries) directly into a CSV without sanitizing fields that start with formula characters (`=`, `+`, `-`, `@`). This could lead to a CSV Injection (Formula Injection) vulnerability if the CSV is opened in spreadsheet software like Excel, where malicious formulas could be executed.
+**Learning:** The previous implementation failed to account for DDE (Dynamic Data Exchange) and macro execution risks inherent in CSV files opened by common spreadsheet applications. Adding a simple regex check is necessary but requires care not to escape valid numeric data (e.g., negative numbers like `-15.5`).
+**Prevention:** Whenever exporting data to a CSV format, always sanitize any field starting with formula execution characters unless it represents a valid numeric data type intended for calculation. Prefixing these fields with a single quote (`'`) safely coerces the spreadsheet to interpret the value as a literal string.
