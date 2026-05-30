@@ -551,8 +551,9 @@ import UI from './ui.js';
   function saveResult() {
     const result = latestResult || calculate();
     const history = getHistory();
+    // Use cryptographically secure UUID if available, fallback to weak RNG
     const entry = {
-      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       savedAt: new Date().toISOString(),
       mode: result.mode,
       income: result.income,
