@@ -53,7 +53,11 @@ function createMockElement(id) {
                 return [];
             },
             replaceChildren: function(...children) {
-                this.children = children;
+                if (children.length === 1 && children[0].children !== undefined) {
+                    this.children = children[0].children;
+                } else {
+                    this.children = children;
+                }
             },
             appendChild: function(child) {
                 if(!this.children) this.children = [];
@@ -78,6 +82,15 @@ const mockDocument = {
         el.click = () => {};
         el.remove = () => {};
         return el;
+    },
+    createDocumentFragment: () => {
+        return {
+            appendChild: function(child) {
+                if (!this.children) this.children = [];
+                this.children.push(child);
+            },
+            children: []
+        };
     },
     body: {
         appendChild: () => {}
