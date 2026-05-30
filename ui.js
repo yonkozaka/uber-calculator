@@ -82,15 +82,16 @@ import U from './utils.js';
 
     if (!els.alerts) return;
 
-    const alertElements = messages.map((message) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    messages.forEach((message) => {
       const className = message.type === 'good' ? 'good' : message.type === 'bad' ? 'bad' : message.type === 'info' ? 'info' : '';
       const div = document.createElement('div');
       div.className = `alert ${className}`.trim();
       div.textContent = message.text;
-      return div;
+      fragment.appendChild(div);
     });
-
-    els.alerts.replaceChildren(...alertElements);
+    els.alerts.replaceChildren(fragment);
   }
 
   function renderSummary(els, result) {
@@ -121,17 +122,18 @@ import U from './utils.js';
 
     if (!els.summaryBody) return;
 
-    const trElements = rows.map((row) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    rows.forEach((row) => {
       const tr = document.createElement('tr');
       row.forEach((cellText) => {
         const td = document.createElement('td');
         td.textContent = cellText;
         tr.appendChild(td);
       });
-      return tr;
+      fragment.appendChild(tr);
     });
-
-    els.summaryBody.replaceChildren(...trElements);
+    els.summaryBody.replaceChildren(fragment);
   }
 
   function renderResults(els, result, renderScenarioComparison) {
@@ -184,7 +186,9 @@ import U from './utils.js';
   function renderSmartSuggestions(els, suggestions) {
     if (!els.smartSuggestions) return;
     const list = Array.isArray(suggestions) ? suggestions : [];
-    const articles = list.map((suggestion) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    list.forEach((suggestion) => {
       const article = document.createElement('article');
       article.className = `suggestion-item ${suggestion.type || 'info'}`;
 
@@ -196,9 +200,9 @@ import U from './utils.js';
 
       article.appendChild(strong);
       article.appendChild(p);
-      return article;
+      fragment.appendChild(article);
     });
-    els.smartSuggestions.replaceChildren(...articles);
+    els.smartSuggestions.replaceChildren(fragment);
   }
 
   function renderHistory(els, history) {
@@ -285,7 +289,9 @@ import U from './utils.js';
 
     if (!els.analyticsGrid) return;
 
-    const metricElements = metrics.map(([label, value]) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    metrics.forEach(([label, value]) => {
       const div = document.createElement('div');
       div.className = 'metric';
 
@@ -297,10 +303,9 @@ import U from './utils.js';
       span.textContent = value;
       div.appendChild(span);
 
-      return div;
+      fragment.appendChild(div);
     });
-
-    els.analyticsGrid.replaceChildren(...metricElements);
+    els.analyticsGrid.replaceChildren(fragment);
   }
 
   function renderScenarioComparison(els, scenarioInputs) {
@@ -310,7 +315,9 @@ import U from './utils.js';
 
     if (!els.scenarioBody) return;
 
-    const rows = scenarioInputs.map((item, index) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    scenarioInputs.forEach((item, index) => {
       const isBest = index === bestIndex;
       const tr = document.createElement('tr');
       if (isBest) tr.className = 'best-row';
@@ -347,10 +354,9 @@ import U from './utils.js';
       tdTrueProfitPerMile.textContent = U.money(item.result.trueProfitPerMile);
       tr.appendChild(tdTrueProfitPerMile);
 
-      return tr;
+      fragment.appendChild(tr);
     });
-
-    els.scenarioBody.replaceChildren(...rows);
+    els.scenarioBody.replaceChildren(fragment);
   }
 
   function renderProTip(els, tip) {

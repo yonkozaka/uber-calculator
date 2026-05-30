@@ -7,3 +7,6 @@
 ## 2024-06-25 - Avoid Spread Operator on Large Arrays
 **Learning:** Using the spread operator (`...array`) to pass large arrays as arguments to functions like `replaceChildren()` can cause "Maximum call stack size exceeded" errors and is inefficient.
 **Action:** Use a `DocumentFragment` to batch DOM insertions when rendering lists, especially those of unbound size like history entries.
+## 2024-07-28 - Update test mock DOM for DocumentFragment
+**Learning:** When optimizing DOM rendering with `DocumentFragment` to avoid call stack limits (e.g., when spreading arrays into `replaceChildren`), existing mock DOM implementations in tests must be updated to support the new API (e.g., adding `createDocumentFragment` and handling the fragment argument in `replaceChildren`).
+**Action:** Always verify and update custom test DOM mocks when introducing modern or different DOM APIs in application code to prevent test suite failures.

@@ -34,7 +34,11 @@ function createMockElement(id) {
                 this.children.push(child);
             },
             replaceChildren: function(...children) {
-                this.children = children;
+                if (children.length === 1 && children[0].children !== undefined) {
+                    this.children = [...children[0].children];
+                } else {
+                    this.children = [...children];
+                }
             },
             setAttribute: function(name, value) {
                 if (!this.attributes) this.attributes = {};
@@ -51,6 +55,15 @@ const mockDocument = {
         const el = createMockElement('temp-' + Math.random());
         el.tagName = tag.toUpperCase();
         return el;
+    },
+    createDocumentFragment: () => {
+        return {
+            appendChild: function(child) {
+                if (!this.children) this.children = [];
+                this.children.push(child);
+            },
+            children: []
+        };
     }
 };
 
