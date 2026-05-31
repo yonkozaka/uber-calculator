@@ -128,6 +128,8 @@ try {
     assert.strictEqual(Utils.toCsv([['=cmd|calc']]), "'=cmd|calc", "Formula starting with = should be quoted");
     assert.strictEqual(Utils.toCsv([['+A1']]), "'+A1", "Formula starting with + should be quoted");
     assert.strictEqual(Utils.toCsv([['-B2']]), "'-B2", "Formula starting with - should be quoted");
+    assert.strictEqual(Utils.toCsv([[' =cmd']]), "' =cmd", "Formula starting with space should be quoted");
+    assert.strictEqual(Utils.toCsv([['\t+A1']]), "'\t+A1", "Formula starting with tab should be quoted");
     assert.strictEqual(Utils.toCsv([['@SUM(A1:A5)']]), "'@SUM(A1:A5)", "Formula starting with @ should be quoted");
     assert.strictEqual(Utils.toCsv([['-15.5']]), "-15.5", "Valid negative number should not be quoted");
     assert.strictEqual(Utils.toCsv([['+42']]), "+42", "Valid positive number should not be quoted");
