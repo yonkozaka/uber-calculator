@@ -10,3 +10,6 @@
 ## 2024-07-28 - Update test mock DOM for DocumentFragment
 **Learning:** When optimizing DOM rendering with `DocumentFragment` to avoid call stack limits (e.g., when spreading arrays into `replaceChildren`), existing mock DOM implementations in tests must be updated to support the new API (e.g., adding `createDocumentFragment` and handling the fragment argument in `replaceChildren`).
 **Action:** Always verify and update custom test DOM mocks when introducing modern or different DOM APIs in application code to prevent test suite failures.
+## 2024-05-18 - Minimizing redundant DOM reads
+**Learning:** Repeatedly polling `.value` from the DOM during frequent calculation cycles (e.g., debounced keystrokes) causes unnecessary overhead.
+**Action:** Minimize redundant DOM reads by fetching the DOM state once at the start and accessing the cached state, rather than repeatedly polling the DOM.

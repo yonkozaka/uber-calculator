@@ -208,7 +208,9 @@ import UI from './ui.js';
   }
 
   function numberValue(id) {
-    return U.safeNumber(fields[id]?.value);
+    // ⚡ Bolt: Performance - Minimize DOM reads
+    const cached = StateStore.state.inputs[id];
+    return U.safeNumber(cached !== undefined ? cached : fields[id]?.value);
   }
 
   function getInputs() {
@@ -235,7 +237,7 @@ import UI from './ui.js';
   }
 
   function syncMode() {
-    const isDaily = fields.mode?.value === 'daily';
+    const isDaily = (StateStore.state.inputs.mode || fields.mode?.value) === 'daily';
     if (els.periodInputs) els.periodInputs.classList.toggle('active', !isDaily);
     UI.setElementText(labels.income, isDaily ? 'Total Uber income ($)' : 'Calculated income ($)');
     UI.setElementText(labels.hours, isDaily ? 'Total working hours' : 'Calculated working hours');
@@ -255,7 +257,7 @@ import UI from './ui.js';
   }
 
   function syncPeriodAmounts(activeId = null) {
-    if (fields.mode?.value === 'daily') return;
+    if ((StateStore.state.inputs.mode || fields.mode?.value) === 'daily') return;
     const workingDays = Math.max(numberValue('workingDays'), 1);
 
     if (Object.prototype.hasOwnProperty.call(periodAverageByTotal, activeId)) {
@@ -276,7 +278,7 @@ import UI from './ui.js';
   }
 
   function preparePeriodModeAfterModeChange() {
-    const currentMode = fields.mode?.value || 'daily';
+    const currentMode = StateStore.state.inputs.mode || fields.mode?.value || 'daily';
     if (lastMode === 'daily' && currentMode !== 'daily') {
       fields.avgIncome.value = numberValue('income').toFixed(periodDecimals.avgIncome);
       fields.avgHours.value = numberValue('hours').toFixed(periodDecimals.avgHours);
