@@ -97,7 +97,7 @@ const Utils = {};
     return rows.map((row) => row.map((cell) => {
       let value = String(cell ?? '');
       // Prevent CSV Injection: prepend single quote to formula-like inputs
-      if (/^[=+\-@]/.test(value) && isNaN(Number(value))) {
+      if (/^\s*[=+\-@]/.test(value) && isNaN(Number(value))) {
         value = `'${value}`;
       }
       return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
