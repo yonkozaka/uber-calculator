@@ -375,15 +375,17 @@ import U from './utils.js';
 
   function renderProTipDots(els, tips, activeIndex) {
     if (!els.proTipDots) return;
-    const buttons = tips.map((tip, index) => {
+    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    const fragment = document.createDocumentFragment();
+    tips.forEach((tip, index) => {
       const button = document.createElement('button');
       button.className = `tip-dot ${index === activeIndex ? 'active' : ''}`;
       button.type = 'button';
       button.setAttribute('data-tip-index', index);
       button.setAttribute('aria-label', `Show tip ${index + 1}: ${tip.category}`);
-      return button;
+      fragment.appendChild(button);
     });
-    els.proTipDots.replaceChildren(...buttons);
+    els.proTipDots.replaceChildren(fragment);
   }
 
   function appendAdvisorMessage(container, role, text) {
