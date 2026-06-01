@@ -542,6 +542,7 @@ import UI from './ui.js';
   }
 
   function resetForm() {
+    if (!confirm('Reset all inputs to their default values?')) return;
     safeStorageRemove(STORAGE_KEY, 'Could not clear saved inputs');
     setInputs(defaults);
     periodInputSource = 'averages';

@@ -19,3 +19,6 @@
 ## 2025-05-30 - WAI-ARIA tab keyboard navigation
 **Learning:** Custom tab interfaces often lack proper keyboard navigation out of the box. Users relying on keyboards need to navigate between tabs using arrow keys, rather than tabbing through every single unselected tab option.
 **Action:** Implemented the W3C automatic activation pattern for tabs. Added roving `tabindex` to ensure only the active tab is in the focus order (`0`), while setting inactive tabs to `-1`. Added a `keydown` listener handling `ArrowRight`, `ArrowLeft`, `Home`, and `End` keys to programmatically switch active tabs and focus them.
+## 2024-06-01 - Add confirmation dialog to destructive actions
+**Learning:** Destructive actions like 'Reset All' can lead to accidental data loss and frustration if they do not require user confirmation.
+**Action:** Always wrap destructive form reset or clear functions with a confirmation dialog.
