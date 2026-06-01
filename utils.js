@@ -231,12 +231,13 @@ const Utils = {};
     };
   }
 
-  function calculateTargets(input, period, netProfit, trueProfitPerHour, trueProfitPerMile) {
-    const dailyNetProfit = input.mode === 'daily' ? netProfit : Utils.safeDivide(netProfit, period.workingDays);
+  function calculateTargets(state) {
+    const { input, period, expenses, wear } = state;
+    const dailyNetProfit = input.mode === 'daily' ? expenses.netProfit : Utils.safeDivide(expenses.netProfit, period.workingDays);
     const hitDailyTarget = dailyNetProfit >= Utils.cleanNumber(input.targetDailyProfit);
     const incomeNeededForDailyTarget = Math.max(0, Utils.cleanNumber(input.targetDailyProfit) - dailyNetProfit);
     const incomeNeededForPeriodTarget = incomeNeededForDailyTarget * (input.mode === 'daily' ? 1 : period.workingDays);
-    const { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget } = Utils.evaluateTargets(trueProfitPerHour, trueProfitPerMile, input);
+    const { targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget } = Utils.evaluateTargets(wear.trueProfitPerHour, wear.trueProfitPerMile, input);
     return {
       dailyNetProfit, hitDailyTarget, incomeNeededForDailyTarget, incomeNeededForPeriodTarget, targetProfitHour, targetProfitMile, hitHourlyTarget, hitMileTarget
     };
@@ -248,7 +249,7 @@ const Utils = {};
     const expenses = calculateExpenses(input, period);
     const taxes = calculateTaxes(input, period, expenses.totalExpenses, expenses.netProfit);
     const wear = calculateWear(input, period, taxes.afterTaxProfit, expenses.netProfit);
-    const targets = calculateTargets(input, period, expenses.netProfit, wear.trueProfitPerHour, wear.trueProfitPerMile);
+    const targets = calculateTargets({ input, period, expenses, wear });
 
     const result = {
       mode: input.mode,
