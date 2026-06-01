@@ -246,7 +246,6 @@ const Utils = {};
 
   Utils.calculateCore = function calculateCore(input) {
     const period = resolvePeriod(input);
-
     const expenses = calculateExpenses(input, period);
     const taxes = calculateTaxes(input, period, expenses.totalExpenses, expenses.netProfit);
     const wear = calculateWear(input, period, taxes.afterTaxProfit, expenses.netProfit);
@@ -254,52 +253,18 @@ const Utils = {};
 
     const result = {
       mode: input.mode,
-      workingDays: period.workingDays,
-      income: period.income,
-      hours: period.hours,
-      trips: period.trips,
-      miles: period.miles,
       gasPrice: input.gasPrice,
-      mpg: expenses.mpg,
-      gasUsed: expenses.gasUsed,
-      gasCost: expenses.gasCost,
       tolls: input.tolls,
       additional: input.additional,
-      monthlyFixedCosts: expenses.monthlyFixedCosts,
-      fixedCostShare: expenses.fixedCostShare,
-      variableExpenses: expenses.variableExpenses,
-      totalExpenses: expenses.totalExpenses,
-      netProfit: expenses.netProfit,
-      profitPerHour: wear.profitPerHour,
-      profitPerMile: wear.profitPerMile,
+      deductionMode: input.deductionMode,
+      targetDailyProfit: input.targetDailyProfit,
+      ...period,
+      ...expenses,
+      ...taxes,
+      ...wear,
+      ...targets,
       averageIncomePerTrip: Utils.safeDivide(period.income, period.trips),
       averageProfitPerTrip: Utils.safeDivide(expenses.netProfit, period.trips),
-      deductionMode: input.deductionMode,
-      mileageDeduction: taxes.mileageDeduction,
-      actualExpenseDeduction: taxes.actualExpenseDeduction,
-      selectedDeduction: taxes.selectedDeduction,
-      taxableProfit: taxes.taxableProfit,
-      totalTaxRate: taxes.totalTaxRate,
-      estimatedTaxOwed: taxes.estimatedTaxOwed,
-      suggestedTaxSetAside: taxes.suggestedTaxSetAside,
-      afterTaxProfit: taxes.afterTaxProfit,
-      depreciationCost: wear.depreciationCost,
-      tireWearCost: wear.tireWearCost,
-      brakeWearCost: wear.brakeWearCost,
-      wearRate: wear.wearRate,
-      vehicleWearCost: wear.vehicleWearCost,
-      trueNetAfterWear: wear.trueNetAfterWear,
-      trueProfitPerHour: wear.trueProfitPerHour,
-      trueProfitPerMile: wear.trueProfitPerMile,
-      dailyNetProfit: targets.dailyNetProfit,
-      hitDailyTarget: targets.hitDailyTarget,
-      incomeNeededForDailyTarget: targets.incomeNeededForDailyTarget,
-      incomeNeededForPeriodTarget: targets.incomeNeededForPeriodTarget,
-      hitHourlyTarget: targets.hitHourlyTarget,
-      hitMileTarget: targets.hitMileTarget,
-      targetProfitHour: targets.targetProfitHour,
-      targetProfitMile: targets.targetProfitMile,
-      targetDailyProfit: input.targetDailyProfit,
       validation: validateInputs(input)
     };
 
