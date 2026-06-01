@@ -100,7 +100,7 @@ const Utils = {};
       if (/^\s*[=+\-@]/.test(value) && isNaN(Number(value))) {
         value = `'${value}`;
       }
-      return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+      return /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
     }).join(',')).join('\n');
   };
 

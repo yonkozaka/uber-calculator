@@ -133,6 +133,7 @@ try {
     assert.strictEqual(Utils.toCsv([['@SUM(A1:A5)']]), "'@SUM(A1:A5)", "Formula starting with @ should be quoted");
     assert.strictEqual(Utils.toCsv([['-15.5']]), "-15.5", "Valid negative number should not be quoted");
     assert.strictEqual(Utils.toCsv([['+42']]), "+42", "Valid positive number should not be quoted");
+    assert.strictEqual(Utils.toCsv([['hello\r=cmd']]), '"hello\r=cmd"', "Values with carriage returns should be quoted");
     console.log("✓ Utils.toCsv");
 
     // Test: Utils.deductionLabel
