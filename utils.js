@@ -17,8 +17,9 @@ const Utils = {};
   };
 
   Utils.safeJSONParse = function safeJSONParse(value, fallback) {
+    if (value == null) return fallback;
     try {
-      return value === null ? fallback : JSON.parse(value);
+      return JSON.parse(value);
     } catch (error) {
       return fallback;
     }
