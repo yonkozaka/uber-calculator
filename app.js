@@ -169,14 +169,14 @@ import UI from './ui.js';
 
   function safeStorageGet(key, fallback = null) {
     try {
-      let value = localStorage.getItem(key);
+      const value = localStorage.getItem(key);
       if (value === null) return fallback;
       try {
-        value = decodeURIComponent(atob(value));
+        return decodeURIComponent(atob(value));
       } catch (decodeError) {
         // Fallback for existing unencoded data
+        return value;
       }
-      return value;
     } catch (error) {
       return fallback;
     }
