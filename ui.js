@@ -21,7 +21,8 @@ import U from './utils.js';
     else element.classList.add('positive');
   }
 
-  function renderCard({ label, value, note, type = '', toneValue, warningLimit }) {
+  function renderCard(options) {
+    const { label, value, note, type = '', toneValue, warningLimit } = options;
     const card = document.createElement('div');
     card.className = `result-card ${type}`;
 
