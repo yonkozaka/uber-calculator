@@ -6,7 +6,7 @@ const Utils = {};
   };
 
   Utils.safeText = function safeText(value, fallback = '') {
-    if (value === undefined || value === null) return fallback;
+    if (value == null) return fallback;
     return String(value);
   };
 
