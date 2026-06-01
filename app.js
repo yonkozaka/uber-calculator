@@ -390,6 +390,16 @@ import UI from './ui.js';
     ]);
   }
 
+
+  function safeRender(name, renderFn, fallbackFn = null) {
+    try {
+      renderFn();
+    } catch (error) {
+      console.error(`UI Error in ${name}:`, error);
+      if (fallbackFn) fallbackFn(error);
+    }
+  }
+
   function updateStateFromDOM() {
     const data = {};
     inputIds.forEach((id) => {
@@ -409,40 +419,22 @@ import UI from './ui.js';
       latestResult = U.calculateCore(mainInput);
       const tripDecision = U.calculateTripDecision(buildTripDecisionInput(mainInput));
       
-      try {
-        UI.renderResults(els, latestResult, renderScenarioComparison);
-      } catch (error) {
-        console.error("UI Error in renderResults:", error);
-        UI.setElementText(els.savedStatus, "UI Error. Click Reset All.");
-        if (els.savedStatus) {
-          els.savedStatus.classList.remove('good', 'warn');
-          els.savedStatus.classList.add('bad');
+      safeRender('renderResults',
+        () => UI.renderResults(els, latestResult, renderScenarioComparison),
+        () => {
+          UI.setElementText(els.savedStatus, "UI Error. Click Reset All.");
+          if (els.savedStatus) {
+            els.savedStatus.classList.remove('good', 'warn');
+            els.savedStatus.classList.add('bad');
+          }
         }
-      }
+      );
       
-      try {
-        UI.renderTripDecision(els, tripDecision);
-      } catch (error) {
-        console.error("UI Error in renderTripDecision:", error);
-      }
+      safeRender('renderTripDecision', () => UI.renderTripDecision(els, tripDecision));
+      safeRender('renderSmartSuggestions', () => UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult)));
+      safeRender('heroReadout text', () => UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`));
       
-      try {
-        UI.renderSmartSuggestions(els, U.buildSmartSuggestions(latestResult));
-      } catch (error) {
-        console.error("UI Error in renderSmartSuggestions:", error);
-      }
-      
-      try {
-        UI.setElementText(els.heroReadout, `${latestResult.goalStatus.label} - ${U.money(latestResult.trueNetAfterWear)} true net`);
-      } catch (error) {
-        console.error("UI Error in heroReadout text:", error);
-      }
-      
-      try {
-        renderActiveProTip();
-      } catch (error) {
-        console.error("UI Error in renderActiveProTip:", error);
-      }
+      renderActiveProTip();
       
       saveInputs();
       return latestResult;
@@ -461,12 +453,10 @@ import UI from './ui.js';
   }
 
   function renderActiveProTip() {
-    try {
+    safeRender('renderActiveProTip', () => {
       UI.renderProTip(els, getActiveTip());
       UI.renderProTipDots(els, proTips, activeTipIndex);
-    } catch (error) {
-      console.error("UI Error in renderActiveProTip:", error);
-    }
+    });
   }
 
   function showTip(index) {
@@ -526,19 +516,11 @@ import UI from './ui.js';
   }
 
   function renderHistory() {
-    try {
-      UI.renderHistory(els, getHistory());
-    } catch (error) {
-      console.error("UI Error in renderHistory:", error);
-    }
+    safeRender('renderHistory', () => UI.renderHistory(els, getHistory()));
   }
 
   function renderAnalytics() {
-    try {
-      UI.renderAnalytics(els, getHistory());
-    } catch (error) {
-      console.error("UI Error in renderAnalytics:", error);
-    }
+    safeRender('renderAnalytics', () => UI.renderAnalytics(els, getHistory()));
   }
 
   function resetForm() {
@@ -669,12 +651,10 @@ import UI from './ui.js';
       const question = U.safeText(rawQuestion).trim();
       if (!question) return;
       const result = latestResult || calculate();
-      try {
+      safeRender('sendAdvisorQuestion UI render', () => {
         UI.appendAdvisorMessage(els.advisorMessages, 'user', question);
         UI.appendAdvisorMessage(els.advisorMessages, 'assistant', U.buildAdvisorReply(question, result));
-      } catch (error) {
-        console.error("UI Error in sendAdvisorQuestion UI render:", error);
-      }
+      });
       if (els.advisorInput) els.advisorInput.value = '';
     } catch (error) {
       console.error("Error in sendAdvisorQuestion logic:", error);

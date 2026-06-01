@@ -13,3 +13,6 @@
 ## 2024-05-18 - Minimizing redundant DOM reads
 **Learning:** Repeatedly polling `.value` from the DOM during frequent calculation cycles (e.g., debounced keystrokes) causes unnecessary overhead.
 **Action:** Minimize redundant DOM reads by fetching the DOM state once at the start and accessing the cached state, rather than repeatedly polling the DOM.
+## 2024-06-01 - Consolidate duplicate error handling logic with a generic safeRender utility
+**Learning:** Duplicate error handling boilerplate (`try...catch` blocks for UI renders) across various functions introduces unnecessary verbosity and reduces code readability. Consolidating this logic into a centralized `safeRender` utility improves maintainability and ensures consistent error logging.
+**Action:** When multiple operations share identical or similar error handling semantics, encapsulate the `try...catch` wrapper into a higher-order utility function to improve DRYness and code health.
