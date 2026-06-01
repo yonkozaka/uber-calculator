@@ -13,3 +13,6 @@
 ## 2024-05-18 - Minimizing redundant DOM reads
 **Learning:** Repeatedly polling `.value` from the DOM during frequent calculation cycles (e.g., debounced keystrokes) causes unnecessary overhead.
 **Action:** Minimize redundant DOM reads by fetching the DOM state once at the start and accessing the cached state, rather than repeatedly polling the DOM.
+## 2024-07-31 - Avoid Micro-Optimizing `replaceChildren`
+**Learning:** For a fixed, small array, the native `replaceChildren(...nodes)` API is already highly optimized by browser engines (in C++) to handle multiple elements without triggering multiple reflows. Implementing a `DocumentFragment` manually in JavaScript for this scenario introduces unnecessary JS execution overhead (`createDocumentFragment` and multiple `appendChild` calls), making it a faux-optimization that is likely slower or completely negligible, and degrades code readability.
+**Action:** Do not replace `replaceChildren(...nodes)` with a `DocumentFragment` loop unless the array size is extremely large or unbounded (like rendering history entries).
