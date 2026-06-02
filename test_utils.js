@@ -153,6 +153,56 @@ try {
         assert.strictEqual(callCount, 1, "Debounce should only call the function once");
         console.log("✓ Utils.debounce");
 
+
+    // Test: Utils.validateInputs
+    const validDailyInput = { mode: 'daily', mpg: 25, hours: 8, miles: 100, income: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(validDailyInput).length, 0, "Valid daily inputs should return no messages");
+
+    const validWeeklyInput = { mode: 'weekly', mpg: 25, avgHours: 8, avgMiles: 100, avgIncome: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(validWeeklyInput).length, 0, "Valid weekly inputs should return no messages");
+
+    const invalidMpg = { mode: 'daily', mpg: 0, hours: 8, miles: 100, income: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidMpg).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidMpg)[0].type, 'bad');
+    assert.ok(Utils.validateInputs(invalidMpg)[0].text.includes('MPG cannot be zero'));
+
+    const invalidDailyHours = { mode: 'daily', mpg: 25, hours: 0, miles: 100, income: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidDailyHours).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidDailyHours)[0].type, 'warn');
+    assert.ok(Utils.validateInputs(invalidDailyHours)[0].text.includes('Hours cannot be zero'));
+
+    const invalidWeeklyHours = { mode: 'weekly', mpg: 25, avgHours: 0, avgMiles: 100, avgIncome: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyHours).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyHours)[0].type, 'warn');
+    assert.ok(Utils.validateInputs(invalidWeeklyHours)[0].text.includes('Average hours cannot be zero'));
+
+    const invalidDailyMiles = { mode: 'daily', mpg: 25, hours: 8, miles: -1, income: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidDailyMiles).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidDailyMiles)[0].type, 'warn');
+    assert.ok(Utils.validateInputs(invalidDailyMiles)[0].text.includes('Miles cannot be zero'));
+
+    const invalidWeeklyMiles = { mode: 'weekly', mpg: 25, avgHours: 8, avgMiles: 0, avgIncome: 200, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyMiles).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyMiles)[0].type, 'warn');
+    assert.ok(Utils.validateInputs(invalidWeeklyMiles)[0].text.includes('Average miles cannot be zero'));
+
+    const invalidDailyIncome = { mode: 'daily', mpg: 25, hours: 8, miles: 100, income: -10, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidDailyIncome).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidDailyIncome)[0].type, 'bad');
+    assert.ok(Utils.validateInputs(invalidDailyIncome)[0].text.includes('Income should not be negative'));
+
+    const invalidWeeklyIncome = { mode: 'weekly', mpg: 25, avgHours: 8, avgMiles: 100, avgIncome: -10, gasPrice: 3.5 };
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyIncome).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidWeeklyIncome)[0].type, 'bad');
+    assert.ok(Utils.validateInputs(invalidWeeklyIncome)[0].text.includes('Income should not be negative'));
+
+    const invalidGasPrice = { mode: 'daily', mpg: 25, hours: 8, miles: 100, income: 200, gasPrice: -1 };
+    assert.strictEqual(Utils.validateInputs(invalidGasPrice).length, 1);
+    assert.strictEqual(Utils.validateInputs(invalidGasPrice)[0].type, 'bad');
+    assert.ok(Utils.validateInputs(invalidGasPrice)[0].text.includes('Gas price should not be negative'));
+
+    console.log("✓ Utils.validateInputs");
+
     // --- Core Logic functions ---
 
     // Test: Utils.calculateWearRate
