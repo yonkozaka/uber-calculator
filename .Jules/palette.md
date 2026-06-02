@@ -26,3 +26,6 @@
 ## 2026-06-02 - Visible Keyboard Focus Indicators
 **Learning:** Setting `outline: 2px solid transparent;` for `focus-visible` states effectively hides the focus ring from keyboard users, creating a significant accessibility barrier. Keyboard navigation relies on clear, visible focus indicators to show which element is currently active.
 **Action:** Replaced transparent outlines with a visible color (`var(--primary)`) for all interactive elements like buttons, tip dots, and advisor chips, and ensured custom UI elements like tab buttons also have explicit, visible `focus-visible` styles.
+## 2026-06-02 - Premium UI Form Elements
+**Learning:** Solid borders and flat white/grey backgrounds on input fields can make forms feel harsh and dated, particularly in dark mode interfaces. Updating form elements to use translucent backgrounds (e.g., `rgba(255, 255, 255, 0.03)`), faint borders, and sharp box-shadows on focus dramatically increases the perceived quality of the application, bringing it closer to modern SaaS design systems.
+**Action:** Always favor subtle `rgba` border colors, soft glass-like backgrounds, and `box-shadow` inset details over rigid solid colors when designing premium forms.
