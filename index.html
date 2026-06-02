@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests;">
   <title>Uber Profit Calculator</title>
   <link rel="stylesheet" href="variables.css">
   <link rel="stylesheet" href="components.css">
@@ -495,7 +495,7 @@
           </div>
           <div class="advisor-input-row">
             <label class="sr-only" for="advisorInput">Ask the local smart advisor</label>
-            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off">
+            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off" maxlength="200">
             <button id="advisorSendBtn" type="button">Send</button>
           </div>
         </div>
