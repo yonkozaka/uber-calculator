@@ -658,7 +658,7 @@ section[id],
   }
 
   .brand {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .brand p {
