@@ -8,3 +8,7 @@
 ## 2025-05-25 - Prevent accidental data loss on global reset actions
 **Learning:** Destructive actions that clear substantial amounts of user input, like a "Reset All" button in a complex form, can lead to significant frustration if clicked accidentally. This is especially true on mobile or smaller screens where mis-taps are more frequent. Providing a confirmation step serves as a critical safety net for these global actions.
 **Action:** Added a native `confirm()` prompt inside the `resetForm` handler to ensure intentionality before wiping all data and localStorage state.
+
+## 2026-06-02 - Tab panel accessible naming
+**Learning:** While `aria-controls` explicitly links a tab button to a tab panel, it only provides a programmatic relationship (telling screen readers "this button controls this panel"). It does NOT automatically give the panel an accessible name. Without a name, screen reader users entering the panel may just hear "tab panel" without knowing which panel they are in.
+**Action:** Always complement `aria-controls` on the tab with `aria-labelledby` on the `role="tabpanel"` element, pointing back to the tab's ID. This ensures the panel announces its purpose (e.g., "Active Shift tab panel") when focused.
