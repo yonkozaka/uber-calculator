@@ -94,14 +94,19 @@ const Utils = {};
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
+  // Bolt optimization: Extract regexes outside loop to prevent redundant recompilation
+  const formulaRegex = /^\s*[=+\-@]/;
+  const csvNeedsQuotesRegex = /[",\r\n]/;
+  const doubleQuoteRegex = /"/g;
+
   Utils.toCsv = function toCsv(rows) {
     return rows.map((row) => row.map((cell) => {
       let value = String(cell ?? '');
       // Prevent CSV Injection: prepend single quote to formula-like inputs
-      if (/^\s*[=+\-@]/.test(value) && isNaN(Number(value))) {
+      if (formulaRegex.test(value) && isNaN(Number(value))) {
         value = `'${value}`;
       }
-      return /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+      return csvNeedsQuotesRegex.test(value) ? `"${value.replace(doubleQuoteRegex, '""')}"` : value;
     }).join(',')).join('\n');
   };
 
@@ -117,7 +122,6 @@ const Utils = {};
     return messages;
   }
 
-  Utils.validateInputs = validateInputs;
 
   function resolvePeriod(input) {
     const isDaily = input.mode === 'daily';
