@@ -1,0 +1,6 @@
+{
+  "branch_name": "fix/test-validate-inputs",
+  "commit_message": "Expose and test validateInputs",
+  "title": "🧪 Testing Improvement: Add tests for validateInputs",
+  "description": "🎯 **What:** The `validateInputs` function in `utils.js` lacked test coverage despite containing critical logic for evaluating user inputs and generating UI warning/error messages.\n\n📊 **Coverage:** `validateInputs` was exposed globally on `CalculatorUtils` to allow independent testing. Tests were added to verify correct array return types, empty arrays for valid inputs in both daily and weekly modes, and the correct text/type format for invalid inputs (`mpg`, `hours`, `avgHours`, `miles`, `avgMiles`, `income`, `avgIncome`, and `gasPrice`).\n\n✨ **Result:** Increased testing confidence around input validation, ensuring UI messages behave deterministically regardless of future refactoring."
+}

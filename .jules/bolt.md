@@ -16,3 +16,6 @@
 ## 2024-07-31 - Avoid Micro-Optimizing `replaceChildren`
 **Learning:** For a fixed, small array, the native `replaceChildren(...nodes)` API is already highly optimized by browser engines (in C++) to handle multiple elements without triggering multiple reflows. Implementing a `DocumentFragment` manually in JavaScript for this scenario introduces unnecessary JS execution overhead (`createDocumentFragment` and multiple `appendChild` calls), making it a faux-optimization that is likely slower or completely negligible, and degrades code readability.
 **Action:** Do not replace `replaceChildren(...nodes)` with a `DocumentFragment` loop unless the array size is extremely large or unbounded (like rendering history entries).
+## 2024-06-02 - Array Identity Assertion Failure in Tests
+**Learning:** `assert.deepStrictEqual` can fail when asserting two empty arrays created in different Node `vm` sandboxes due to prototype differences (`Array` vs `sandbox.window.Array`).
+**Action:** When testing for empty arrays returned by functions executing inside a `vm` context, assert against `.length === 0` rather than using `deepStrictEqual` with `[]`.

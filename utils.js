@@ -105,7 +105,7 @@ const Utils = {};
     }).join(',')).join('\n');
   };
 
-  function validateInputs(input) {
+  Utils.validateInputs = function validateInputs(input) {
     const messages = [];
     if (input.mpg <= 0) messages.push({ text: 'MPG cannot be zero. Gas cost is shown as $0 until MPG is corrected.', type: 'bad' });
     if (input.hours <= 0 && input.mode === 'daily') messages.push({ text: 'Hours cannot be zero if calculating profit per hour.', type: 'warn' });
@@ -267,7 +267,7 @@ const Utils = {};
       ...targets,
       averageIncomePerTrip: Utils.safeDivide(period.income, period.trips),
       averageProfitPerTrip: Utils.safeDivide(expenses.netProfit, period.trips),
-      validation: validateInputs(input)
+      validation: Utils.validateInputs(input)
     };
 
     result.goalStatus = getGoalStatus(result);
