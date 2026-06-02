@@ -313,6 +313,46 @@ try {
     assert.strictEqual(elementStore['income'].value, 220, "App should initialize with default income even if localStorage.getItem throws");
     console.log("✓ safeStorageGet handles errors and allows app initialization");
 
+
+    console.log("Test 7: safeStorageRemove error handling");
+    let listeners5 = {};
+    const mockFailingRemoveLocalStorage = {
+        getItem: (key) => {
+            if (key === 'uberCalculatorShiftHistoryV1') return btoa(encodeURIComponent('{"corrupted":true}'));
+            return null;
+        },
+        setItem: (key, val) => {},
+        removeItem: (key) => { throw new Error('QuotaExceededError'); },
+        clear: () => {}
+    };
+
+    const sandbox5 = {
+        window: {
+            CalculatorUtils: {}, CalculatorUI: {}, localStorage: mockFailingRemoveLocalStorage,
+            addEventListener: (event, callback) => {
+                if (!listeners5[event]) listeners5[event] = [];
+                listeners5[event].push(callback);
+            },
+            clearInterval: () => {}, setInterval: () => 123
+        },
+        document: mockDocument, localStorage: mockFailingRemoveLocalStorage, confirm: () => true,
+        Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
+        Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
+        setTimeout: setTimeout, clearTimeout: clearTimeout,
+        btoa: btoa, atob: atob, encodeURIComponent: encodeURIComponent, decodeURIComponent: decodeURIComponent,
+    };
+    // reset elementStore status
+    elementStore['savedStatus'].textContent = '';
+
+    vm.createContext(sandbox5);
+    vm.runInContext(utilsCode, sandbox5);
+    vm.runInContext(uiCode, sandbox5);
+    vm.runInContext(appCode, sandbox5); // This initializes app and calls renderHistory() -> getHistory()
+
+    const statusTextAfterRemove = elementStore['savedStatus'].textContent;
+    assert.strictEqual(statusTextAfterRemove, 'Could not clear corrupted shift history', "safeStorageRemove should update UI with failure message on throw");
+    console.log("✓ safeStorageRemove handles errors and updates UI");
+
     console.log("All tests passed!");
 
 
