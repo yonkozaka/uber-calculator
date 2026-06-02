@@ -556,7 +556,7 @@ import UI from './ui.js';
     const history = getHistory();
     // Use cryptographically secure UUID if available, fallback to weak RNG
     const entry = {
-      id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : (typeof crypto !== 'undefined' && crypto.getRandomValues) ? `${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(16)}` : `${Date.now()}`,
       savedAt: new Date().toISOString(),
       mode: result.mode,
       income: result.income,
