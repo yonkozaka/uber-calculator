@@ -491,6 +491,7 @@ import UI from './ui.js';
 
   let historyCache = null;
 
+  // ⚡ Bolt: Performance - Store large history arrays as individual items
   function getHistory() {
     if (historyCache !== null) {
       return historyCache;
@@ -503,24 +504,61 @@ import UI from './ui.js';
       return historyCache;
     }
 
-    historyCache = rawHistory
-      .filter((entry) => entry && typeof entry === 'object')
-      .map((entry, index) => ({
-        id: String(entry.id || `${entry.savedAt || 'shift'}-${index}`),
-        savedAt: Number.isNaN(new Date(entry.savedAt).getTime()) ? new Date().toISOString() : entry.savedAt,
-        mode: ['daily', 'weekly', 'monthly'].includes(entry.mode) ? entry.mode : 'daily',
-        income: U.cleanNumber(entry.income),
-        hours: U.cleanNumber(entry.hours),
-        miles: U.cleanNumber(entry.miles),
-        trips: U.cleanNumber(entry.trips),
-        gasCost: U.cleanNumber(entry.gasCost),
-        totalExpenses: U.cleanNumber(entry.totalExpenses),
-        netProfit: U.cleanNumber(entry.netProfit),
-        afterTaxProfit: U.cleanNumber(entry.afterTaxProfit),
-        trueNetAfterWear: U.cleanNumber(entry.trueNetAfterWear),
-        profitPerHour: U.cleanNumber(entry.profitPerHour),
-        profitPerMile: U.cleanNumber(entry.profitPerMile)
-      }));
+    // Support legacy monolithic array storage format for backward compatibility
+    if (rawHistory.length > 0 && typeof rawHistory[0] === 'object' && rawHistory[0] !== null) {
+      historyCache = rawHistory
+        .filter((entry) => entry && typeof entry === 'object')
+        .map((entry, index) => ({
+          id: String(entry.id || `${entry.savedAt || 'shift'}-${index}`),
+          savedAt: Number.isNaN(new Date(entry.savedAt).getTime()) ? new Date().toISOString() : entry.savedAt,
+          mode: ['daily', 'weekly', 'monthly'].includes(entry.mode) ? entry.mode : 'daily',
+          income: U.cleanNumber(entry.income),
+          hours: U.cleanNumber(entry.hours),
+          miles: U.cleanNumber(entry.miles),
+          trips: U.cleanNumber(entry.trips),
+          gasCost: U.cleanNumber(entry.gasCost),
+          totalExpenses: U.cleanNumber(entry.totalExpenses),
+          netProfit: U.cleanNumber(entry.netProfit),
+          afterTaxProfit: U.cleanNumber(entry.afterTaxProfit),
+          trueNetAfterWear: U.cleanNumber(entry.trueNetAfterWear),
+          profitPerHour: U.cleanNumber(entry.profitPerHour),
+          profitPerMile: U.cleanNumber(entry.profitPerMile)
+        }));
+
+      // Migrate to new storage format format immediately
+      const idList = historyCache.map(entry => entry.id);
+      safeStorageSet(HISTORY_KEY, JSON.stringify(idList), 'Could not migrate shift history');
+      historyCache.forEach(entry => safeStorageSet(`uberCalculatorShift_${entry.id}`, JSON.stringify(entry), 'Could not migrate shift'));
+
+      return historyCache;
+    }
+
+    // New format: rawHistory is an array of IDs
+    historyCache = rawHistory.map(id => {
+      const entryData = safeStorageGet(`uberCalculatorShift_${id}`, null);
+      if (!entryData) return null;
+      try {
+        const entry = typeof entryData === 'string' ? JSON.parse(entryData) : entryData;
+        return {
+          id: String(entry.id || id),
+          savedAt: Number.isNaN(new Date(entry.savedAt).getTime()) ? new Date().toISOString() : entry.savedAt,
+          mode: ['daily', 'weekly', 'monthly'].includes(entry.mode) ? entry.mode : 'daily',
+          income: U.cleanNumber(entry.income),
+          hours: U.cleanNumber(entry.hours),
+          miles: U.cleanNumber(entry.miles),
+          trips: U.cleanNumber(entry.trips),
+          gasCost: U.cleanNumber(entry.gasCost),
+          totalExpenses: U.cleanNumber(entry.totalExpenses),
+          netProfit: U.cleanNumber(entry.netProfit),
+          afterTaxProfit: U.cleanNumber(entry.afterTaxProfit),
+          trueNetAfterWear: U.cleanNumber(entry.trueNetAfterWear),
+          profitPerHour: U.cleanNumber(entry.profitPerHour),
+          profitPerMile: U.cleanNumber(entry.profitPerMile)
+        };
+      } catch (e) {
+        return null;
+      }
+    }).filter(Boolean);
 
     return historyCache;
   }
@@ -574,7 +612,14 @@ import UI from './ui.js';
 
     history.unshift(entry);
     historyCache = history;
-    const savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(history), 'Could not save shift history');
+
+    // ⚡ Bolt: Performance - Save individual entry and append ID to list, avoiding full array serialization
+    const entrySaved = safeStorageSet(`uberCalculatorShift_${entry.id}`, JSON.stringify(entry), 'Could not save shift');
+    let savedHistory = false;
+    if (entrySaved) {
+       const idList = history.map(e => e.id);
+       savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(idList), 'Could not save shift history list');
+    }
     const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
     if (savedHistory && savedResult) {
       UI.setElementText(els.savedStatus, `Shift saved at ${timeFormatter.format(new Date())}`);
@@ -591,14 +636,22 @@ import UI from './ui.js';
     if (!confirm(`Delete saved shift from ${dateStr}?`)) return;
 
     historyCache = history.filter((e) => e.id !== id);
-    safeStorageSet(HISTORY_KEY, JSON.stringify(historyCache), 'Could not delete shift');
+    safeStorageRemove(`uberCalculatorShift_${id}`, 'Could not delete shift data');
+    const idList = historyCache.map(e => e.id);
+    safeStorageSet(HISTORY_KEY, JSON.stringify(idList), 'Could not update shift history list');
     renderHistory();
     renderAnalytics();
   }
 
   function clearHistory() {
     if (!confirm('Clear all saved shift history?')) return;
-    safeStorageRemove(HISTORY_KEY, 'Could not clear history');
+
+    const history = getHistory();
+    history.forEach(entry => {
+      safeStorageRemove(`uberCalculatorShift_${entry.id}`, 'Could not remove shift entry');
+    });
+    safeStorageRemove(HISTORY_KEY, 'Could not clear history list');
+
     historyCache = [];
     renderHistory();
     renderAnalytics();
