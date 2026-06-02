@@ -270,7 +270,7 @@ button:focus-visible {
 button:focus-visible,
 .tip-dot:focus-visible,
 .advisor-chip:focus-visible {
-  outline: 2px solid transparent;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -957,4 +957,9 @@ button.blue:disabled,
   box-shadow: none !important;
   transform: none !important;
   filter: grayscale(0.5);
+}
+
+.tab-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
 }
