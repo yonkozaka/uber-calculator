@@ -22,3 +22,7 @@
 ## 2024-06-01 - Add confirmation dialog to destructive actions
 **Learning:** Destructive actions like 'Reset All' can lead to accidental data loss and frustration if they do not require user confirmation.
 **Action:** Always wrap destructive form reset or clear functions with a confirmation dialog.
+
+## 2026-06-02 - Visible Keyboard Focus Indicators
+**Learning:** Setting `outline: 2px solid transparent;` for `focus-visible` states effectively hides the focus ring from keyboard users, creating a significant accessibility barrier. Keyboard navigation relies on clear, visible focus indicators to show which element is currently active.
+**Action:** Replaced transparent outlines with a visible color (`var(--primary)`) for all interactive elements like buttons, tip dots, and advisor chips, and ensured custom UI elements like tab buttons also have explicit, visible `focus-visible` styles.
