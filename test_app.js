@@ -23,9 +23,11 @@ function createMockElement(id) {
             textContent: '',
             dataset: {},
             classList: {
+                _classes: new Set(),
                 toggle: function(className, force) {},
-                add: function() {},
-                remove: function() {}
+                add: function(...args) { args.forEach(c => this._classes.add(c)); },
+                remove: function(...args) { args.forEach(c => this._classes.delete(c)); },
+                contains: function(c) { return this._classes.has(c); }
             },
             style: {},
             setAttribute: function(name, value) {
@@ -352,6 +354,41 @@ try {
     const statusTextAfterRemove = elementStore['savedStatus'].textContent;
     assert.strictEqual(statusTextAfterRemove, 'Could not clear corrupted shift history', "safeStorageRemove should update UI with failure message on throw");
     console.log("✓ safeStorageRemove handles errors and updates UI");
+
+
+    console.log("Test 8: calculate error handling in renderResults");
+    let listeners6 = {};
+    const sandbox6 = {
+        window: {
+            CalculatorUtils: {}, CalculatorUI: {}, localStorage: mockLocalStorage,
+            addEventListener: (event, callback) => {
+                if (!listeners6[event]) listeners6[event] = [];
+                listeners6[event].push(callback);
+            },
+            clearInterval: () => {}, setInterval: () => 123
+        },
+        document: mockDocument, localStorage: mockLocalStorage, confirm: () => true,
+        Math: Math, Date: Date, Number: Number, String: String, Array: Array, Object: Object, JSON: JSON, console: console,
+        Blob: class Blob { constructor() {} }, URL: { createObjectURL: () => 'blob:url', revokeObjectURL: () => {} },
+        setTimeout: setTimeout, clearTimeout: clearTimeout,
+        btoa: btoa, atob: atob, encodeURIComponent: encodeURIComponent, decodeURIComponent: decodeURIComponent,
+    };
+
+    // reset elementStore status
+    elementStore['savedStatus'].textContent = '';
+    elementStore['savedStatus'].classList._classes.clear();
+
+    vm.createContext(sandbox6);
+    vm.runInContext(utilsCode, sandbox6);
+    vm.runInContext(uiCode, sandbox6);
+    // Mock UI.renderResults to throw
+    vm.runInContext('window.CalculatorUI.renderResults = function() { throw new Error("Mock render error"); };', sandbox6);
+    vm.runInContext(appCode, sandbox6);
+
+    const statusTextAfterError = elementStore['savedStatus'].textContent;
+    assert.strictEqual(statusTextAfterError, 'UI Error. Click Reset All.', "Should update savedStatus on renderResults error");
+    assert.strictEqual(elementStore['savedStatus'].classList.contains('bad'), true, "Should add 'bad' class to savedStatus on error");
+    console.log("✓ renderResults errors are correctly caught and handled in calculate()");
 
     console.log("All tests passed!");
 
