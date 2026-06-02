@@ -408,6 +408,7 @@ import U from './utils.js';
   }
 
 const CalculatorUI = {
+    setTone,
     setElementText,
     setElementClass,
     setElementDisplay,

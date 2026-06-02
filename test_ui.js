@@ -254,6 +254,38 @@ try {
     assert.strictEqual(firstRow.children[0].tagName, 'TD', 'Cell should be a TD');
     assert.strictEqual(firstRow.children[0].textContent, 'Mode', 'First cell should contain the correct label text');
 
+
+    // Test: setTone
+    console.log("Testing setTone...");
+    const toneEl = createMockElement('span');
+
+    // null element shouldn't crash
+    UI.setTone(null, 10, 5);
+
+    // Class cleanup and positive value (no warning limit)
+    toneEl.classList.add('warning', 'negative', 'info');
+    UI.setTone(toneEl, 10);
+    assert.strictEqual(toneEl.classList.contains('warning'), false, 'Should remove warning class');
+    assert.strictEqual(toneEl.classList.contains('negative'), false, 'Should remove negative class');
+    assert.strictEqual(toneEl.classList.contains('info'), false, 'Should remove info class');
+    assert.strictEqual(toneEl.classList.contains('positive'), true, 'Value >= 0 without limit is positive');
+
+    // Negative value
+    toneEl.className = '';
+    UI.setTone(toneEl, -5, 0);
+    assert.strictEqual(toneEl.classList.contains('negative'), true, 'Negative value is negative');
+    assert.strictEqual(toneEl.classList.contains('positive'), false, 'Negative value is not positive');
+
+    // Value < warningLimit
+    toneEl.className = '';
+    UI.setTone(toneEl, 10, 15);
+    assert.strictEqual(toneEl.classList.contains('warning'), true, 'Value < limit is warning');
+
+    // Value >= warningLimit
+    toneEl.className = '';
+    UI.setTone(toneEl, 20, 15);
+    assert.strictEqual(toneEl.classList.contains('positive'), true, 'Value >= limit is positive');
+
     console.log("All UI tests passed!");
     process.exit(0);
 
