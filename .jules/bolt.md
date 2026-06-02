@@ -26,3 +26,6 @@
 ## 2024-06-02 - Fast local storage arrays
 **Learning:** Monolithic storage arrays serialize slowly in LocalStorage and can block the main thread. Splitting elements into individual KV pairs using `id` based keys avoids serializing/deserializing the full set on every write, producing huge speedups (from 1020ms down to 64ms for 100 appends onto an array of 2000 elements).
 **Action:** When managing growing arrays of objects in LocalStorage, store objects as individual keys (e.g., `item_ID`) and keep a master array containing only the IDs.
+## 2024-08-01 - Avoid micro-optimizing small fixed arrays
+**Learning:** Re-writing clear `.filter(Boolean)` usage on small, fixed-size arrays into complex `if (assign)` push statements is an unreadable micro-optimization that produces zero measurable benefit.
+**Action:** Do not sacrifice readability to optimize away small, short-lived array allocations. Focus loop-fusion and array optimization techniques on large or unbounded data structures where intermediate allocations cause meaningful overhead.

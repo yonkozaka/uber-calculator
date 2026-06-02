@@ -464,16 +464,22 @@ const Utils = {};
       checkTaxSeparation(result, taxShare),
       checkExpenseLoad(result, expenseShare),
       checkStrongPattern(result)
-    ].filter(Boolean);
-    if (!suggestions.length) {
-      suggestions.push({
+    ];
+
+    // ⚡ Bolt: Performance - Replace filter(Boolean) with explicit loop to avoid intermediate array allocation
+    const validSuggestions = [];
+    for (let i = 0; i < suggestions.length; i++) {
+      if (suggestions[i]) validSuggestions.push(suggestions[i]);
+    }
+    if (!validSuggestions.length) {
+      validSuggestions.push({
         title: 'Healthy but watch the margins',
         text: 'The shift is positive. Keep tracking gas, pickup miles, and tax set-aside so hidden costs do not drift upward.',
         type: 'good'
       });
     }
 
-    return suggestions.slice(0, 6);
+    return validSuggestions.slice(0, 6);
   };
 
   Utils.getProfitTipData = function getProfitTipData(result) {

@@ -534,12 +534,15 @@ import UI from './ui.js';
     }
 
     // New format: rawHistory is an array of IDs
-    historyCache = rawHistory.map(id => {
+    // ⚡ Bolt: Performance - Avoid intermediate arrays from map().filter(Boolean)
+    historyCache = [];
+    for (let i = 0; i < rawHistory.length; i++) {
+      const id = rawHistory[i];
       const entryData = safeStorageGet(`uberCalculatorShift_${id}`, null);
-      if (!entryData) return null;
+      if (!entryData) continue;
       try {
         const entry = typeof entryData === 'string' ? JSON.parse(entryData) : entryData;
-        return {
+        historyCache.push({
           id: String(entry.id || id),
           savedAt: Number.isNaN(new Date(entry.savedAt).getTime()) ? new Date().toISOString() : entry.savedAt,
           mode: ['daily', 'weekly', 'monthly'].includes(entry.mode) ? entry.mode : 'daily',
@@ -554,11 +557,11 @@ import UI from './ui.js';
           trueNetAfterWear: U.cleanNumber(entry.trueNetAfterWear),
           profitPerHour: U.cleanNumber(entry.profitPerHour),
           profitPerMile: U.cleanNumber(entry.profitPerMile)
-        };
+        });
       } catch (e) {
-        return null;
+        // Skip invalid entries
       }
-    }).filter(Boolean);
+    }
 
     return historyCache;
   }
