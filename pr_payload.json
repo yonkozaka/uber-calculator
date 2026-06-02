@@ -1,4 +1,0 @@
-{
-  "title": "🧪 Add tests for safeStorageRemove",
-  "description": "### What\nAdded missing tests for the `safeStorageRemove` function in `app.js`.\n\n### Coverage\nTested that when `localStorage.removeItem` throws an error, the error is caught and `UI.setElementText` is called to update the UI status with the provided failure message.\n\n### Result\nImproved overall test coverage by ensuring proper error handling during local storage removal."
-}

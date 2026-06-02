@@ -19,3 +19,7 @@
 ## 2024-06-02 - Array Identity Assertion Failure in Tests
 **Learning:** `assert.deepStrictEqual` can fail when asserting two empty arrays created in different Node `vm` sandboxes due to prototype differences (`Array` vs `sandbox.window.Array`).
 **Action:** When testing for empty arrays returned by functions executing inside a `vm` context, assert against `.length === 0` rather than using `deepStrictEqual` with `[]`.
+
+## 2024-06-02 - Extract Regexes from Loops
+**Learning:** Compiling regular expressions repeatedly inside tight loops like `toCsv` causes unnecessary overhead and slows down data generation operations, particularly over large arrays.
+**Action:** Always hoist regexes outside loop bodies to ensure they are compiled just once.
