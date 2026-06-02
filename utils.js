@@ -117,7 +117,6 @@ const Utils = {};
     return messages;
   }
 
-  Utils.validateInputs = validateInputs;
 
   function resolvePeriod(input) {
     const isDaily = input.mode === 'daily';
