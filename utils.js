@@ -117,6 +117,8 @@ const Utils = {};
     return messages;
   }
 
+  Utils.validateInputs = validateInputs;
+
   function resolvePeriod(input) {
     const isDaily = input.mode === 'daily';
     const workingDays = Math.max(Utils.cleanNumber(input.workingDays), 1);
