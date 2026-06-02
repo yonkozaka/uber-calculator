@@ -29,3 +29,6 @@
 ## 2026-06-02 - Premium UI Form Elements
 **Learning:** Solid borders and flat white/grey backgrounds on input fields can make forms feel harsh and dated, particularly in dark mode interfaces. Updating form elements to use translucent backgrounds (e.g., `rgba(255, 255, 255, 0.03)`), faint borders, and sharp box-shadows on focus dramatically increases the perceived quality of the application, bringing it closer to modern SaaS design systems.
 **Action:** Always favor subtle `rgba` border colors, soft glass-like backgrounds, and `box-shadow` inset details over rigid solid colors when designing premium forms.
+## 2026-06-02 - Logo and Branding Update
+**Learning:** Adding a real `<img>` element instead of a CSS `background-image` for logos improves both semantics and accessibility, allowing screen readers to process `alt` text. Removing deprecated references avoids 404 resource errors.
+**Action:** When updating logos, use `<img src="..." alt="...">` inside container elements rather than CSS backgrounds, and ensure old image files are correctly deleted and decoupled from CSS.

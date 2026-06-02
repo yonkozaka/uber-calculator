@@ -149,17 +149,27 @@ p {
   border-radius: var(--radius-lg);
   overflow: hidden;
   background:
-    url("assets/uber-profit-logo.png") center / 116% 116% no-repeat,
     linear-gradient(145deg, rgba(16, 185, 129, 0.12), rgba(52, 211, 153, 0.06)),
     #050a0e;
   box-shadow: 0 16px 36px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
 }
 
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform var(--transition-med);
+}
+
 .brand:hover .logo-mark {
   transform: translateY(-2px) scale(1.03);
   border-color: rgba(16, 185, 129, 0.6);
   box-shadow: var(--shadow-glow-green), 0 20px 48px rgba(0, 0, 0, 0.4);
+}
+
+.brand:hover .logo-img {
+  transform: scale(1.05);
 }
 
 .feature-details {
@@ -653,7 +663,7 @@ tr.best-row td {
   box-shadow: 0 16px 34px rgba(16, 185, 129, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   overflow: hidden;
   background:
-    url("assets/uber-profit-logo.png") center / 116% 116% no-repeat,
+
     linear-gradient(145deg, rgba(16, 185, 129, 0.14), rgba(52, 211, 153, 0.08)),
     #07100f;
 }
