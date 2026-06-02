@@ -117,6 +117,8 @@ import UI from './ui.js';
 
   const periodAverageByTotal = { income: 'avgIncome', hours: 'avgHours', miles: 'avgMiles' };
   const periodTotalByAverage = { avgIncome: 'income', avgHours: 'hours', avgMiles: 'miles' };
+  const periodAverageByTotalEntries = Object.entries(periodAverageByTotal);
+  const periodTotalByAverageEntries = Object.entries(periodTotalByAverage);
   const periodDecimals = { income: 2, avgIncome: 2, hours: 1, avgHours: 1, miles: 1, avgMiles: 1 };
   const featureDetails = {
     offline: 'The calculator runs as local browser files. After loading, inputs, calculations, history, and exports keep working without a server.',
@@ -267,11 +269,11 @@ import UI from './ui.js';
     }
 
     if (periodInputSource === 'totals') {
-      Object.entries(periodAverageByTotal).forEach(([totalId, averageId]) => {
+      periodAverageByTotalEntries.forEach(([totalId, averageId]) => {
         setPeriodFieldValue(averageId, U.safeDivide(numberValue(totalId), workingDays), activeId);
       });
     } else {
-      Object.entries(periodTotalByAverage).forEach(([averageId, totalId]) => {
+      periodTotalByAverageEntries.forEach(([averageId, totalId]) => {
         setPeriodFieldValue(totalId, numberValue(averageId) * workingDays, activeId);
       });
     }
