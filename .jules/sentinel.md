@@ -6,3 +6,7 @@
 **Vulnerability:** The application's `Utils.toCsv` function failed to quote strings containing a carriage return (`\r`) character. A malicious payload like `hello\r=cmd` would not be wrapped in quotes. In spreadsheet software, this creates a new row allowing the formula to execute, bypassing the leading `'` protection.
 **Learning:** Checking for newline characters (`\n`) is insufficient for preventing CSV injection via multi-line payloads if carriage returns (`\r`) are not also checked and escaped by quoting.
 **Prevention:** Always check for both `\n` and `\r` (e.g. `/[",\r\n]/`) when determining if a CSV field needs to be enclosed in quotes to prevent multi-line injection attacks.
+## 2024-06-02 - Use of Weak RNG Fallback
+**Vulnerability:** Used Math.random() as a fallback for generating a random UUID, which could lead to predictable IDs.
+**Learning:** Math.random() is a weak RNG that shouldn't be used where non-predictability is important.
+**Prevention:** Use crypto.getRandomValues if crypto.randomUUID is not available, avoiding Math.random() when generating random IDs or tokens.
