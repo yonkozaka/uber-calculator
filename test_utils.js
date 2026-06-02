@@ -471,6 +471,45 @@ try {
     assert.ok(textReport.includes('Net profit:'));
     console.log("✓ Utils.buildTextReport");
 
+
+    // Test: Utils.validateInputs
+    const vMpg = Utils.validateInputs({ mpg: 0 });
+    assert.strictEqual(vMpg.length, 1);
+    assert.ok(vMpg[0].text.includes('MPG cannot be zero'));
+
+    const vHoursDaily = Utils.validateInputs({ hours: 0, mode: 'daily' });
+    assert.strictEqual(vHoursDaily.length, 1);
+    assert.ok(vHoursDaily[0].text.includes('Hours cannot be zero'));
+
+    const vAvgHoursWeekly = Utils.validateInputs({ avgHours: 0, mode: 'weekly' });
+    assert.strictEqual(vAvgHoursWeekly.length, 1);
+    assert.ok(vAvgHoursWeekly[0].text.includes('Average hours cannot be zero'));
+
+    const vMilesDaily = Utils.validateInputs({ miles: 0, mode: 'daily' });
+    assert.strictEqual(vMilesDaily.length, 1);
+    assert.ok(vMilesDaily[0].text.includes('Miles cannot be zero'));
+
+    const vAvgMilesWeekly = Utils.validateInputs({ avgMiles: 0, mode: 'weekly' });
+    assert.strictEqual(vAvgMilesWeekly.length, 1);
+    assert.ok(vAvgMilesWeekly[0].text.includes('Average miles cannot be zero'));
+
+    const vIncomeDaily = Utils.validateInputs({ income: -10, mode: 'daily' });
+    assert.strictEqual(vIncomeDaily.length, 1);
+    assert.ok(vIncomeDaily[0].text.includes('Income should not be negative'));
+
+    const vAvgIncomeWeekly = Utils.validateInputs({ avgIncome: -10, mode: 'weekly' });
+    assert.strictEqual(vAvgIncomeWeekly.length, 1);
+    assert.ok(vAvgIncomeWeekly[0].text.includes('Income should not be negative'));
+
+    const vGasPrice = Utils.validateInputs({ gasPrice: -1 });
+    assert.strictEqual(vGasPrice.length, 1);
+    assert.ok(vGasPrice[0].text.includes('Gas price should not be negative'));
+
+    const vHappy = Utils.validateInputs({ mpg: 25, hours: 8, miles: 100, income: 200, gasPrice: 3.5, mode: 'daily' });
+    assert.strictEqual(vHappy.length, 0);
+
+    console.log("✓ Utils.validateInputs");
+
         console.log("Basic Utility tests passed!");
     }, 20);
 
