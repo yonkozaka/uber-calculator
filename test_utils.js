@@ -432,6 +432,18 @@ try {
     assert.strictEqual(healthySuggestions.length, 1);
     assert.strictEqual(healthySuggestions[0].title, 'Healthy but watch the margins');
 
+
+    // 2.5 Test Utils.checkDownsideRisk directly
+    assert.strictEqual(Utils.checkDownsideRisk({ trueNetAfterWear: 10 }), null);
+
+    const downsideRiskZero = Utils.checkDownsideRisk({ trueNetAfterWear: 0 });
+    assert.strictEqual(downsideRiskZero.title, 'Protect your downside');
+    assert.strictEqual(downsideRiskZero.type, 'bad');
+
+    const downsideRiskNegative = Utils.checkDownsideRisk({ trueNetAfterWear: -10 });
+    assert.strictEqual(downsideRiskNegative.title, 'Protect your downside');
+    assert.strictEqual(downsideRiskNegative.type, 'bad');
+
     // 3. Test checkDownsideRisk
     const downsideResult = Object.assign({}, healthyBaseResult, { trueNetAfterWear: 0 });
     const downsideSuggestions = Utils.buildSmartSuggestions(downsideResult);
