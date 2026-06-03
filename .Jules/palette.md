@@ -32,3 +32,7 @@
 ## 2026-06-02 - Logo and Branding Update
 **Learning:** Adding a real `<img>` element instead of a CSS `background-image` for logos improves both semantics and accessibility, allowing screen readers to process `alt` text. Removing deprecated references avoids 404 resource errors.
 **Action:** When updating logos, use `<img src="..." alt="...">` inside container elements rather than CSS backgrounds, and ensure old image files are correctly deleted and decoupled from CSS.
+
+## 2025-06-02 - WAI-ARIA tabpanel linking and focusability
+**Learning:** Screen readers and keyboard users require explicit links between a tab and its content panel. Additionally, tab panels themselves should be focusable so users can easily read their content via keyboard navigation after activating a tab.
+**Action:** Added `id` attributes to `role="tab"` buttons, and added `aria-labelledby` and `tabindex="0"` to the corresponding `role="tabpanel"` container elements to link them together and make panels keyboard focusable.
