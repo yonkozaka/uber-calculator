@@ -78,13 +78,13 @@
     <div class="dashboard-grid">
       <section class="input-column" aria-label="Calculator inputs">
         <div class="tabs-container" role="tablist" aria-label="Calculator Input Panels">
-          <button class="tab-button active" data-tab="active-shift" role="tab" aria-selected="true" aria-controls="tab-active-shift" type="button">Active Shift</button>
-          <button class="tab-button" data-tab="trip-evaluator" role="tab" aria-selected="false" aria-controls="tab-trip-evaluator" type="button">Trip Evaluator</button>
-          <button class="tab-button" data-tab="operating-costs" role="tab" aria-selected="false" aria-controls="tab-operating-costs" type="button">Operating Costs</button>
-          <button class="tab-button" data-tab="scenario-analysis" role="tab" aria-selected="false" aria-controls="tab-scenario-analysis" type="button">Scenario Analysis</button>
+          <button id="tab-btn-active-shift" class="tab-button active" data-tab="active-shift" role="tab" aria-selected="true" aria-controls="tab-active-shift" type="button">Active Shift</button>
+          <button id="tab-btn-trip-evaluator" class="tab-button" data-tab="trip-evaluator" role="tab" aria-selected="false" aria-controls="tab-trip-evaluator" type="button">Trip Evaluator</button>
+          <button id="tab-btn-operating-costs" class="tab-button" data-tab="operating-costs" role="tab" aria-selected="false" aria-controls="tab-operating-costs" type="button">Operating Costs</button>
+          <button id="tab-btn-scenario-analysis" class="tab-button" data-tab="scenario-analysis" role="tab" aria-selected="false" aria-controls="tab-scenario-analysis" type="button">Scenario Analysis</button>
         </div>
 
-        <div class="tab-content active" id="tab-active-shift" role="tabpanel">
+        <div class="tab-content active" id="tab-active-shift" role="tabpanel" aria-labelledby="tab-btn-active-shift" tabindex="0">
         <div class="card input-card priority-card" id="tripSection">
           <div class="card-heading">
             <div class="step-badge">01</div>
@@ -181,7 +181,7 @@
         </div>
         </div> <!-- Closes tab-active-shift -->
 
-        <div class="tab-content" id="tab-trip-evaluator" role="tabpanel">
+        <div class="tab-content" id="tab-trip-evaluator" role="tabpanel" aria-labelledby="tab-btn-trip-evaluator" tabindex="0">
         <div class="card trip-decision-card" id="tripDecisionCard">
           <div class="card-heading">
             <div class="step-badge">P1</div>
@@ -236,7 +236,7 @@
         </div>
         </div> <!-- Closes tab-trip-evaluator -->
 
-        <div class="tab-content" id="tab-operating-costs" role="tabpanel">
+        <div class="tab-content" id="tab-operating-costs" role="tabpanel" aria-labelledby="tab-btn-operating-costs" tabindex="0">
         <div class="card input-card" id="fixedCostsSection">
           <div class="card-heading">
             <div class="step-badge">02</div>
@@ -352,7 +352,7 @@
         </div>
         </div> <!-- Closes tab-operating-costs -->
 
-        <div class="tab-content" id="tab-scenario-analysis" role="tabpanel">
+        <div class="tab-content" id="tab-scenario-analysis" role="tabpanel" aria-labelledby="tab-btn-scenario-analysis" tabindex="0">
         <div class="card scenario-panel">
           <div class="card-heading">
             <div class="step-badge">07</div>
