@@ -1,5 +1,23 @@
 import U from './utils.js';
 
+
+  function momentaryButtonFeedback(button, successText = 'Saved!') {
+    if (!button || button.disabled) return;
+
+    // Check if we're already showing feedback to avoid stuck text on double clicks
+    if (button.dataset.originalText) return;
+
+    button.dataset.originalText = button.textContent;
+    button.textContent = successText;
+    button.classList.add('good');
+
+    setTimeout(() => {
+      button.textContent = button.dataset.originalText;
+      delete button.dataset.originalText;
+      button.classList.remove('good');
+    }, 2000);
+  }
+
   function setElementText(element, value) {
     if (element) element.textContent = U.safeText(value);
   }
@@ -409,6 +427,8 @@ import U from './utils.js';
 
 const CalculatorUI = {
     setTone,
+
+    momentaryButtonFeedback,
     setElementText,
     setElementClass,
     setElementDisplay,
