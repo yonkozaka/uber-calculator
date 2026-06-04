@@ -626,6 +626,7 @@ import UI from './ui.js';
     const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
     if (savedHistory && savedResult) {
       UI.setElementText(els.savedStatus, `Shift saved at ${timeFormatter.format(new Date())}`);
+      UI.momentaryButtonFeedback(document.getElementById('saveBtn'), 'Saved!');
       renderHistory();
       renderAnalytics();
     }
@@ -675,6 +676,7 @@ import UI from './ui.js';
 
   function downloadResult() {
     downloadBlob(U.buildTextReport(latestResult || calculate()), 'uber-earnings-dashboard-report.txt', 'text/plain');
+    UI.momentaryButtonFeedback(document.getElementById('downloadBtn'), 'Exported!');
   }
 
   function exportHistoryCsv() {
@@ -697,6 +699,7 @@ import UI from './ui.js';
       ])
     ];
     downloadBlob(U.toCsv(rows), 'uber-shift-history.csv', 'text/csv');
+    UI.momentaryButtonFeedback(document.getElementById('exportHistoryBtn'), 'Exported!');
   }
 
   function applyPreset(name) {
@@ -710,6 +713,8 @@ import UI from './ui.js';
     lastMode = fields.mode?.value || 'daily';
     UI.setElementText(els.savedStatus, 'Preset applied');
     calculate();
+    const btn = document.querySelector(`[data-preset="${name}"]`);
+    if (btn) UI.momentaryButtonFeedback(btn, 'Applied!');
   }
 
   function openFeature(feature, targetId) {

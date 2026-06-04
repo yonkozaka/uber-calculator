@@ -36,3 +36,7 @@
 ## 2025-06-02 - WAI-ARIA tabpanel linking and focusability
 **Learning:** Screen readers and keyboard users require explicit links between a tab and its content panel. Additionally, tab panels themselves should be focusable so users can easily read their content via keyboard navigation after activating a tab.
 **Action:** Added `id` attributes to `role="tab"` buttons, and added `aria-labelledby` and `tabindex="0"` to the corresponding `role="tabpanel"` container elements to link them together and make panels keyboard focusable.
+
+## 2026-06-03 - Button Action Feedback
+**Learning:** Actions that do not navigate to a new page or show a prominent modal (e.g., saving a shift, exporting data) often leave users wondering if the action succeeded. A quick, momentary change in the button's text or style provides immediate, satisfying confirmation.
+**Action:** Always provide brief, momentary visual feedback on action buttons when a background process completes successfully, rather than relying solely on separate toast notifications or silent state changes.
