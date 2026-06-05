@@ -736,7 +736,10 @@ import UI from './ui.js';
       } catch (error) {
         console.error("UI Error in sendAdvisorQuestion UI render:", error);
       }
-      if (els.advisorInput) els.advisorInput.value = '';
+      if (els.advisorInput) {
+        els.advisorInput.value = '';
+        els.advisorInput.dispatchEvent(new Event('input'));
+      }
     } catch (error) {
       console.error("Error in sendAdvisorQuestion logic:", error);
     }
@@ -792,6 +795,15 @@ import UI from './ui.js';
       const button = event.target.closest('[data-tip-index]');
       if (button) showTip(U.safeNumber(button.dataset.tipIndex));
     });
+
+    if (els.advisorInput && els.advisorSendBtn) {
+      const toggleSendBtn = () => {
+        els.advisorSendBtn.disabled = els.advisorInput.value.trim() === '';
+      };
+      els.advisorInput.addEventListener('input', toggleSendBtn);
+      toggleSendBtn();
+    }
+
     els.advisorSendBtn?.addEventListener('click', () => sendAdvisorQuestion(els.advisorInput?.value));
     els.advisorInput?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') sendAdvisorQuestion(els.advisorInput.value);
