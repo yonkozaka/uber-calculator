@@ -272,24 +272,24 @@ import U from './utils.js';
   }
 
   function renderAnalytics(els, history) {
-    const { totals, best, worst } = history.reduce((acc, entry) => {
-      acc.totals.income += entry.income;
-      acc.totals.miles += entry.miles;
-      acc.totals.hours += entry.hours;
-      acc.totals.gasCost += entry.gasCost;
-      acc.totals.totalExpenses += entry.totalExpenses;
-      acc.totals.netProfit += entry.netProfit;
-      acc.totals.afterTaxProfit += entry.afterTaxProfit;
+    // ⚡ Bolt: Performance - Avoid callback execution overhead from reduce by using manual variables and a for loop
+    let tIncome = 0, tMiles = 0, tHours = 0, tGasCost = 0, tTotalExpenses = 0, tNetProfit = 0, tAfterTaxProfit = 0;
+    let best = null;
+    let worst = null;
+    for (let i = 0; i < history.length; i++) {
+      const entry = history[i];
+      tIncome += entry.income;
+      tMiles += entry.miles;
+      tHours += entry.hours;
+      tGasCost += entry.gasCost;
+      tTotalExpenses += entry.totalExpenses;
+      tNetProfit += entry.netProfit;
+      tAfterTaxProfit += entry.afterTaxProfit;
 
-      if (!acc.best || entry.trueNetAfterWear > acc.best.trueNetAfterWear) acc.best = entry;
-      if (!acc.worst || entry.trueNetAfterWear < acc.worst.trueNetAfterWear) acc.worst = entry;
-
-      return acc;
-    }, {
-      totals: { income: 0, miles: 0, hours: 0, gasCost: 0, totalExpenses: 0, netProfit: 0, afterTaxProfit: 0 },
-      best: null,
-      worst: null
-    });
+      if (!best || entry.trueNetAfterWear > best.trueNetAfterWear) best = entry;
+      if (!worst || entry.trueNetAfterWear < worst.trueNetAfterWear) worst = entry;
+    }
+    const totals = { income: tIncome, miles: tMiles, hours: tHours, gasCost: tGasCost, totalExpenses: tTotalExpenses, netProfit: tNetProfit, afterTaxProfit: tAfterTaxProfit };
     const metrics = [
       ['Total saved shifts', history.length.toString()],
       ['Total income', U.money(totals.income)],

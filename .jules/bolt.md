@@ -29,3 +29,7 @@
 ## 2024-08-01 - Avoid micro-optimizing small fixed arrays
 **Learning:** Re-writing clear `.filter(Boolean)` usage on small, fixed-size arrays into complex `if (assign)` push statements is an unreadable micro-optimization that produces zero measurable benefit.
 **Action:** Do not sacrifice readability to optimize away small, short-lived array allocations. Focus loop-fusion and array optimization techniques on large or unbounded data structures where intermediate allocations cause meaningful overhead.
+
+## 2024-08-16 - Accurate Optimization Terminology
+**Learning:** Re-writing `Array.prototype.reduce` to a standard `for` loop avoids the overhead of executing a callback function on every iteration. If the original reduce logic mutated a single accumulator object, the optimization avoids 'callback execution overhead', not 'object creation overhead'.
+**Action:** Use accurate terminology when documenting performance gains. If no new objects were created per iteration, attribute the speedup to avoiding callback overhead.
