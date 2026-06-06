@@ -328,9 +328,13 @@ import U from './utils.js';
   }
 
   function renderScenarioComparison(els, scenarioInputs) {
-    const bestIndex = scenarioInputs.reduce((winnerIndex, item, index, list) => (
-      item.result.trueNetAfterWear > list[winnerIndex].result.trueNetAfterWear ? index : winnerIndex
-    ), 0);
+    // ⚡ Bolt: Performance - Avoid callback execution overhead from reduce by using manual variables and a for loop
+    let bestIndex = 0;
+    for (let i = 1; i < scenarioInputs.length; i++) {
+      if (scenarioInputs[i].result.trueNetAfterWear > scenarioInputs[bestIndex].result.trueNetAfterWear) {
+        bestIndex = i;
+      }
+    }
 
     if (!els.scenarioBody) return;
 
