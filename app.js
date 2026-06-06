@@ -672,6 +672,7 @@ import UI from './ui.js';
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 0);
+    UI.momentaryButtonFeedback(document.getElementById('exportHistoryBtn'), 'Exported!');
   }
 
   function downloadResult() {
@@ -775,7 +776,10 @@ import UI from './ui.js';
       preparePeriodModeAfterModeChange();
       calculate('mode');
     });
-    document.getElementById('calculateBtn')?.addEventListener('click', () => calculate());
+    document.getElementById('calculateBtn')?.addEventListener('click', () => {
+      calculate();
+      UI.momentaryButtonFeedback(document.getElementById('calculateBtn'), 'Calculated!');
+    });
     document.getElementById('resetBtn')?.addEventListener('click', resetForm);
     document.getElementById('saveBtn')?.addEventListener('click', saveResult);
     document.getElementById('downloadBtn')?.addEventListener('click', downloadResult);
@@ -798,7 +802,9 @@ import UI from './ui.js';
 
     if (els.advisorInput && els.advisorSendBtn) {
       const toggleSendBtn = () => {
-        els.advisorSendBtn.disabled = els.advisorInput.value.trim() === '';
+        const isEmpty = els.advisorInput.value.trim() === '';
+        els.advisorSendBtn.disabled = isEmpty;
+        els.advisorSendBtn.title = isEmpty ? 'Enter a question to send' : '';
       };
       els.advisorInput.addEventListener('input', toggleSendBtn);
       toggleSendBtn();

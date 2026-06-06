@@ -229,8 +229,14 @@ import U from './utils.js';
 
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     const exportHistoryBtn = document.getElementById('exportHistoryBtn');
-    if (clearHistoryBtn) clearHistoryBtn.disabled = history.length === 0;
-    if (exportHistoryBtn) exportHistoryBtn.disabled = history.length === 0;
+    if (clearHistoryBtn) {
+      clearHistoryBtn.disabled = history.length === 0;
+      clearHistoryBtn.title = history.length === 0 ? 'No history to clear' : '';
+    }
+    if (exportHistoryBtn) {
+      exportHistoryBtn.disabled = history.length === 0;
+      exportHistoryBtn.title = history.length === 0 ? 'No history to export' : '';
+    }
     if (!els.historyBody) return;
 
     // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
