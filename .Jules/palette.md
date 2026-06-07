@@ -40,3 +40,7 @@
 ## 2026-06-03 - Button Action Feedback
 **Learning:** Actions that do not navigate to a new page or show a prominent modal (e.g., saving a shift, exporting data) often leave users wondering if the action succeeded. A quick, momentary change in the button's text or style provides immediate, satisfying confirmation.
 **Action:** Always provide brief, momentary visual feedback on action buttons when a background process completes successfully, rather than relying solely on separate toast notifications or silent state changes.
+
+## 2024-06-04 - Enter key submission for form-less inputs
+**Learning:** In applications where inputs aren't wrapped in native `<form>` tags, pressing the `Enter` key often does nothing. For data-entry intensive interfaces like calculators, this breaks user expectations and forces unnecessary mouse interactions or complex tabbing to reach the submit button.
+**Action:** Always manually implement `Enter` key handling on inputs (e.g., via `keydown` listeners) when native `<form>` submission isn't applicable, routing the action to the primary action button to ensure a smooth, keyboard-friendly data entry flow.
