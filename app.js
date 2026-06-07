@@ -826,6 +826,12 @@ import UI from './ui.js';
       input.addEventListener('focus', function() {
         this.select();
       });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('calculateBtn')?.click();
+        }
+      });
     });
 
     // Tab switcher controller
