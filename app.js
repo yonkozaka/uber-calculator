@@ -682,9 +682,13 @@ import UI from './ui.js';
   }
 
   function exportHistoryCsv() {
-    const rows = [
-      ['Date', 'Mode', 'Income', 'Hours', 'Miles', 'Trips', 'Gas cost', 'Total expenses', 'Net profit', 'After-tax profit', 'True net after wear', 'Profit/hour', 'Profit/mile'],
-      ...getHistory().map((entry) => [
+    const history = getHistory();
+    // ⚡ Bolt: Performance - Avoid spreading large mapped arrays, which creates intermediate allocations and can blow the call stack.
+    const rows = new Array(history.length + 1);
+    rows[0] = ['Date', 'Mode', 'Income', 'Hours', 'Miles', 'Trips', 'Gas cost', 'Total expenses', 'Net profit', 'After-tax profit', 'True net after wear', 'Profit/hour', 'Profit/mile'];
+    for (let i = 0; i < history.length; i++) {
+      const entry = history[i];
+      rows[i + 1] = [
         U.formatDateTime(entry.savedAt),
         entry.mode,
         entry.income,
@@ -698,8 +702,8 @@ import UI from './ui.js';
         entry.trueNetAfterWear,
         entry.profitPerHour,
         entry.profitPerMile
-      ])
-    ];
+      ];
+    }
     downloadBlob(U.toCsv(rows), 'uber-shift-history.csv', 'text/csv');
     UI.momentaryButtonFeedback(document.getElementById('exportHistoryBtn'), 'Exported!');
   }
