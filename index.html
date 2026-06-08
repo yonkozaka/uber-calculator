@@ -497,8 +497,11 @@
           </div>
           <div class="advisor-input-row">
             <label class="sr-only" for="advisorInput">Ask the local smart advisor</label>
-            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off" maxlength="200">
+            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off" maxlength="200" aria-describedby="advisorCharCount">
             <button id="advisorSendBtn" type="button">Send</button>
+          </div>
+          <div style="display: flex; justify-content: flex-end; padding: 0 var(--space-6) var(--space-4); margin-top: -12px;">
+            <span id="advisorCharCount" style="font-size: 12px; color: var(--text-muted);">0 / 200</span>
           </div>
         </div>
 

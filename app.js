@@ -55,6 +55,7 @@ import UI from './ui.js';
     advisorMessages: document.getElementById('advisorMessages'),
     advisorInput: document.getElementById('advisorInput'),
     advisorSendBtn: document.getElementById('advisorSendBtn'),
+    advisorCharCount: document.getElementById('advisorCharCount'),
     heroReadout: document.getElementById('heroReadout'),
     smartSuggestions: document.getElementById('smartSuggestions'),
     tripDecisionCard: document.getElementById('tripDecisionCard'),
@@ -802,9 +803,13 @@ import UI from './ui.js';
 
     if (els.advisorInput && els.advisorSendBtn) {
       const toggleSendBtn = () => {
-        const isEmpty = els.advisorInput.value.trim() === '';
+        const val = els.advisorInput.value;
+        const isEmpty = val.trim() === '';
         els.advisorSendBtn.disabled = isEmpty;
         els.advisorSendBtn.title = isEmpty ? 'Enter a question to send' : '';
+        if (els.advisorCharCount) {
+          els.advisorCharCount.textContent = `${val.length} / 200`;
+        }
       };
       els.advisorInput.addEventListener('input', toggleSendBtn);
       toggleSendBtn();

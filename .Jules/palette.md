@@ -44,3 +44,7 @@
 ## 2024-06-04 - Enter key submission for form-less inputs
 **Learning:** In applications where inputs aren't wrapped in native `<form>` tags, pressing the `Enter` key often does nothing. For data-entry intensive interfaces like calculators, this breaks user expectations and forces unnecessary mouse interactions or complex tabbing to reach the submit button.
 **Action:** Always manually implement `Enter` key handling on inputs (e.g., via `keydown` listeners) when native `<form>` submission isn't applicable, routing the action to the primary action button to ensure a smooth, keyboard-friendly data entry flow.
+
+## 2026-06-05 - Character counts for bounded inputs
+**Learning:** For text inputs with a hard `maxlength` (like the AI advisor input), users can unexpectedly hit the limit while typing, which feels abrupt and confusing. Adding a visual character count helps set expectations and gives users control over their input length.
+**Action:** Added a `0 / 200` character count indicator below the AI advisor input that updates on every keystroke. Linked it to the input using `aria-describedby` so screen readers also have context for the limit.
