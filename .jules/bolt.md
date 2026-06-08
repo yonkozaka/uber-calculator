@@ -33,3 +33,10 @@
 ## 2024-08-16 - Accurate Optimization Terminology
 **Learning:** Re-writing `Array.prototype.reduce` to a standard `for` loop avoids the overhead of executing a callback function on every iteration. If the original reduce logic mutated a single accumulator object, the optimization avoids 'callback execution overhead', not 'object creation overhead'.
 **Action:** Use accurate terminology when documenting performance gains. If no new objects were created per iteration, attribute the speedup to avoiding callback overhead.
+## 2024-10-27 - Optimizing Array Map and Spread for Large Datasets
+**Learning:** Using `...array.map()` on large datasets creates an intermediate mapped array that is then spread into a new array. This not only incurs memory and garbage collection overhead but can also trigger "Maximum call stack size exceeded" errors if the array is large enough, as spread elements are passed as individual arguments.
+**Action:** When transforming large arrays (e.g., generating rows for CSV exports), use a pre-allocated array (`new Array(size)`) and an explicit `for` loop to build the result directly.
+
+## 2024-10-27 - Fast CSV Generation Strategy
+**Learning:** For 2D array stringification (like CSV generation), chaining `.map().join()` creates intermediate arrays per row. However, manual string concatenation (`str += ...`) inside the inner loop is actually much slower than V8's array joining.
+**Action:** The fastest and most memory-efficient approach is to use nested `for` loops with pre-allocated inner and outer arrays, assigning values via index, and then calling `.join()` on them. Avoid chained `.map()` for large datasets, and avoid manual `+=` string concatenation inside tight inner loops.

@@ -100,14 +100,24 @@ const Utils = {};
   const doubleQuoteRegex = /"/g;
 
   Utils.toCsv = function toCsv(rows) {
-    return rows.map((row) => row.map((cell) => {
-      let value = String(cell ?? '');
-      // Prevent CSV Injection: prepend single quote to formula-like inputs
-      if (formulaRegex.test(value) && isNaN(Number(value))) {
-        value = `'${value}`;
+    // ⚡ Bolt: Performance - Use pre-allocated arrays and a for-loop to avoid intermediate array allocations from map().
+    const numRows = rows.length;
+    const result = new Array(numRows);
+    for (let i = 0; i < numRows; i++) {
+      const row = rows[i];
+      const numCols = row.length;
+      const rowResult = new Array(numCols);
+      for (let j = 0; j < numCols; j++) {
+        let value = String(row[j] ?? '');
+        // Prevent CSV Injection: prepend single quote to formula-like inputs
+        if (formulaRegex.test(value) && isNaN(Number(value))) {
+          value = `'${value}`;
+        }
+        rowResult[j] = csvNeedsQuotesRegex.test(value) ? `"${value.replace(doubleQuoteRegex, '""')}"` : value;
       }
-      return csvNeedsQuotesRegex.test(value) ? `"${value.replace(doubleQuoteRegex, '""')}"` : value;
-    }).join(',')).join('\n');
+      result[i] = rowResult.join(',');
+    }
+    return result.join('\n');
   };
 
   Utils.validateInputs = function validateInputs(input) {
