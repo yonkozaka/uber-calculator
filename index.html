@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests;">
+  <meta name="referrer" content="no-referrer">
   <title>Uber Earnings Calculator</title>
   <link rel="stylesheet" href="variables.css">
   <link rel="stylesheet" href="components.css">
@@ -500,8 +501,8 @@
             <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off" maxlength="200" aria-describedby="advisorCharCount">
             <button id="advisorSendBtn" type="button">Send</button>
           </div>
-          <div style="display: flex; justify-content: flex-end; padding: 0 var(--space-6) var(--space-4); margin-top: -12px;">
-            <span id="advisorCharCount" style="font-size: 12px; color: var(--text-muted);">0 / 200</span>
+          <div class="advisor-char-count-row">
+            <span id="advisorCharCount" class="advisor-char-count">0 / 200</span>
           </div>
         </div>
 

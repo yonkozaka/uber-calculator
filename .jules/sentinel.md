@@ -10,3 +10,7 @@
 **Vulnerability:** Used Math.random() as a fallback for generating a random UUID, which could lead to predictable IDs.
 **Learning:** Math.random() is a weak RNG that shouldn't be used where non-predictability is important.
 **Prevention:** Use crypto.getRandomValues if crypto.randomUUID is not available, avoiding Math.random() when generating random IDs or tokens.
+## 2026-06-09 - Harden Content-Security-Policy against CSS Injection
+**Vulnerability:** The application's Content-Security-Policy meta tag allowed `style-src 'unsafe-inline'`. This could have permitted CSS injection attacks if an attacker found a way to inject HTML. Such attacks can be used to exfiltrate sensitive data via CSS attribute selectors and external background images.
+**Learning:** In a single-page application without a build step extracting CSS, it is common to leave `unsafe-inline` enabled for convenience, but it undermines defense-in-depth. Modifying `element.style` properties via JavaScript is still permitted under a strict CSP, so only explicitly declared `<style>` blocks and `style=` attributes are blocked.
+**Prevention:** Avoid writing inline `style=` attributes directly in the HTML. Move any layout or styling directly into CSS classes within external stylesheets, then completely remove `'unsafe-inline'` from the `style-src` directive in the CSP to effectively eliminate CSS injection vectors.
