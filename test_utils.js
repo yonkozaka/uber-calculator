@@ -89,6 +89,13 @@ try {
     assert.strictEqual(Utils.safeJSONParse('{bad_json}', 'fb'), 'fb');
     console.log("✓ Utils.safeJSONParse");
 
+    // Test: Utils.safeJSONParse prototype pollution prevention
+    const maliciousJSON = '{"__proto__":{"polluted":"yes"},"constructor":{"prototype":{"polluted":"yes"}}}';
+    const parsedMalicious = Utils.safeJSONParse(maliciousJSON, {});
+    const testTarget = {};
+    Object.assign(testTarget, parsedMalicious);
+    assert.strictEqual(testTarget.polluted, undefined, "safeJSONParse should prevent prototype pollution via __proto__ and constructor");
+
     // Test: Utils.formatMoney / Utils.money
     assert.strictEqual(Utils.formatMoney(1000), '$1,000.00');
     assert.strictEqual(Utils.formatMoney(0), '$0.00');
