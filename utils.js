@@ -19,7 +19,12 @@ const Utils = {};
   Utils.safeJSONParse = function safeJSONParse(value, fallback) {
     if (value == null) return fallback;
     try {
-      return JSON.parse(value);
+      return JSON.parse(value, (key, val) => {
+        if (key === '__proto__' || key === 'constructor') {
+          return undefined;
+        }
+        return val;
+      });
     } catch (error) {
       return fallback;
     }
