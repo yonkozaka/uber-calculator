@@ -16,15 +16,18 @@ const Utils = {};
     return bottom === 0 ? fallback : Utils.safeNumber(top / bottom, fallback);
   };
 
+  // ⚡ Bolt: Performance - Extract reviver to avoid closure allocation on every parse
+  const jsonReviver = (key, val) => {
+    if (key === '__proto__' || key === 'constructor') {
+      return undefined;
+    }
+    return val;
+  };
+
   Utils.safeJSONParse = function safeJSONParse(value, fallback) {
     if (value == null) return fallback;
     try {
-      return JSON.parse(value, (key, val) => {
-        if (key === '__proto__' || key === 'constructor') {
-          return undefined;
-        }
-        return val;
-      });
+      return JSON.parse(value, jsonReviver);
     } catch (error) {
       return fallback;
     }
