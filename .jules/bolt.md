@@ -40,3 +40,10 @@
 ## 2024-10-27 - Fast CSV Generation Strategy
 **Learning:** For 2D array stringification (like CSV generation), chaining `.map().join()` creates intermediate arrays per row. However, manual string concatenation (`str += ...`) inside the inner loop is actually much slower than V8's array joining.
 **Action:** The fastest and most memory-efficient approach is to use nested `for` loops with pre-allocated inner and outer arrays, assigning values via index, and then calling `.join()` on them. Avoid chained `.map()` for large datasets, and avoid manual `+=` string concatenation inside tight inner loops.
+## 2025-02-18 - Avoid array spreads for replaceChildren
+**Learning:** Reverting `DocumentFragment` to array mapping and spreading (`replaceChildren(...nodes)`) is a de-optimization that introduces a significant risk of encountering `RangeError: Maximum call stack size exceeded` if called with a large dataset, and uses more memory by creating intermediate arrays.
+**Action:** Always use a `DocumentFragment` to safely append collections of DOM elements. Avoid spreading arrays into function arguments like `replaceChildren`, and never replace `DocumentFragment` with spread syntax in the name of micro-optimization.
+
+## 2025-02-18 - Extract inline functions to avoid closure allocation
+**Learning:** Inline functions, like the `reviver` callback inside `JSON.parse()`, create a new closure and allocate a new function object every time the parent function is invoked. For utility functions called frequently, this causes unnecessary garbage collection pressure and allocation overhead.
+**Action:** Extract inline functions (such as a `reviver` callback in `JSON.parse`) into constants outside of frequently called parent functions to prevent the JavaScript engine from allocating a new closure/function object on every call.
