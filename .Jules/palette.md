@@ -48,3 +48,7 @@
 ## 2026-06-05 - Character counts for bounded inputs
 **Learning:** For text inputs with a hard `maxlength` (like the AI advisor input), users can unexpectedly hit the limit while typing, which feels abrupt and confusing. Adding a visual character count helps set expectations and gives users control over their input length.
 **Action:** Added a `0 / 200` character count indicator below the AI advisor input that updates on every keystroke. Linked it to the input using `aria-describedby` so screen readers also have context for the limit.
+
+## 2026-06-12 - Skip to content links
+**Learning:** For keyboard and screen reader users navigating complex, data-heavy interfaces, tabbing through navigation and headers before reaching the primary inputs is tedious. A "Skip to content" link provides a massive usability boost by allowing them to jump directly to the main interaction area.
+**Action:** Added a visually hidden `.skip-link` right after the body tag that becomes visible on focus. It anchors to the main calculator grid, which was given `tabindex="-1"` so it can programmatically receive focus without interrupting normal tab flow.
