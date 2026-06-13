@@ -57,6 +57,8 @@ function createMockElement(id) {
             replaceChildren: function(...children) {
                 if (children.length === 1 && children[0].children !== undefined) {
                     this.children = children[0].children;
+                } else if (children.length === 1 && children[0].childNodes !== undefined) {
+                    this.children = children[0].childNodes;
                 } else {
                     this.children = children;
                 }

@@ -173,7 +173,14 @@ import U from './utils.js';
       { label: 'True profit per mile', value: U.money(result.trueProfitPerMile), toneValue: result.trueProfitPerMile, warningLimit: result.targetProfitMile, type: 'wear' }
     ];
 
-    if (els.resultsGrid) els.resultsGrid.replaceChildren(...cards.map(renderCard));
+    if (els.resultsGrid) {
+      // ⚡ Bolt: Performance - Avoid intermediate array allocation and spread operator execution overhead
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < cards.length; i++) {
+        fragment.appendChild(renderCard(cards[i]));
+      }
+      els.resultsGrid.replaceChildren(fragment);
+    }
     renderTopSummary(els, result);
     renderRecommendation(els, result);
     renderAlerts(els, result);
@@ -239,27 +246,29 @@ import U from './utils.js';
     }
     if (!els.historyBody) return;
 
-    // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
+    // ⚡ Bolt: Performance - Avoid intermediate function allocations in loops by using explicit for-loops and inline cell creation
     const fragment = document.createDocumentFragment();
-    history.forEach(entry => {
+    for (let i = 0; i < history.length; i++) {
+      const entry = history[i];
       const tr = document.createElement('tr');
-
       const savedAt = U.formatDateTime(entry.savedAt);
 
-      const createCell = (text) => {
-        const td = document.createElement('td');
-        td.textContent = text;
-        return td;
-      };
+      const cells = [
+        savedAt,
+        U.money(entry.income),
+        U.safeNumber(entry.hours).toFixed(1),
+        U.safeNumber(entry.miles).toFixed(1),
+        U.money(entry.netProfit),
+        U.money(entry.afterTaxProfit),
+        U.money(entry.trueNetAfterWear),
+        U.money(entry.profitPerHour)
+      ];
 
-      tr.appendChild(createCell(savedAt));
-      tr.appendChild(createCell(U.money(entry.income)));
-      tr.appendChild(createCell(U.safeNumber(entry.hours).toFixed(1)));
-      tr.appendChild(createCell(U.safeNumber(entry.miles).toFixed(1)));
-      tr.appendChild(createCell(U.money(entry.netProfit)));
-      tr.appendChild(createCell(U.money(entry.afterTaxProfit)));
-      tr.appendChild(createCell(U.money(entry.trueNetAfterWear)));
-      tr.appendChild(createCell(U.money(entry.profitPerHour)));
+      for (let j = 0; j < cells.length; j++) {
+        const td = document.createElement('td');
+        td.textContent = cells[j];
+        tr.appendChild(td);
+      }
 
       const tdBtn = document.createElement('td');
       const btn = document.createElement('button');
@@ -272,7 +281,7 @@ import U from './utils.js';
 
       tr.appendChild(tdBtn);
       fragment.appendChild(tr);
-    });
+    }
 
     els.historyBody.replaceChildren(fragment);
   }
