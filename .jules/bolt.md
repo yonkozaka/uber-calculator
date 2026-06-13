@@ -47,3 +47,7 @@
 ## 2025-02-18 - Extract inline functions to avoid closure allocation
 **Learning:** Inline functions, like the `reviver` callback inside `JSON.parse()`, create a new closure and allocate a new function object every time the parent function is invoked. For utility functions called frequently, this causes unnecessary garbage collection pressure and allocation overhead.
 **Action:** Extract inline functions (such as a `reviver` callback in `JSON.parse`) into constants outside of frequently called parent functions to prevent the JavaScript engine from allocating a new closure/function object on every call.
+
+## 2024-05-30 - [Performance - Optimize DOM Rendering Loops]
+**Learning:** Avoid using array `.forEach()` loops and spread operators when building DOM structures in this codebase, because it allocates new functions and intermediate arrays which slow down performance unnecessarily.
+**Action:** Use standard `for` loops to iterate over data, manually create DOM elements inside the loop, and append them directly to a `DocumentFragment` before updating the DOM with `replaceChildren()`. Also ensure the custom mock DOM in tests accounts for `DocumentFragment` insertion when patching standard methods.
