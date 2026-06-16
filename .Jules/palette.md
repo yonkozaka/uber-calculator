@@ -52,3 +52,7 @@
 ## 2026-06-12 - Skip to content links
 **Learning:** For keyboard and screen reader users navigating complex, data-heavy interfaces, tabbing through navigation and headers before reaching the primary inputs is tedious. A "Skip to content" link provides a massive usability boost by allowing them to jump directly to the main interaction area.
 **Action:** Added a visually hidden `.skip-link` right after the body tag that becomes visible on focus. It anchors to the main calculator grid, which was given `tabindex="-1"` so it can programmatically receive focus without interrupting normal tab flow.
+
+## 2026-06-16 - Mobile virtual keyboard optimizations
+**Learning:** Default `<input type="number">` fields often trigger suboptimal mobile keyboard layouts, missing crucial features like decimal points or showing full alphanumeric keyboards depending on the OS and browser. This creates significant friction for data entry in calculator applications.
+**Action:** Always apply `inputmode="decimal"` or `inputmode="numeric"` to number inputs to guarantee the correct numeric keypad appears, and use `enterkeyhint="done"` to provide clear feedback on the return key's action.
