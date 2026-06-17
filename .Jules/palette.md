@@ -52,3 +52,7 @@
 ## 2026-06-12 - Skip to content links
 **Learning:** For keyboard and screen reader users navigating complex, data-heavy interfaces, tabbing through navigation and headers before reaching the primary inputs is tedious. A "Skip to content" link provides a massive usability boost by allowing them to jump directly to the main interaction area.
 **Action:** Added a visually hidden `.skip-link` right after the body tag that becomes visible on focus. It anchors to the main calculator grid, which was given `tabindex="-1"` so it can programmatically receive focus without interrupting normal tab flow.
+
+## 2026-06-13 - Mobile Virtual Keyboard Optimization
+**Learning:** For mobile web apps with many numeric inputs (like calculators), failing to set `inputmode` forces users to switch to the numeric keyboard manually for every field, creating massive friction. Additionally, not setting `enterkeyhint` leaves the default "Go" or "Enter" label on the keyboard action button, which can be confusing when the goal is simply to close the keyboard or indicate "Done".
+**Action:** Added `inputmode="decimal"` (for fields allowing floats) or `inputmode="numeric"` (for integer fields) to all numeric inputs to trigger the correct mobile keyboard. Added `enterkeyhint="done"` to numeric inputs and `enterkeyhint="send"` to the advisor chat input to clarify the keyboard action button's purpose.
