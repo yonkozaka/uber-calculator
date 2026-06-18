@@ -31,12 +31,12 @@
       <div class="topbar-actions">
         <div class="top-mode-control">
           <label for="mode">Mode</label>
-          <select id="mode">
+          <select id="mode" aria-describedby="mode-hint">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
           </select>
-          <small>Live model period</small>
+          <small id="mode-hint">Live model period</small>
         </div>
         <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
       </div>
@@ -364,8 +364,8 @@
             </div>
           </div>
           <div class="scenario-editor">
-            <div class="scenario-card">
-              <span class="scenario-label">Scenario A</span>
+            <div class="scenario-card" role="group" aria-labelledby="scenarioALabel">
+              <span class="scenario-label" id="scenarioALabel">Scenario A</span>
               <div class="form-grid two-col compact">
                 <div>
                   <label for="scenarioAIncome">Income ($)</label>
@@ -385,8 +385,8 @@
                 </div>
               </div>
             </div>
-            <div class="scenario-card">
-              <span class="scenario-label">Scenario B</span>
+            <div class="scenario-card" role="group" aria-labelledby="scenarioBLabel">
+              <span class="scenario-label" id="scenarioBLabel">Scenario B</span>
               <div class="form-grid two-col compact">
                 <div>
                   <label for="scenarioBIncome">Income ($)</label>
