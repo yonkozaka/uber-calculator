@@ -421,6 +421,7 @@ import U from './utils.js';
       button.type = 'button';
       button.setAttribute('data-tip-index', index);
       button.setAttribute('aria-label', `Show tip ${index + 1}: ${tip.category}`);
+      if (index === activeIndex) button.setAttribute('aria-current', 'true');
       fragment.appendChild(button);
     });
     els.proTipDots.replaceChildren(fragment);

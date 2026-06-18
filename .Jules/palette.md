@@ -56,3 +56,7 @@
 ## 2026-06-13 - Mobile Virtual Keyboard Optimization
 **Learning:** For mobile web apps with many numeric inputs (like calculators), failing to set `inputmode` forces users to switch to the numeric keyboard manually for every field, creating massive friction. Additionally, not setting `enterkeyhint` leaves the default "Go" or "Enter" label on the keyboard action button, which can be confusing when the goal is simply to close the keyboard or indicate "Done".
 **Action:** Added `inputmode="decimal"` (for fields allowing floats) or `inputmode="numeric"` (for integer fields) to all numeric inputs to trigger the correct mobile keyboard. Added `enterkeyhint="done"` to numeric inputs and `enterkeyhint="send"` to the advisor chat input to clarify the keyboard action button's purpose.
+
+## 2026-06-14 - Screen reader context for grouped inputs
+**Learning:** When a form contains identical input fields grouped into different sections (like "Scenario A Income" vs "Scenario B Income" where the visual labels just say "Income"), screen reader users hear duplicate labels without context. Grouping them programmatically is necessary.
+**Action:** Wrapped grouped inputs in a `role="group"` container and linked it to the group's heading using `aria-labelledby`. This ensures screen readers announce the group name alongside the input label (e.g., "Scenario A group, Income").
