@@ -75,8 +75,10 @@ import U from './utils.js';
     ];
 
     values.forEach(([element, value, warningLimit]) => {
-      setElementText(element, U.compactMoney(value));
-      setTone(element, value, warningLimit);
+      if (element) {
+        element.textContent = U.compactMoney(value);
+        setTone(element, value, warningLimit);
+      }
     });
   }
 
@@ -141,6 +143,16 @@ import U from './utils.js';
 
     if (!els.summaryBody) return;
 
+    // ⚡ Bolt: Performance - Recycle existing DOM nodes to prevent expensive garbage collection and layout recalculations
+    if (els.summaryBody.children && els.summaryBody.children.length === rows.length) {
+      for (let i = 0; i < rows.length; i++) {
+        const tr = els.summaryBody.children[i];
+        if (tr.children[1]) tr.children[1].textContent = rows[i][1];
+        if (tr.children[2]) tr.children[2].textContent = rows[i][2];
+      }
+      return;
+    }
+
     // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
     const fragment = document.createDocumentFragment();
     rows.forEach((row) => {
@@ -174,12 +186,26 @@ import U from './utils.js';
     ];
 
     if (els.resultsGrid) {
-      // ⚡ Bolt: Performance - Avoid intermediate array allocation and spread operator execution overhead
-      const fragment = document.createDocumentFragment();
-      for (let i = 0; i < cards.length; i++) {
-        fragment.appendChild(renderCard(cards[i]));
+      // ⚡ Bolt: Performance - Recycle existing DOM nodes to prevent expensive garbage collection and layout recalculations
+      if (els.resultsGrid.children && els.resultsGrid.children.length === cards.length) {
+        for (let i = 0; i < cards.length; i++) {
+          const card = els.resultsGrid.children[i];
+          const options = cards[i];
+          if (card.children[1]) card.children[1].textContent = options.value;
+          if (options.toneValue !== undefined && card.children[1]) {
+            setTone(card.children[1], options.toneValue, options.warningLimit);
+          }
+          if (options.note && card.children[2]) {
+            card.children[2].textContent = options.note;
+          }
+        }
+      } else {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < cards.length; i++) {
+          fragment.appendChild(renderCard(cards[i]));
+        }
+        els.resultsGrid.replaceChildren(fragment);
       }
-      els.resultsGrid.replaceChildren(fragment);
     }
     renderTopSummary(els, result);
     renderRecommendation(els, result);
@@ -352,6 +378,25 @@ import U from './utils.js';
     }
 
     if (!els.scenarioBody) return;
+
+    // ⚡ Bolt: Performance - Recycle existing DOM nodes to prevent expensive garbage collection and layout recalculations
+    if (els.scenarioBody.children && els.scenarioBody.children.length === scenarioInputs.length) {
+      for (let i = 0; i < scenarioInputs.length; i++) {
+        const item = scenarioInputs[i];
+        const isBest = i === bestIndex;
+        const tr = els.scenarioBody.children[i];
+        tr.className = isBest ? 'best-row' : '';
+        if (tr.children[0]) tr.children[0].textContent = item.name + (isBest ? ' - Best' : '');
+        if (tr.children[1]) tr.children[1].textContent = U.money(item.result.income);
+        if (tr.children[2]) tr.children[2].textContent = U.money(item.result.totalExpenses);
+        if (tr.children[3]) tr.children[3].textContent = U.money(item.result.netProfit);
+        if (tr.children[4]) tr.children[4].textContent = U.money(item.result.afterTaxProfit);
+        if (tr.children[5]) tr.children[5].textContent = U.money(item.result.trueNetAfterWear);
+        if (tr.children[6]) tr.children[6].textContent = U.money(item.result.trueProfitPerHour);
+        if (tr.children[7]) tr.children[7].textContent = U.money(item.result.trueProfitPerMile);
+      }
+      return;
+    }
 
     // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
     const fragment = document.createDocumentFragment();
