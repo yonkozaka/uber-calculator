@@ -30,6 +30,9 @@ function createMockElement(id) {
                 contains: function(c) { return this._classes.has(c); }
             },
             style: {},
+            removeAttribute: function(name) {
+                if (this.attributes) delete this.attributes[name];
+            },
             setAttribute: function(name, value) {
                 if (!this.attributes) this.attributes = {};
                 this.attributes[name] = String(value);

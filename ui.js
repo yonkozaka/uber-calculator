@@ -413,6 +413,22 @@ import U from './utils.js';
 
   function renderProTipDots(els, tips, activeIndex) {
     if (!els.proTipDots) return;
+
+    // ⚡ Bolt: Performance - Recycle DOM nodes for carousel dots instead of rebuilding every 7 seconds
+    if (els.proTipDots.children && els.proTipDots.children.length === tips.length) {
+      for (let i = 0; i < tips.length; i++) {
+        const button = els.proTipDots.children[i];
+        const isActive = i === activeIndex;
+        button.className = `tip-dot ${isActive ? 'active' : ''}`;
+        if (isActive) {
+          button.setAttribute('aria-current', 'true');
+        } else {
+          if (typeof button.removeAttribute === 'function') button.removeAttribute('aria-current');
+        }
+      }
+      return;
+    }
+
     // ⚡ Bolt: Performance - Use DocumentFragment to avoid spreading large arrays
     const fragment = document.createDocumentFragment();
     tips.forEach((tip, index) => {
