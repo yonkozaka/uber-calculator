@@ -17,7 +17,11 @@ import UI from './ui.js';
     'tripPickupMiles', 'tripPickupTime', 'tripTolls'
   ];
 
-  const fields = Object.fromEntries(inputIds.map((id) => [id, document.getElementById(id)]));
+  // ⚡ Bolt: Performance - Avoid map() overhead by directly populating object in a loop
+  const fields = {};
+  for (let i = 0; i < inputIds.length; i++) {
+    fields[inputIds[i]] = document.getElementById(inputIds[i]);
+  }
   const labels = {
     income: document.getElementById('incomeLabel'),
     hours: document.getElementById('hoursLabel'),
@@ -219,9 +223,12 @@ import UI from './ui.js';
   }
 
   function setInputs(values) {
-    Object.entries(values).forEach(([id, value]) => {
-      if (fields[id]) fields[id].value = value;
-    });
+    // ⚡ Bolt: Performance - Avoid Object.entries and forEach overhead
+    const keys = Object.keys(values);
+    for (let i = 0; i < keys.length; i++) {
+      const id = keys[i];
+      if (fields[id]) fields[id].value = values[id];
+    }
     StateStore.updateInputs(values);
   }
 
@@ -393,11 +400,13 @@ import UI from './ui.js';
 
   function updateStateFromDOM() {
     const data = {};
-    inputIds.forEach((id) => {
+    // ⚡ Bolt: Performance - Avoid forEach overhead
+    for (let i = 0; i < inputIds.length; i++) {
+      const id = inputIds[i];
       if (fields[id]) {
         data[id] = fields[id].value;
       }
-    });
+    }
     StateStore.updateInputs(data);
   }
 
@@ -621,7 +630,12 @@ import UI from './ui.js';
     const entrySaved = safeStorageSet(`uberCalculatorShift_${entry.id}`, JSON.stringify(entry), 'Could not save shift');
     let savedHistory = false;
     if (entrySaved) {
-       const idList = history.map(e => e.id);
+       // ⚡ Bolt: Performance - Avoid map() overhead for ID list generation
+       const numHistory = history.length;
+       const idList = new Array(numHistory);
+       for (let i = 0; i < numHistory; i++) {
+         idList[i] = history[i].id;
+       }
        savedHistory = safeStorageSet(HISTORY_KEY, JSON.stringify(idList), 'Could not save shift history list');
     }
     const savedResult = safeStorageSet(RESULT_KEY, JSON.stringify(result), 'Could not save latest result');
@@ -642,7 +656,14 @@ import UI from './ui.js';
 
     historyCache = history.filter((e) => e.id !== id);
     safeStorageRemove(`uberCalculatorShift_${id}`, 'Could not delete shift data');
-    const idList = historyCache.map(e => e.id);
+
+    // ⚡ Bolt: Performance - Avoid map() overhead for ID list generation
+    const numCache = historyCache.length;
+    const idList = new Array(numCache);
+    for (let i = 0; i < numCache; i++) {
+      idList[i] = historyCache[i].id;
+    }
+
     safeStorageSet(HISTORY_KEY, JSON.stringify(idList), 'Could not update shift history list');
     renderHistory();
     renderAnalytics();
