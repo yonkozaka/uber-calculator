@@ -46,6 +46,12 @@ function createMockElement(id) {
                 }
             },
             closest: function(selector) {
+                if (selector === '.tab-content') {
+                    return {
+                        classList: { contains: () => false },
+                        getAttribute: () => 'tab-btn-active-shift'
+                    };
+                }
                 return null;
             },
             querySelector: function(selector) {
