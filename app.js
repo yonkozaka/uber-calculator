@@ -392,12 +392,14 @@ import UI from './ui.js';
   }
 
   function updateStateFromDOM() {
+    // ⚡ Bolt: Performance - Avoid callback execution overhead by replacing forEach with a standard loop
     const data = {};
-    inputIds.forEach((id) => {
+    for (let i = 0; i < inputIds.length; i++) {
+      const id = inputIds[i];
       if (fields[id]) {
         data[id] = fields[id].value;
       }
-    });
+    }
     StateStore.updateInputs(data);
   }
 

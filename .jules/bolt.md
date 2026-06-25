@@ -51,3 +51,6 @@
 ## 2024-05-30 - [Performance - Optimize DOM Rendering Loops]
 **Learning:** Avoid using array `.forEach()` loops and spread operators when building DOM structures in this codebase, because it allocates new functions and intermediate arrays which slow down performance unnecessarily.
 **Action:** Use standard `for` loops to iterate over data, manually create DOM elements inside the loop, and append them directly to a `DocumentFragment` before updating the DOM with `replaceChildren()`. Also ensure the custom mock DOM in tests accounts for `DocumentFragment` insertion when patching standard methods.
+## 2025-02-18 - Input event state sync vs debounce
+**Learning:** Re-writing debounced batch state updates into direct `StateStore.updateInputs` sync on every `input` keystroke is not a measurable performance win. Instead, it introduces performance regressions (un-debouncing state updates) and bugs (falling out of sync with programmatic value updates).
+**Action:** Do not remove explicit DOM sync mechanisms (`updateStateFromDOM`) that run securely inside a debounced update cycle. Wait for the cycle to complete before polling to guarantee state accuracy.
