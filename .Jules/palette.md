@@ -60,3 +60,6 @@
 ## 2026-06-14 - Screen reader context for grouped inputs
 **Learning:** When a form contains identical input fields grouped into different sections (like "Scenario A Income" vs "Scenario B Income" where the visual labels just say "Income"), screen reader users hear duplicate labels without context. Grouping them programmatically is necessary.
 **Action:** Wrapped grouped inputs in a `role="group"` container and linked it to the group's heading using `aria-labelledby`. This ensures screen readers announce the group name alongside the input label (e.g., "Scenario A group, Income").
+## 2026-06-15 - Programmatic focus for hidden jump links
+**Learning:** When implementing programmatic jump links (e.g., using `scrollIntoView`), if the target element might be hidden inside an inactive tab or container, screen readers and keyboard users cannot navigate to it.
+**Action:** When creating jump links, explicitly activate/reveal the container first, and always set `tabindex="-1"` and call `.focus({ preventScroll: true })` on the target to ensure proper keyboard and screen reader navigation.
