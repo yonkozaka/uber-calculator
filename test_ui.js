@@ -40,6 +40,8 @@ function createMockElement(id) {
                     this.children = [...children];
                 }
             },
+            focus: function() {},
+            scrollIntoView: function() {},
             setAttribute: function(name, value) {
                 if (!this.attributes) this.attributes = {};
                 this.attributes[name] = String(value);

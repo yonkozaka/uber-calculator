@@ -30,6 +30,8 @@ function createMockElement(id) {
                 contains: function(c) { return this._classes.has(c); }
             },
             style: {},
+            focus: function() {},
+            scrollIntoView: function() {},
             setAttribute: function(name, value) {
                 if (!this.attributes) this.attributes = {};
                 this.attributes[name] = String(value);
