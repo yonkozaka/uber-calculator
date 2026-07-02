@@ -35,6 +35,8 @@ function createMockElement(id) {
                 this.attributes[name] = String(value);
                 if (name === 'data-delete-shift') this.dataset.deleteShift = value;
             },
+            focus: function() {},
+            scrollIntoView: function() {},
             addEventListener: function(event, callback) {
                 if (!listeners[id]) listeners[id] = {};
                 if (!listeners[id][event]) listeners[id][event] = [];
