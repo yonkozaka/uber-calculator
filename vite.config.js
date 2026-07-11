@@ -4,13 +4,9 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 export default defineConfig({
   plugins: [viteSingleFile()],
   build: {
-    target: 'esnext',
-    assetsInlineLimit: 100000000,
-    chunkSizeWarningLimit: 100000000,
     cssCodeSplit: false,
-    outDir: 'dist',
-    rollupOptions: {
-      inlineDynamicImports: true
-    }
+    assetsInlineLimit: 100000000,
+    target: 'es2020',
+    sourcemap: false
   }
 });

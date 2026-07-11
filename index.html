@@ -1,613 +1,322 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests;">
-  <meta name="referrer" content="no-referrer">
-  <title>Uber Earnings Calculator</title>
-  <link rel="stylesheet" href="variables.css">
-  <link rel="stylesheet" href="components.css">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body class="premium-dashboard">
-  <a href="#main-content" class="skip-link">Skip to calculator</a>
-  <main class="app-shell">
-    <header class="topbar command-topbar">
-      <div class="brand">
-        <div class="logo-mark">
-          <img src="assets/logo.png" alt="Uber Earnings Calculator Logo" class="logo-img">
-        </div>
-        <div>
-          <div class="title-row">
-            <span class="eyebrow">Rideshare finance console</span>
-            <span class="year-badge">2026</span>
-          </div>
-          <h1>Uber Earnings Calculator</h1>
-          <p>Forecast gross pay, operating costs, taxes, vehicle wear, and the real margin behind every shift.</p>
-        </div>
-      </div>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A transparent Uber shift profit calculator with scenarios, weekly planning, and true cost estimates." />
+    <meta name="theme-color" content="#07110f" />
+    <title>DriveWorth — Uber Profit Command Center</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#calculator">Skip to calculator</a>
+    <div class="page-glow" aria-hidden="true"></div>
 
-      <div class="topbar-actions">
-        <div class="top-mode-control">
-          <label for="mode">Mode</label>
-          <select id="mode" aria-describedby="mode-hint">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="DriveWorth home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>
+          <strong>DriveWorth</strong>
+          <small>Profit command center</small>
+        </span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#calculator">Calculator</a>
+        <a href="#scenarios">Scenarios</a>
+        <a href="#planner">Week planner</a>
+        <a href="#history">History</a>
+      </nav>
+      <div class="header-actions">
+        <label class="profile-control">
+          <span>Driver profile</span>
+          <select id="profileSelect" aria-describedby="profileSource">
+            <option value="boston">Boston</option>
+            <option value="raleigh">Raleigh</option>
+            <option value="custom">Custom</option>
           </select>
-          <small id="mode-hint">Live model period</small>
-        </div>
-        <button id="resetBtn" class="secondary reset-top" type="button">Reset All</button>
+        </label>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme">
+          <span aria-hidden="true">◐</span>
+        </button>
       </div>
     </header>
 
-    <section class="hero-strip">
-      <div class="hero-copy">
-        <span class="eyebrow">Private profit studio</span>
-        <h2>Know the true take-home before the road takes its cut.</h2>
-        <p>Built for drivers who want a sharper read on hourly return, mileage quality, tax set-aside, and hidden vehicle cost.</p>
-      </div>
-      <div class="hero-command">
-        <div class="hero-score">
-          <span>Live operating readout</span>
-          <strong id="heroReadout">True-profit dashboard</strong>
-        </div>
-        <div class="hero-metrics" aria-label="Model priorities">
-          <div>
-            <strong>Margin</strong>
-            <span>True net after wear</span>
+    <main id="top">
+      <section class="hero wrap" aria-labelledby="heroTitle">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot"></span> Live shift economics</p>
+          <h1 id="heroTitle">Know what the road pays <em>after it takes its share.</em></h1>
+          <p class="hero-subtitle">Turn an Uber estimate into a practical go-or-no-go decision using fuel, tax reserve, maintenance, fixed costs, and vehicle depreciation.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#calculator">Check my shift</a>
+            <a class="button ghost" href="#planner">Plan my week</a>
           </div>
-          <div>
-            <strong>Reserve</strong>
-            <span>Tax set-aside view</span>
-          </div>
-          <div>
-            <strong>Quality</strong>
-            <span>Hourly and mile goals</span>
-          </div>
-        </div>
-        <div class="quick-stats" aria-label="Calculator highlights">
-          <button class="pill" type="button" data-feature="offline" data-jump-target="notesSection">Offline after loading</button>
-          <button class="pill" type="button" data-feature="storage" data-jump-target="historySection">Private browser storage</button>
-          <button class="pill" type="button" data-feature="taxWear" data-jump-target="taxSection">Tax and wear modeling</button>
-          <button class="pill" type="button" data-feature="exports" data-jump-target="historySection">CSV and TXT exports</button>
-        </div>
-      </div>
-      <div id="featureDetails" class="feature-details" aria-live="polite"></div>
-    </section>
-
-    <div class="dashboard-grid" id="main-content" tabindex="-1">
-      <section class="input-column" aria-label="Calculator inputs">
-        <div class="tabs-container" role="tablist" aria-label="Calculator Input Panels">
-          <button id="tab-btn-active-shift" class="tab-button active" data-tab="active-shift" role="tab" aria-selected="true" aria-controls="tab-active-shift" type="button">Active Shift</button>
-          <button id="tab-btn-trip-evaluator" class="tab-button" data-tab="trip-evaluator" role="tab" aria-selected="false" aria-controls="tab-trip-evaluator" type="button">Trip Evaluator</button>
-          <button id="tab-btn-operating-costs" class="tab-button" data-tab="operating-costs" role="tab" aria-selected="false" aria-controls="tab-operating-costs" type="button">Operating Costs</button>
-          <button id="tab-btn-scenario-analysis" class="tab-button" data-tab="scenario-analysis" role="tab" aria-selected="false" aria-controls="tab-scenario-analysis" type="button">Scenario Analysis</button>
+          <p id="profileSource" class="source-note"></p>
         </div>
 
-        <div class="tab-content active" id="tab-active-shift" role="tabpanel" aria-labelledby="tab-btn-active-shift" tabindex="0">
-        <div class="card input-card priority-card" id="tripSection">
-          <div class="card-heading">
-            <div class="step-badge">01</div>
-            <div>
-              <h2>Income and driving activity</h2>
-              <p>Period totals, daily averages, mileage, and direct cash expenses.</p>
-            </div>
+        <aside class="hero-decision" aria-label="Current shift decision">
+          <div class="decision-topline">
+            <span>Current decision</span>
+            <span id="decisionBadge" class="status-badge caution">Needs caution</span>
           </div>
-          <div class="form-grid four-col">
-            <div>
-              <label id="incomeLabel" for="income">Total Uber income ($)</label>
-              <input id="income" type="number" min="0" step="0.01" value="220" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label id="hoursLabel" for="hours">Total working hours</label>
-              <input id="hours" type="number" min="0" step="0.1" value="8" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label id="tripsLabel" for="trips">Number of trips</label>
-              <input id="trips" type="number" min="0" step="1" value="18" inputmode="numeric" enterkeyhint="done">
-            </div>
-            <div>
-              <label id="milesLabel" for="miles">Total miles driven</label>
-              <input id="miles" type="number" min="0" step="0.1" value="135" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="gasPrice">Gas price per gallon ($)</label>
-              <input id="gasPrice" type="number" min="0" step="0.01" value="3.75" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="mpg">Car MPG</label>
-              <input id="mpg" type="number" min="0" step="0.1" value="28" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label id="tollsLabel" for="tolls">Parking/tolls cost ($)</label>
-              <input id="tolls" type="number" min="0" step="0.01" value="12" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label id="additionalLabel" for="additional">Additional expenses ($)</label>
-              <input id="additional" type="number" min="0" step="0.01" value="8" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div id="periodInputs" class="period-inputs wide">
-              <div>
-                <label for="workingDays">Number of working days</label>
-                <input id="workingDays" type="number" min="1" step="1" value="5" inputmode="numeric" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="avgIncome">Average daily income ($)</label>
-                <input id="avgIncome" type="number" min="0" step="0.01" value="220" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="avgHours">Average hours per day</label>
-                <input id="avgHours" type="number" min="0" step="0.1" value="8" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="avgMiles">Average miles per day</label>
-                <input id="avgMiles" type="number" min="0" step="0.1" value="135" inputmode="decimal" enterkeyhint="done">
-              </div>
-            </div>
+          <strong id="heroNet">$0.00</strong>
+          <span class="hero-net-label">estimated true profit</span>
+          <div class="hero-mini-grid">
+            <div><span>Net / hour</span><strong id="heroHourly">$0.00</strong></div>
+            <div><span>Net / mile</span><strong id="heroMile">$0.00</strong></div>
+            <div><span>Break-even</span><strong id="heroBreakEven">$0.00</strong></div>
           </div>
-        </div>
+          <p id="decisionSummary">Complete the shift details to see whether working is worth it.</p>
+        </aside>
+      </section>
 
-        <div class="card action-card">
-          <div class="card-heading">
-            <div class="step-badge">06</div>
-            <div>
-              <h2>Presets and actions</h2>
-              <p>Load a reference pattern, calculate, save a shift, or export the current report.</p>
-            </div>
-          </div>
-          <div class="preset-row">
-            <button class="secondary" type="button" data-preset="corolla">My Corolla 2016</button>
-            <button class="secondary" type="button" data-preset="conservative">Conservative Uber Day</button>
-            <button class="blue" type="button" data-preset="strong">Strong Uber Day</button>
-            <button class="secondary" type="button" data-preset="bad">Bad Uber Day</button>
-          </div>
-          <div class="actions">
-            <button id="calculateBtn" class="primary-action" type="button" title="Keyboard shortcut: Enter">Calculate</button>
-            <button id="saveBtn" class="blue success-action" type="button">Save result</button>
-            <button id="downloadBtn" class="secondary export-action" type="button">Export current TXT</button>
-          </div>
-        </div>
-
-        <div class="card pro-tip-card" id="proTipsCard" tabindex="0">
-          <div class="tip-icon" aria-hidden="true">PT</div>
-          <div class="tip-content">
-            <span class="eyebrow" id="proTipCategory">Profit strategy</span>
-            <h2 id="proTipTitle">Track the hidden cost of every mile.</h2>
-            <p id="proTipText">Tracking every expense and using real mileage gives you the most accurate profit estimate.</p>
-            <small id="proTipMeta">Tips rotate automatically every few seconds.</small>
-            <div class="tip-dots" id="proTipDots" aria-label="Pro tip progress"></div>
-          </div>
-          <div class="tip-art" aria-hidden="true"></div>
-        </div>
-        </div> <!-- Closes tab-active-shift -->
-
-        <div class="tab-content" id="tab-trip-evaluator" role="tabpanel" aria-labelledby="tab-btn-trip-evaluator" tabindex="0">
-        <div class="card trip-decision-card" id="tripDecisionCard">
-          <div class="card-heading">
-            <div class="step-badge">P1</div>
-            <div>
-              <h2>Trip Decision Engine</h2>
-              <p>Evaluate an offer before accepting it using your live cost and goal settings.</p>
-            </div>
-          </div>
-          <div class="decision-layout">
-            <div class="form-grid three-col compact">
-              <div>
-                <label for="tripOfferPay">Offered trip pay ($)</label>
-                <input id="tripOfferPay" type="number" min="0" step="0.01" value="18" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tripTime">Estimated trip time (minutes)</label>
-                <input id="tripTime" type="number" min="0" step="1" value="24" inputmode="numeric" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tripMiles">Estimated trip miles</label>
-                <input id="tripMiles" type="number" min="0" step="0.1" value="10" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tripPickupMiles">Pickup miles</label>
-                <input id="tripPickupMiles" type="number" min="0" step="0.1" value="2.5" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tripPickupTime">Pickup time (minutes)</label>
-                <input id="tripPickupTime" type="number" min="0" step="1" value="7" inputmode="numeric" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tripTolls">Optional tolls/parking ($)</label>
-                <input id="tripTolls" type="number" min="0" step="0.01" value="0" inputmode="decimal" enterkeyhint="done">
-              </div>
-            </div>
-            <div class="decision-console">
-              <div class="decision-badge warn" id="tripDecisionBadge">
-                <span id="tripDecisionText">MAYBE</span>
-              </div>
-              <p id="tripDecisionReason">Enter offer details to see whether this trip clears your goals.</p>
-              <div class="decision-metrics">
-                <div><strong>Total time</strong><span id="tripTotalTime">0 min</span></div>
-                <div><strong>Total miles</strong><span id="tripTotalMiles">0.0 mi</span></div>
-                <div><strong>Pay / hour</strong><span id="tripPayHour">$0.00</span></div>
-                <div><strong>Pay / mile</strong><span id="tripPayMile">$0.00</span></div>
-                <div><strong>Gas cost</strong><span id="tripGasCost">$0.00</span></div>
-                <div><strong>Wear cost</strong><span id="tripWearCost">$0.00</span></div>
-                <div class="wide-metric"><strong>Estimated true profit</strong><span id="tripTrueProfit">$0.00</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div> <!-- Closes tab-trip-evaluator -->
-
-        <div class="tab-content" id="tab-operating-costs" role="tabpanel" aria-labelledby="tab-btn-operating-costs" tabindex="0">
-        <div class="card input-card" id="fixedCostsSection">
-          <div class="card-heading">
-            <div class="step-badge">02</div>
-            <div>
-              <h2>Fixed monthly costs</h2>
-              <p>Shared across estimated working days so the model includes real operating overhead.</p>
-            </div>
-          </div>
-          <div class="form-grid two-col">
-            <div>
-              <label for="insurance">Monthly insurance ($)</label>
-              <input id="insurance" type="number" min="0" step="0.01" value="180" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="maintenance">Estimated monthly maintenance ($)</label>
-              <input id="maintenance" type="number" min="0" step="0.01" value="120" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="phone">Phone/subscriptions ($)</label>
-              <input id="phone" type="number" min="0" step="0.01" value="60" inputmode="decimal" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="otherFixed">Any other fixed cost ($)</label>
-              <input id="otherFixed" type="number" min="0" step="0.01" value="40" inputmode="decimal" enterkeyhint="done">
-            </div>
-          </div>
-        </div>
-
-        <div class="split-grid">
-          <div class="card input-card" id="taxSection">
-            <div class="card-heading">
-              <div class="step-badge">03</div>
-              <div>
-                <h2>Taxes and deduction model</h2>
-                <p>Planning estimate only, not tax advice.</p>
-              </div>
-            </div>
-            <div class="form-grid two-col compact">
-              <div>
-                <label for="selfEmploymentTax">Self-employment tax (%)</label>
-                <input id="selfEmploymentTax" type="number" min="0" step="0.1" value="15.3" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="federalTax">Federal income tax (%)</label>
-                <input id="federalTax" type="number" min="0" step="0.1" value="12" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="stateTax">State income tax (%)</label>
-                <input id="stateTax" type="number" min="0" step="0.1" value="5" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="deductionMode">Tax deduction mode</label>
-                <select id="deductionMode">
-                  <option value="standard">Standard mileage deduction</option>
-                  <option value="actual">Actual expenses</option>
-                  <option value="none">No deduction estimate</option>
-                </select>
-              </div>
-              <div class="wide">
-                <label for="mileageRate">Mileage deduction rate ($/mile)</label>
-                <input id="mileageRate" type="number" min="0" step="0.01" value="0.67" inputmode="decimal" enterkeyhint="done">
-              </div>
-            </div>
-          </div>
-
-          <div class="card input-card" id="wearSection">
-            <div class="card-heading">
-              <div class="step-badge">04</div>
-              <div>
-                <h2>Vehicle wear</h2>
-                <p>The hidden cost per mile behind depreciation, tires, and brakes.</p>
-              </div>
-            </div>
-            <div class="stacked-fields">
-              <div>
-                <label for="depreciationPerMile">Depreciation per mile ($)</label>
-                <input id="depreciationPerMile" type="number" min="0" step="0.01" value="0.12" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="tireWearPerMile">Tire wear per mile ($)</label>
-                <input id="tireWearPerMile" type="number" min="0" step="0.01" value="0.03" inputmode="decimal" enterkeyhint="done">
-              </div>
-              <div>
-                <label for="brakeWearPerMile">Brake/maintenance wear per mile ($)</label>
-                <input id="brakeWearPerMile" type="number" min="0" step="0.01" value="0.04" inputmode="decimal" enterkeyhint="done">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card input-card" id="goalsSection">
-          <div class="card-heading">
-            <div class="step-badge">05</div>
-            <div>
-              <h2>Goal checker</h2>
-              <p>Your personal floor for daily profit, hourly profit, and profit per mile.</p>
-            </div>
-          </div>
-          <div class="form-grid three-col">
-            <div>
-              <label for="targetDailyProfit">Target net profit per day ($)</label>
-              <input id="targetDailyProfit" type="number" min="0" step="1" value="160" inputmode="numeric" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="targetProfitHour">Target profit per hour ($)</label>
-              <input id="targetProfitHour" type="number" min="0" step="1" value="20" inputmode="numeric" enterkeyhint="done">
-            </div>
-            <div>
-              <label for="targetProfitMile">Target profit per mile ($)</label>
-              <input id="targetProfitMile" type="number" min="0" step="0.01" value="1.25" inputmode="decimal" enterkeyhint="done">
-            </div>
-          </div>
-        </div>
-        </div> <!-- Closes tab-operating-costs -->
-
-        <div class="tab-content" id="tab-scenario-analysis" role="tabpanel" aria-labelledby="tab-btn-scenario-analysis" tabindex="0">
-        <div class="card scenario-panel">
-          <div class="card-heading">
-            <div class="step-badge">07</div>
-            <div>
-              <h2>Scenario comparison</h2>
-              <p>Compare two possible shifts against the same gas, tax, fixed-cost, and wear model.</p>
-            </div>
-          </div>
-          <div class="scenario-editor">
-            <div class="scenario-card" role="group" aria-labelledby="scenarioALabel">
-              <span class="scenario-label" id="scenarioALabel">Scenario A</span>
-              <div class="form-grid two-col compact">
-                <div>
-                  <label for="scenarioAIncome">Income ($)</label>
-                  <input id="scenarioAIncome" type="number" min="0" step="0.01" value="220" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioAHours">Hours</label>
-                  <input id="scenarioAHours" type="number" min="0" step="0.1" value="8" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioAMiles">Miles</label>
-                  <input id="scenarioAMiles" type="number" min="0" step="0.1" value="120" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioATrips">Trips</label>
-                  <input id="scenarioATrips" type="number" min="0" step="1" value="18" inputmode="numeric" enterkeyhint="done">
-                </div>
-              </div>
-            </div>
-            <div class="scenario-card" role="group" aria-labelledby="scenarioBLabel">
-              <span class="scenario-label" id="scenarioBLabel">Scenario B</span>
-              <div class="form-grid two-col compact">
-                <div>
-                  <label for="scenarioBIncome">Income ($)</label>
-                  <input id="scenarioBIncome" type="number" min="0" step="0.01" value="260" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioBHours">Hours</label>
-                  <input id="scenarioBHours" type="number" min="0" step="0.1" value="8" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioBMiles">Miles</label>
-                  <input id="scenarioBMiles" type="number" min="0" step="0.1" value="120" inputmode="decimal" enterkeyhint="done">
-                </div>
-                <div>
-                  <label for="scenarioBTrips">Trips</label>
-                  <input id="scenarioBTrips" type="number" min="0" step="1" value="20" inputmode="numeric" enterkeyhint="done">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Scenario</th>
-                  <th>Income</th>
-                  <th>Expenses</th>
-                  <th>Net profit</th>
-                  <th>After-tax</th>
-                  <th>True net</th>
-                  <th>Profit/hour</th>
-                  <th>Profit/mile</th>
-                </tr>
-              </thead>
-              <tbody id="scenarioBody"></tbody>
-            </table>
-          </div>
-        </div>
+      <section class="trust-strip" aria-label="Product highlights">
+        <div class="wrap trust-grid">
+          <span><i aria-hidden="true">✓</i> Transparent formulas</span>
+          <span><i aria-hidden="true">✓</i> Data stays in your browser</span>
+          <span><i aria-hidden="true">✓</i> Mobile-first shift planning</span>
+          <span><i aria-hidden="true">✓</i> No account required</span>
         </div>
       </section>
 
-      <aside class="results-column" aria-label="Calculator results">
-        <div class="section-kicker">
-          <span>Results cockpit</span>
-          <strong>Live operating intelligence</strong>
+      <section id="calculator" class="section wrap" aria-labelledby="calculatorTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 / Shift calculator</p>
+            <h2 id="calculatorTitle">Start with the numbers you already know.</h2>
+          </div>
+          <p>Basic inputs stay simple. Open advanced costs only when you want more precision.</p>
         </div>
 
-        <div class="card results-panel">
-          <div class="results-head">
-            <div>
-              <h2>Results summary</h2>
-              <p>Cash expenses plus fixed cost share, tax estimate, and vehicle wear.</p>
+        <div class="calculator-layout">
+          <form id="calculatorForm" class="panel form-panel" novalidate>
+            <div class="panel-heading">
+              <div>
+                <span class="section-icon" aria-hidden="true">$</span>
+                <div><h3>Shift inputs</h3><p>Use the full time and mileage from leaving to returning.</p></div>
+              </div>
+              <span id="saveStateLabel" class="autosave-label" role="status" aria-live="polite">Auto-saved locally</span>
             </div>
-            <span id="savedStatus" class="live-dot" role="status" aria-live="polite" aria-atomic="true">Live calculation</span>
-          </div>
-          <div class="top-results" aria-label="Top summary">
-            <div class="mini-result">
-              <strong>Net profit</strong>
-              <span id="topNet">$0.00</span>
+
+            <div id="formAlert" class="form-alert" role="alert" hidden></div>
+
+            <fieldset>
+              <legend>Essential details</legend>
+              <div class="field-grid basic-grid">
+                <label class="field">
+                  <span>Gross Uber earnings</span>
+                  <span class="input-shell"><span>$</span><input id="grossEarnings" name="grossEarnings" type="number" min="0" step="0.01" inputmode="decimal" required /></span>
+                  <small>Before Uber-related expenses and taxes.</small>
+                  <span class="field-error" data-error-for="grossEarnings"></span>
+                </label>
+                <label class="field">
+                  <span>Total hours online</span>
+                  <span class="input-shell"><input id="hours" name="hours" type="number" min="0" step="0.25" inputmode="decimal" required /><span>hr</span></span>
+                  <small>Include waiting and pickup time.</small>
+                  <span class="field-error" data-error-for="hours"></span>
+                </label>
+                <label class="field">
+                  <span>Total miles driven</span>
+                  <span class="input-shell"><input id="miles" name="miles" type="number" min="0" step="0.1" inputmode="decimal" required /><span>mi</span></span>
+                  <small>Include unpaid and pickup miles.</small>
+                  <span class="field-error" data-error-for="miles"></span>
+                </label>
+                <label class="field">
+                  <span>Trips completed</span>
+                  <span class="input-shell"><input id="trips" name="trips" type="number" min="0" step="1" inputmode="numeric" /><span>trips</span></span>
+                  <small>Optional context for this shift.</small>
+                  <span class="field-error" data-error-for="trips"></span>
+                </label>
+                <label class="field">
+                  <span>Gas price</span>
+                  <span class="input-shell"><span>$</span><input id="gasPrice" name="gasPrice" type="number" min="0" step="0.01" inputmode="decimal" required /><span>/ gal</span></span>
+                  <small>Replace the preset with the pump price you pay.</small>
+                  <span class="field-error" data-error-for="gasPrice"></span>
+                </label>
+                <label class="field">
+                  <span>Vehicle efficiency</span>
+                  <span class="input-shell"><input id="mpg" name="mpg" type="number" min="0" step="0.1" inputmode="decimal" required /><span>MPG</span></span>
+                  <small>Use your car's real-world average.</small>
+                  <span class="field-error" data-error-for="mpg"></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <details class="advanced-details">
+              <summary>
+                <span><strong>Advanced costs</strong><small>Tax, depreciation, maintenance, and allocations</small></span>
+                <span class="summary-action">Customize</span>
+              </summary>
+              <div class="advanced-content">
+                <fieldset>
+                  <legend>Shift expenses</legend>
+                  <div class="field-grid">
+                    <label class="field"><span>Tolls</span><span class="input-shell"><span>$</span><input id="tolls" name="tolls" type="number" min="0" step="0.01" /></span><span class="field-error" data-error-for="tolls"></span></label>
+                    <label class="field"><span>Parking / airport fees</span><span class="input-shell"><span>$</span><input id="parking" name="parking" type="number" min="0" step="0.01" /></span><span class="field-error" data-error-for="parking"></span></label>
+                    <label class="field"><span>Food / coffee</span><span class="input-shell"><span>$</span><input id="food" name="food" type="number" min="0" step="0.01" /></span><span class="field-error" data-error-for="food"></span></label>
+                    <label class="field"><span>Other shift cost</span><span class="input-shell"><span>$</span><input id="otherVariable" name="otherVariable" type="number" min="0" step="0.01" /></span><span class="field-error" data-error-for="otherVariable"></span></label>
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend>Vehicle and monthly allocations</legend>
+                  <div class="field-grid">
+                    <label class="field"><span>Maintenance reserve</span><span class="input-shell"><span>$</span><input id="maintenancePerMile" name="maintenancePerMile" type="number" min="0" step="0.01" /><span>/ mi</span></span><small>Oil, tires, brakes, and repairs.</small><span class="field-error" data-error-for="maintenancePerMile"></span></label>
+                    <label class="field"><span>Depreciation estimate</span><span class="input-shell"><span>$</span><input id="depreciationPerMile" name="depreciationPerMile" type="number" min="0" step="0.01" /><span>/ mi</span></span><small>Loss of vehicle value from mileage.</small><span class="field-error" data-error-for="depreciationPerMile"></span></label>
+                    <label class="field"><span>Monthly insurance</span><span class="input-shell"><span>$</span><input id="monthlyInsurance" name="monthlyInsurance" type="number" min="0" step="1" /></span><span class="field-error" data-error-for="monthlyInsurance"></span></label>
+                    <label class="field"><span>Monthly phone share</span><span class="input-shell"><span>$</span><input id="monthlyPhone" name="monthlyPhone" type="number" min="0" step="1" /></span><span class="field-error" data-error-for="monthlyPhone"></span></label>
+                    <label class="field"><span>Other monthly cost</span><span class="input-shell"><span>$</span><input id="monthlyOther" name="monthlyOther" type="number" min="0" step="1" /></span><span class="field-error" data-error-for="monthlyOther"></span></label>
+                    <label class="field"><span>Uber workdays / month</span><span class="input-shell"><input id="workDaysPerMonth" name="workDaysPerMonth" type="number" min="1" step="1" /><span>days</span></span><span class="field-error" data-error-for="workDaysPerMonth"></span></label>
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend>Tax planning and targets</legend>
+                  <div class="field-grid">
+                    <label class="field"><span>Vehicle deduction estimate</span><select id="deductionMode" name="deductionMode"><option value="standard">2026 standard mileage</option><option value="actual">Estimated actual costs</option><option value="none">No deduction modeled</option></select><small>This changes tax reserve only, not true vehicle cost.</small></label>
+                    <label class="field"><span>IRS mileage rate</span><span class="input-shell"><span>$</span><input id="mileageRate" name="mileageRate" type="number" min="0" step="0.001" /><span>/ mi</span></span><span class="field-error" data-error-for="mileageRate"></span></label>
+                    <label class="field"><span>Self-employment rate</span><span class="input-shell"><input id="selfEmploymentTaxRate" name="selfEmploymentTaxRate" type="number" min="0" step="0.1" /><span>%</span></span><small>Applied to 92.35% of estimated taxable profit.</small><span class="field-error" data-error-for="selfEmploymentTaxRate"></span></label>
+                    <label class="field"><span>Additional income-tax reserve</span><span class="input-shell"><input id="incomeTaxRate" name="incomeTaxRate" type="number" min="0" step="0.1" /><span>%</span></span><small>Custom reserve—not a tax bracket calculation.</small><span class="field-error" data-error-for="incomeTaxRate"></span></label>
+                    <label class="field"><span>Target shift profit</span><span class="input-shell"><span>$</span><input id="targetShiftProfit" name="targetShiftProfit" type="number" min="0" step="1" /></span><span class="field-error" data-error-for="targetShiftProfit"></span></label>
+                    <label class="field"><span>Target true net / hour</span><span class="input-shell"><span>$</span><input id="targetHourlyProfit" name="targetHourlyProfit" type="number" min="0" step="1" /></span><span class="field-error" data-error-for="targetHourlyProfit"></span></label>
+                    <label class="field"><span>Target true net / mile</span><span class="input-shell"><span>$</span><input id="targetProfitPerMile" name="targetProfitPerMile" type="number" min="0" step="0.05" /></span><span class="field-error" data-error-for="targetProfitPerMile"></span></label>
+                  </div>
+                </fieldset>
+              </div>
+            </details>
+
+            <div class="form-actions">
+              <button class="button primary" type="submit">Calculate shift</button>
+              <button class="button secondary" id="saveScenarioBtn" type="button">Save result</button>
+              <button class="text-button" id="resetBtn" type="button">Reset defaults</button>
             </div>
-            <div class="mini-result">
-              <strong>After tax</strong>
-              <span id="topAfterTax">$0.00</span>
-            </div>
-            <div class="mini-result priority-metric">
-              <strong>True net</strong>
-              <span id="topTrueNet">$0.00</span>
-            </div>
-            <div class="mini-result priority-metric">
-              <strong>True / hour</strong>
-              <span id="topTrueHour">$0.00</span>
-            </div>
-          </div>
-          <div class="results-grid" id="resultsGrid"></div>
-          <div class="recommendation" id="recommendation">Calculate to see the final recommendation.</div>
-          <div class="alerts" id="alerts" role="alert" aria-live="assertive" aria-atomic="true"></div>
+          </form>
+
+          <aside class="results-stack" aria-label="Shift results">
+            <section class="panel verdict-card" id="verdictCard">
+              <div class="verdict-heading">
+                <div><p class="eyebrow">Decision</p><h3 id="verdictTitle">Calculate your shift</h3></div>
+                <span id="verdictBadge" class="status-badge caution">Needs input</span>
+              </div>
+              <div class="big-result">
+                <span>Estimated true profit</span>
+                <strong id="resultTrueNet">$0.00</strong>
+                <small id="verdictDetail">Includes tax reserve and vehicle depreciation.</small>
+              </div>
+              <div class="metric-grid">
+                <div><span>Cash before tax</span><strong id="resultCashProfit">$0.00</strong></div>
+                <div><span>Tax reserve</span><strong id="resultTax">$0.00</strong></div>
+                <div><span>True net / hour</span><strong id="resultHourly">$0.00</strong></div>
+                <div><span>True net / mile</span><strong id="resultMile">$0.00</strong></div>
+                <div><span>Total economic cost</span><strong id="resultCost">$0.00</strong></div>
+                <div><span>Break-even gross</span><strong id="resultBreakEven">$0.00</strong></div>
+              </div>
+              <div class="break-even-track" aria-label="Gross earnings relative to break-even">
+                <div class="track-labels"><span>Break-even progress</span><strong id="breakEvenCaption">$0 above break-even</strong></div>
+                <div class="track"><span id="breakEvenBar"></span></div>
+              </div>
+            </section>
+
+            <section class="panel cost-card">
+              <div class="panel-heading compact">
+                <div><span class="section-icon" aria-hidden="true">%</span><div><h3>Where the gross goes</h3><p>Every bar uses the same gross-earnings scale.</p></div></div>
+              </div>
+              <div id="costChart" class="cost-chart" aria-label="Cost breakdown chart"></div>
+              <div class="net-keep"><span>You keep after modeled costs</span><strong id="keepRate">0%</strong></div>
+            </section>
+
+            <details class="panel formula-card">
+              <summary><span><strong>Show the math</strong><small>See exactly how this estimate is built</small></span><span class="summary-action">Open</span></summary>
+              <div id="formulaList" class="formula-list"></div>
+            </details>
+          </aside>
         </div>
 
-        <div class="card smart-suggestions-card" id="smartSuggestionsCard">
-          <div class="card-heading">
-            <div class="step-badge">P1</div>
-            <div>
-              <h2>Smart Suggestions Engine</h2>
-              <p>Auto-prioritized recommendations from profit, mileage, gas, wear, tax, and goals.</p>
+        <section class="panel offer-evaluator" aria-labelledby="offerTitle">
+          <div class="offer-copy">
+            <p class="eyebrow">Quick offer check</p>
+            <h3 id="offerTitle">Should you accept the next trip?</h3>
+            <p>Include pickup time and pickup miles—the unpaid part of the offer can change the answer.</p>
+            <div class="offer-inputs" id="offerInputs">
+              <label class="field"><span>Offer pay</span><span class="input-shell"><span>$</span><input id="offeredPay" type="number" min="0" step="0.01" value="18" /></span><span class="field-error" data-offer-error="offeredPay"></span></label>
+              <label class="field"><span>Trip time</span><span class="input-shell"><input id="tripMinutes" type="number" min="0" step="1" value="24" /><span>min</span></span><span class="field-error" data-offer-error="tripMinutes"></span></label>
+              <label class="field"><span>Trip miles</span><span class="input-shell"><input id="tripMiles" type="number" min="0" step="0.1" value="10" /><span>mi</span></span><span class="field-error" data-offer-error="tripMiles"></span></label>
+              <label class="field"><span>Pickup time</span><span class="input-shell"><input id="pickupMinutes" type="number" min="0" step="1" value="7" /><span>min</span></span><span class="field-error" data-offer-error="pickupMinutes"></span></label>
+              <label class="field"><span>Pickup miles</span><span class="input-shell"><input id="pickupMiles" type="number" min="0" step="0.1" value="2.5" /><span>mi</span></span><span class="field-error" data-offer-error="pickupMiles"></span></label>
+              <label class="field"><span>Unreimbursed tolls</span><span class="input-shell"><span>$</span><input id="offerTolls" type="number" min="0" step="0.01" value="0" /></span><span class="field-error" data-offer-error="tolls"></span></label>
             </div>
           </div>
-          <div class="suggestions-list" id="smartSuggestions"></div>
-        </div>
+          <div class="offer-result" id="offerResult">
+            <div class="decision-topline"><span>Offer decision</span><span id="offerBadge" class="status-badge caution">Maybe</span></div>
+            <strong id="offerProfit">$0.00</strong>
+            <span>estimated true profit from this offer</span>
+            <div class="offer-metrics"><div><span>Total time</span><strong id="offerTime">0 min</strong></div><div><span>Total miles</span><strong id="offerMiles">0 mi</strong></div><div><span>True net / hour</span><strong id="offerHourly">$0.00</strong></div><div><span>True net / mile</span><strong id="offerPerMile">$0.00</strong></div></div>
+            <p id="offerDetail">Enter the full offer details.</p>
+          </div>
+        </section>
+      </section>
 
-        <div class="card advisor-panel" id="advisorPanel">
-          <div class="card-heading">
-            <div class="step-badge">AI</div>
-            <div>
-              <h2>Chat with AI Advisor</h2>
-              <p>Local smart advisor. Not financial or tax advice.</p>
-            </div>
+      <section id="scenarios" class="section section-alt" aria-labelledby="scenarioTitle">
+        <div class="wrap">
+          <div class="section-heading">
+            <div><p class="eyebrow">02 / Risk check</p><h2 id="scenarioTitle">See the downside before the downside sees you.</h2></div>
+            <p>Scenarios use documented changes from your current inputs. They never overwrite your form.</p>
           </div>
-          <div class="advisor-messages" id="advisorMessages" aria-live="polite">
-            <div class="advisor-message assistant">
-              <strong>Advisor</strong>
-              <p>Ask me if this shift is worth it, what to improve first, or whether gas, miles, taxes, or wear are hurting your profit.</p>
-            </div>
-          </div>
-          <div class="advisor-suggestions" aria-label="Advisor quick questions">
-            <button class="advisor-chip" type="button" data-advisor-question="Is this shift worth it?">Worth it?</button>
-            <button class="advisor-chip" type="button" data-advisor-question="How can I increase profit?">Increase profit</button>
-            <button class="advisor-chip" type="button" data-advisor-question="Are my miles too high?">Miles too high?</button>
-            <button class="advisor-chip" type="button" data-advisor-question="Is gas cost hurting my profit?">Gas cost?</button>
-            <button class="advisor-chip" type="button" data-advisor-question="What should I improve first?">Improve first</button>
-          </div>
-          <div class="advisor-input-row">
-            <label class="sr-only" for="advisorInput">Ask the local smart advisor</label>
-            <input id="advisorInput" type="text" placeholder="Ask about this shift..." autocomplete="off" maxlength="200" aria-describedby="advisorCharCount" enterkeyhint="send">
-            <button id="advisorSendBtn" type="button">Send</button>
-          </div>
-          <div class="advisor-char-count-row">
-            <span id="advisorCharCount" class="advisor-char-count">0 / 200</span>
-          </div>
+          <div id="scenarioGrid" class="scenario-grid"></div>
         </div>
+      </section>
 
-        <div class="card">
-          <div class="card-heading">
-            <div class="step-badge">08</div>
-            <div>
-              <h2>Summary table</h2>
-              <p>Main result details and formula notes.</p>
+      <section id="planner" class="section wrap" aria-labelledby="plannerTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / Weekly planner</p><h2 id="plannerTitle">Build a week from individual shifts.</h2></div>
+          <p>Each row runs through the same cost engine using the profile settings above.</p>
+        </div>
+        <div class="planner-layout">
+          <div class="panel planner-card">
+            <div class="planner-head">
+              <div><h3>Planned shifts</h3><p>Add up to seven shifts. Edit any row directly.</p></div>
+              <button class="button secondary small" id="addShiftBtn" type="button">+ Add shift</button>
+            </div>
+            <div class="planner-scroll">
+              <div class="planner-table planner-header" aria-hidden="true"><span>Shift</span><span>Gross</span><span>Hours</span><span>Miles</span><span>True net</span><span></span></div>
+              <div id="shiftRows" class="shift-rows"></div>
             </div>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Value</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody id="summaryBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-heading">
-            <div class="step-badge">09</div>
-            <div>
-              <h2>Analytics</h2>
-              <p>Based on saved shift history.</p>
+          <aside class="panel weekly-summary">
+            <p class="eyebrow">Weekly outlook</p>
+            <strong id="weeklyNet" class="summary-net">$0.00</strong>
+            <span>estimated weekly true profit</span>
+            <div class="summary-list">
+              <div><span>Gross</span><strong id="weeklyGross">$0.00</strong></div>
+              <div><span>Total costs</span><strong id="weeklyCosts">$0.00</strong></div>
+              <div><span>Hours</span><strong id="weeklyHours">0</strong></div>
+              <div><span>Miles</span><strong id="weeklyMiles">0</strong></div>
+              <div><span>Net / hour</span><strong id="weeklyHourly">$0.00</strong></div>
             </div>
-          </div>
-          <div class="analytics-grid" id="analyticsGrid"></div>
+            <div class="monthly-callout"><span>4.33-week monthly projection</span><strong id="monthlyNet">$0.00</strong><small id="monthlyDetail">$0 gross · 0 hours</small></div>
+          </aside>
         </div>
+      </section>
 
-        <div class="card" id="historySection">
-          <div class="card-heading">
-            <div class="step-badge">10</div>
-            <div>
-              <h2>Shift history</h2>
-              <p>Saved locally in this browser.</p>
-            </div>
+      <section id="history" class="section section-alt" aria-labelledby="historyTitle">
+        <div class="wrap">
+          <div class="section-heading history-heading">
+            <div><p class="eyebrow">04 / Saved decisions</p><h2 id="historyTitle">Learn from your real shift pattern.</h2></div>
+            <div class="history-actions"><button class="button secondary small" id="exportBtn" type="button">Export CSV</button><button class="text-button danger-text" id="clearHistoryBtn" type="button">Clear history</button></div>
           </div>
-          <div class="history-actions">
-            <button id="clearHistoryBtn" class="danger" type="button">Clear history</button>
-            <button id="exportHistoryBtn" class="secondary" type="button">Export history CSV</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Income</th>
-                  <th>Hours</th>
-                  <th>Miles</th>
-                  <th>Net profit</th>
-                  <th>After-tax</th>
-                  <th>True net</th>
-                  <th>Profit/hour</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody id="historyBody"></tbody>
-            </table>
-          </div>
-          <div id="historyEmpty" class="empty-state">No saved shifts yet. Click "Save result" after a calculation to build your history.</div>
+          <div id="historyList" class="history-list"></div>
+          <div id="historyEmpty" class="panel empty-state"><span aria-hidden="true">◎</span><h3>No saved results yet</h3><p>Calculate a shift, then choose “Save result” to start a private history in this browser.</p></div>
         </div>
+      </section>
+    </main>
 
-        <div class="card" id="notesSection">
-          <div class="card-heading">
-            <div class="step-badge">11</div>
-            <div>
-              <h2>Notes</h2>
-              <p>Your data stays on your device.</p>
-            </div>
-          </div>
-          <div class="notes">
-            <p>This is an estimate, not financial, tax, or legal advice.</p>
-            <p>Tax estimates are simplified and depend on your actual filing status, deductions, and records.</p>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </main>
+    <footer class="site-footer">
+      <div class="wrap footer-grid">
+        <div><a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><span></span></span><span><strong>DriveWorth</strong><small>Profit command center</small></span></a><p>Built for decisions, not just arithmetic.</p></div>
+        <p class="disclaimer"><strong>Estimate only.</strong> Results depend on the values you provide and are not tax, legal, accounting, or financial advice. Keep mileage and expense records and consult a qualified professional for your situation.</p>
+      </div>
+    </footer>
 
-  <div class="mobile-summary" aria-label="Mobile mini summary">
-    <div>
-      <strong>Net</strong>
-      <span id="mobileNet">$0.00</span>
-    </div>
-    <div>
-      <strong>Tax</strong>
-      <span id="mobileAfterTax">$0.00</span>
-    </div>
-    <div>
-      <strong>True</strong>
-      <span id="mobileTrueNet">$0.00</span>
-    </div>
-    <div>
-      <strong>/Hour</strong>
-      <span id="mobileTrueHour">$0.00</span>
-    </div>
-  </div>
-  <script type="module" src="app.js"></script>
-</body>
+    <div class="mobile-verdict" id="mobileVerdict"><span><small>True profit</small><strong id="mobileNet">$0.00</strong></span><a class="button primary small" href="#calculator">Review shift</a></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
