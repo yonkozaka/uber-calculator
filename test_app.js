@@ -48,6 +48,8 @@ function createMockElement(id) {
             closest: function(selector) {
                 return null;
             },
+            focus: function() {},
+            scrollIntoView: function() {},
             querySelector: function(selector) {
                 return createMockElement(id + '-' + selector);
             },
