@@ -728,7 +728,17 @@ import UI from './ui.js';
     UI.setElementText(els.featureDetails, text);
     if (els.featureDetails) els.featureDetails.classList.toggle('active', Boolean(text));
     const target = document.getElementById(targetId);
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (target) {
+      const parentTabContent = target.closest('.tab-content');
+      if (parentTabContent && !parentTabContent.classList.contains('active')) {
+        const tabId = parentTabContent.id.replace('tab-', '');
+        const tabButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
+        if (tabButton) tabButton.click();
+      }
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   function sendAdvisorQuestion(rawQuestion) {
