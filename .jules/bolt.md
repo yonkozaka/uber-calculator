@@ -51,3 +51,6 @@
 ## 2024-05-30 - [Performance - Optimize DOM Rendering Loops]
 **Learning:** Avoid using array `.forEach()` loops and spread operators when building DOM structures in this codebase, because it allocates new functions and intermediate arrays which slow down performance unnecessarily.
 **Action:** Use standard `for` loops to iterate over data, manually create DOM elements inside the loop, and append them directly to a `DocumentFragment` before updating the DOM with `replaceChildren()`. Also ensure the custom mock DOM in tests accounts for `DocumentFragment` insertion when patching standard methods.
+## 2025-05-18 - DOM Node Recycling Mock Limitations
+**Learning:** Replacing document fragment creation with DOM recycling caused errors in the `test_app.js` test suite because the custom Node.js `vm` mock DOM doesn't perfectly implement elements like `children`. Guard clauses like `if (card.children[1])` were necessary to make recycling safe for both the browser and the incomplete mock DOM.
+**Action:** Always test DOM optimization techniques against `test_app.js` and be prepared to add defensive guards when manipulating DOM elements that are mocked in the vanilla JS test suite.
