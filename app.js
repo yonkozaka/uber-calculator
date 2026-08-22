@@ -137,7 +137,7 @@ import UI from './ui.js';
       return () => this.listeners.delete(callback);
     },
     updateInputs(newInputs) {
-      Object.assign(this.state.inputs, newInputs);
+      this.state.inputs = { ...this.state.inputs, ...newInputs };
       this.notify();
     },
     setHistory(newHistory) {
