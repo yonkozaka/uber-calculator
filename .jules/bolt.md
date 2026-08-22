@@ -51,3 +51,7 @@
 ## 2024-05-30 - [Performance - Optimize DOM Rendering Loops]
 **Learning:** Avoid using array `.forEach()` loops and spread operators when building DOM structures in this codebase, because it allocates new functions and intermediate arrays which slow down performance unnecessarily.
 **Action:** Use standard `for` loops to iterate over data, manually create DOM elements inside the loop, and append them directly to a `DocumentFragment` before updating the DOM with `replaceChildren()`. Also ensure the custom mock DOM in tests accounts for `DocumentFragment` insertion when patching standard methods.
+
+## 2024-11-20 - DOM Node Recycling
+**Learning:** In highly dynamic components that re-render frequently (e.g., auto-advancing carousels running every 7 seconds), destroying and recreating DOM nodes causes unnecessary garbage collection and layout thrashing if the structure and node count are stable.
+**Action:** Implement DOM recycling (reusing existing DOM nodes) and mutating their contents (`className`, `aria-current`) instead of replacing them. Always ensure encapsulated updates by only recycling elements within the function that originally created them, to maintain readability and avoid tightly coupling parent containers to child structures.
