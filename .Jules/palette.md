@@ -60,3 +60,7 @@
 ## 2026-06-14 - Screen reader context for grouped inputs
 **Learning:** When a form contains identical input fields grouped into different sections (like "Scenario A Income" vs "Scenario B Income" where the visual labels just say "Income"), screen reader users hear duplicate labels without context. Grouping them programmatically is necessary.
 **Action:** Wrapped grouped inputs in a `role="group"` container and linked it to the group's heading using `aria-labelledby`. This ensures screen readers announce the group name alongside the input label (e.g., "Scenario A group, Income").
+
+## 2026-06-15 - Managing focus and visibility when jumping to tabbed content
+**Learning:** When users click a quick-jump link (like the hero pills) that targets an element hidden inside an inactive tab panel, the browser cannot scroll to it or focus it properly. Additionally, if focus isn't programmatically shifted to the target element, keyboard users remain at the top of the page, completely disoriented and disconnected from the content they intended to navigate to.
+**Action:** When implementing quick-jump features, check if the target element's closest parent is an inactive tab content area. If so, programmatically click the corresponding tab button to reveal it before scrolling. Always set `tabindex="-1"` and call `.focus({ preventScroll: true })` on the target to ensure screen readers and keyboard navigation move to the correct location.
